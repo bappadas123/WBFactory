@@ -1,0 +1,471 @@
+<?php
+
+function annual_return_factories_init() {
+	
+}
+
+
+function annual_return_factories_menu(){
+	$items	=	array();
+												
+
+//------------------Annual Return Common-------------------------------Start-----
+
+	$items['applicant/annual-return-list'] = array(
+		'title'				=>	'Annual Return List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('annual_return_list'),
+		'file' 				=> 	'includes/annual_return_list.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	
+	$items['applicant/annual-return-common/%/%/%']= array( 
+		//'title'	 			=> 	'Information required under Annual Return',
+		'page callback' 	=> 	'drupal_get_form', 
+		'page arguments' 	=> 	array('annual_return_common',2,3,4),
+		'file' 				=>	'includes/annual_return_common.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	);
+	
+	$items['applicant/annual-return-common-apply/default'] = array(
+		'title' 			=> 'Annual Return Factory Information',
+		'type' 				=> MENU_DEFAULT_LOCAL_TASK,
+		'weight' 			=> -10,
+ 	);
+	
+	$items['applicant/annual-return-common-apply']	= array(
+		'page callback'				=>	'drupal_get_form',
+		'page arguments'			=>	array('annual_return_common_apply'),
+		'file' 						=> 	'includes/annual_return_common_apply.inc',
+		'access arguments' 			=> 	array('permission_for_applicant'),
+	);										
+	
+	$items['applicant/annual-return-common-apply/%/%']	= array(
+		'page callback'				=>	'drupal_get_form',
+		'page arguments'			=>	array('annual_return_common_apply',3,4),
+		'file' 						=> 	'includes/annual_return_common_apply.inc',
+		'access arguments' 			=> 	array('permission_for_applicant'),
+	);
+	
+	$items['update-occupier-details/%ctools_js/%/%/%']  = array(
+		'title'						=> 'Update Occupier\'s Details',
+		'page callback'				=> 'update_occupier_details_form_page',
+		'page arguments'			=> array(1,2,3,4),
+		'file'						=> 'includes/update_occupier_details_form.inc',
+		'access arguments' 			=> array('permission_for_applicant'),
+	
+	);
+	
+	$items['update-manager-details/%ctools_js/%/%/%']  = array(
+		'title'						=> 'Update Manager\'s Details',
+		'page callback'				=> 'update_manager_details_form_page',
+		'page arguments'			=> array(1,2,3,4),
+		'file'						=> 'includes/update_manager_details_form.inc',
+		'access arguments' 			=> array('permission_for_applicant'),
+	
+	);
+	
+	$items['applicant/annual-return-common-apply/workers_details/%/%']= array(
+		'page callback' 	=> 	'drupal_get_form', 
+		'page arguments' 	=> 	array('annual_return_worker_details',3,4),
+		'file' 				=>	'includes/annual_return_worker_details.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	2,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['applicant/annual-return-common-apply/leave_wages/%/%']= array(
+		'page callback' 	=> 	'drupal_get_form', 
+		'page arguments' 	=> 	array('annual_return_leave_wages',3,4),
+		'file' 				=>	'includes/annual_return_leave_wages.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	3,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+
+
+//-------------------Annual Return Common-------------------------------End-----												
+												
+//-----------------Payment of wages----------------------------start-----
+
+	/*$items['applicant/payment-wages-list'] = array(
+		'title'				=>	'Payment of Wages List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('payment_wages_list'),
+		'file' 				=> 	'includes/payment_wages_list.inc',
+		'access arguments' 	=>  array('access content'),
+	);
+
+	$items['applicant/payment-wages']= array( 
+		'title'	 			=> 	'Information required under Payment of Wages Act',	//--------payment of wages
+		'page callback' 	=> 	'drupal_get_form', 
+		'page arguments' 	=> 	array('payment_wages'),
+		'file' 				=>	'includes/payment_of_wages.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	);*/
+								
+								
+	/*$items['applicant/payment-wages-apply/default'] = array(
+		'title' 			=> 'Payment of Wages',
+		'type' 				=> MENU_DEFAULT_LOCAL_TASK,
+		'weight' 			=> -10,
+ 	);
+	
+	$items['applicant/payment-wages-apply']	= array(
+		'page callback'				=>	'drupal_get_form',
+		'page arguments'			=>	array('payment_of_wages_apply'),
+		'file' 						=> 	'includes/payment_of_wages_apply.inc',
+		'access arguments' 			=> 	array('permission_for_applicant'),
+	);										
+	
+	$items['applicant/payment-wages-apply/%/%']	= array(
+		'page callback'				=>	'drupal_get_form',
+		'page arguments'			=>	array('payment_of_wages_apply',3,4),
+		'file' 						=> 	'includes/payment_of_wages_apply.inc',
+		'access arguments' 			=> 	array('permission_for_applicant'),
+	);
+	
+	$items['applicant/payment-wages-apply/part2/%/%']= array( 
+		//'title'	 			=> 	'Information required under Payment of Wages Act',	//--------payment of wages
+		'page callback' 	=> 	'drupal_get_form', 
+		'page arguments' 	=> 	array('worker_details_payment_wages',3,4),
+		'file' 				=>	'includes/worker_details_payment_wages.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	2,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);*/
+									
+	$items['applicant/payment-of-wages/%/%']= array( 
+		//'title'	 			=> 	'ANNUAL RETURN UNDER THE WEST BENGAL PAYMENT OF WAGES RULES',	//--------payment of wages
+		'page callback' 	=> 	'drupal_get_form', 
+		'page arguments' 	=> 	array('payment_wages_return',2,3),
+		'file' 				=>	'includes/payment_wages_return.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	4,
+	);
+	
+	/*$items['applicant/payment-wages-apply/application-preview/%/%'] = array(
+		//'title'				=>	'Application Preview',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('payment_wages_application_preview',3,4),
+		'file' 				=> 	'includes/payment_wages_application_preview.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	4,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);*/	
+								
+//-----------------Payment of wages----------------------------end-----								
+
+								
+//-----------------factories rules----------------------------start-----	
+
+	/*$items['applicant/factories-act-list'] = array(
+		'title'				=>	'Factories Rules List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('factories_act_list'),
+		'file' 				=> 	'includes/factories_act_list.inc',
+		'access arguments' 	=>  array('access content'),
+	);*/
+	
+	/*$items['applicant/factories-act-apply/default'] = array(
+		'title' 			=> 'Factories Rules',
+		'type' 				=> MENU_DEFAULT_LOCAL_TASK,
+		'weight' 			=> -10,
+ 	);
+	
+	$items['applicant/factories-act-apply']	= array(
+		'page callback'				=>	'drupal_get_form',
+		'page arguments'			=>	array('factories_act_apply'),
+		'file' 						=> 	'includes/factories_act_apply.inc',
+		'access arguments' 			=> 	array('permission_for_applicant'),
+	);										
+	
+	$items['applicant/factories-act-apply/%/%']	= array(
+		'page callback'				=>	'drupal_get_form',
+		'page arguments'			=>	array('factories_act_apply',3,4),
+		'file' 						=> 	'includes/factories_act_apply.inc',
+		'access arguments' 			=> 	array('permission_for_applicant'),
+	);*/
+	
+	$items['applicant/factories-act-apply/dangerous_operation/%/%']= array( 
+		//'title'	 			=> 	'Dangerous Process or Operation under Factories Rules',	//--------Factories Rules
+		'page callback' 	=> 	'drupal_get_form',
+		'page arguments' 	=> 	array('dangerous_operation_factories_act',3,4),
+		'file' 				=>	'includes/dangerous_operation_factories_act.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	2,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['applicant/factories-act-apply/safety_officers/%/%']= array( 
+		//'title'	 			=> 	'Safety Officers Details under Factories Rules',	//--------Factories Rules
+		'page callback' 	=> 	'drupal_get_form',
+		'page arguments' 	=> 	array('safety_officers_factories_act',3,4),
+		'file' 				=>	'includes/safety_officers_factories_act.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	2,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['applicant/factories-act-apply/welfare_officers/%/%']= array( 
+	//	'title'	 			=> 	'Welfare Officers Details under Factories Rules',	//--------Factories Rules
+		'page callback' 	=> 	'drupal_get_form',
+		'page arguments' 	=> 	array('welfare_officers_factories_act',3,4),
+		'file' 				=>	'includes/welfare_officers_factories_act.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	2,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['applicant/factories-act-apply/facilities_section/%/%']= array( 
+		//'title'	 			=> 	'Facilities under Factories Rules',	//--------Factories Rules
+		'page callback' 	=> 	'drupal_get_form',
+		'page arguments' 	=> 	array('facilities_section_factories_act',3,4),
+		'file' 				=>	'includes/facilities_section_factories_act.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	3,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['applicant/factories-act-apply/accidents/%/%']= array( 
+		//'title'	 			=> 	'Accidents Details under Factories Rules',	//--------Factories Rules
+		'page callback' 	=> 	'drupal_get_form',
+		'page arguments' 	=> 	array('accidents_details_factories_act',3,4),
+		'file' 				=>	'includes/accidents_details_factories_act.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	3,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['applicant/factories-act-apply/suggestion_scheme/%/%']= array( 
+		//'title'	 			=> 	'Suggestion Scheme under Factories Rules',	//--------Factories Rules
+		'page callback' 	=> 	'drupal_get_form',
+		'page arguments' 	=> 	array('suggestion_scheme_factories_act',3,4),
+		'file' 				=>	'includes/suggestion_scheme_factories_act.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	4,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	//delete menu
+	$items['applicant/factories-act-apply/del_dangerous_operation/%/%/%'] = array(
+		'page callback' 	=> 'del_dangerous_operation_details',
+		'page arguments' 	=> array(3,4,5),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 			=> 'includes/dangerous_operation_factories_act.inc',
+  	);
+	
+	$items['applicant/factories-act-apply/del_safety_officers/%/%/%'] = array(
+		'page callback' 	=> 'del_safety_officers_details',
+		'page arguments' 	=> array(3,4,5),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 			=> 'includes/safety_officers_factories_act.inc',
+  	);
+	
+	$items['applicant/factories-act-apply/del_welfare_officers/%/%/%'] = array(
+		'page callback' 	=> 'del_welfare_officers_details',
+		'page arguments' 	=> array(3,4,5),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 			=> 'includes/welfare_officers_factories_act.inc',
+  	);
+	
+	/*$items['applicant/factories-act-apply/application-preview/%/%'] = array(
+		//'title'				=>	'Application Preview',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('factories_act_application_preview',3,4),
+		'file' 				=> 	'includes/factories_act_application_preview.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	4,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);*/
+
+
+//-----------------factories rules----------------------------end-----	
+
+
+//-----------------Maternity Benefit----------------------------start-----		
+
+	$items['applicant/maternity-benefit-apply/medical_officer/%/%']= array( 
+		//'title'	 			=> 	'Medical Officer under Maternity Benefit',	//--------Maternity Benefit
+		'page callback' 	=> 	'drupal_get_form',
+		'page arguments' 	=> 	array('medical_officer_maternity',3,4),
+		'file' 				=>	'includes/medical_officer_maternity.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	2,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['applicant/maternity-benefit-apply/hospital_details/%/%']= array( 
+		//'title'	 			=> 	'Hospital under Maternity Benefit',	//--------Maternity Benefit
+		'page callback' 	=> 	'drupal_get_form',
+		'page arguments' 	=> 	array('hospital_details_maternity',3,4),
+		'file' 				=>	'includes/hospital_details_maternity.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	3,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['applicant/maternity-benefit-apply/emplm_dism_pay_bonus_women/%/%']= array( 
+		//'title'	 			=> 	'Employment, Dismissal, Payment Of Bonus, Etc. of Women under Maternity Benefit',	//--------Maternity Benefit
+		'page callback' 	=> 	'drupal_get_form',
+		'page arguments' 	=> 	array('emplm_dism_pay_bonus_women_maternity',3,4),
+		'file' 				=>	'includes/emplm_dism_pay_bonus_women_maternity.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	4,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['applicant/maternity-benefit-apply/details_of_payment/%/%']= array( 
+		//'title'	 			=> 	'Details of Payment under Maternity Benefit',	//--------Maternity Benefit
+		'page callback' 	=> 	'drupal_get_form',
+		'page arguments' 	=> 	array('details_of_payment_maternity',3,4),
+		'file' 				=>	'includes/details_of_payment_maternity.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 5,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	
+	//delete menu
+	$items['applicant/maternity-benefit-apply/del_medical_officer/%/%/%'] = array(
+		'page callback' 	=> 'del_medical_officer',
+		'page arguments' 	=> array(3,4,5),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 			=> 'includes/medical_officer_maternity.inc',
+  	);
+	
+	$items['applicant/maternity-benefit-apply/del_hospital_details/%/%/%'] = array(
+		'page callback' 	=> 'del_hospital_details',
+		'page arguments' 	=> array(3,4,5),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 			=> 'includes/hospital_details_maternity.inc',
+  	);
+	
+		
+//-----------------Maternity Benefit----------------------------end-----
+
+//-----------------Application Preview----------------------------Start-----
+
+	$items['applicant/ar-application-preview/ar_common_app_preview/%/%'] = array(
+		//'title'				=>	'Payment of Wages Application Preview',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('ar_common_application_preview',3,4),
+		'file' 				=> 	'includes/ar_common_application_preview.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	2,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['applicant/pw-application-preview/payment_wages_app_preview/%/%'] = array(
+		//'title'				=>	'Payment of Wages Application Preview',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('payment_wages_app_preview',3,4),
+		'file' 				=> 	'includes/payment_wages_app_preview.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	3,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['applicant/fact-act-application-preview/factories_act_app_preview/%/%'] = array(
+		//'title'				=>	'Factories Rules Application Preview',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('factories_act_app_preview',3,4),
+		'file' 				=> 	'includes/factories_act_app_preview.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	4,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['applicant/mb-application-preview/maternity_benefit_app_preview/%/%'] = array(
+		//'title'				=>	'Maternity Benefit Application Preview',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('maternity_benefit_app_preview',3,4),
+		'file' 				=> 	'includes/maternity_benefit_app_preview.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	5,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+
+
+//-----------------Application Preview----------------------------Endt-----
+
+//-----------------PDF Create, Upload, Download----------------------------Start-----
+
+	$items['applicant/annual_return_pdf_upload/%/%'] = array(
+		//'title'				=>	'Application Preview',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('annual_return_pdf_upload',2,3),
+		'file' 				=> 	'includes/annual_return_pdf_upload.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	2,
+	);
+	
+	$items['applicant/payment_of_wages_pdf/%/%'] = array(
+		//'title'				=>	'Application Preview',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('payment_of_wages_pdf',2,3),
+		'file' 				=> 	'includes/payment_of_wages_pdf.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	3,
+	);
+	
+	$items['applicant/factories_act_pdf/%/%'] = array(
+		//'title'				=>	'Application Preview',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('factories_act_pdf',2,3),
+		'file' 				=> 	'includes/factories_act_pdf.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	4,
+	);
+	
+	$items['applicant/maternity_benefit_pdf/%/%'] = array(
+		//'title'				=>	'Application Preview',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('maternity_benefit_pdf',2,3),
+		'file' 				=> 	'includes/maternity_benefit_pdf.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	5,
+	);
+	
+	$items['applicant/annual_return_pdf_download/%/%'] = array(
+		//'title'				=>	'Application Preview',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('annual_return_pdf_download',2,3),
+		'file' 				=> 	'includes/annual_return_pdf_download.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	6,
+	);
+	
+	$items['applicant/download_uploaded_pw_doc/%/%/%'] = array(
+		//'title' => 'Update RHE Flat Master(Edit Flat Data)',	
+		'page callback' 	=> 'download_uploaded_doc',
+		'page arguments' 	=> array(2,3,4),
+		'file' 				=> 'includes/annual_return_pdf_download.inc',
+		'access arguments' 	=> array('permission_for_applicant'),
+		'weight' 			=> 	7,
+	);
+	
+	$items['applicant/download_uploaded_fact_act_doc/%/%/%'] = array(
+		//'title' => 'Update RHE Flat Master(Edit Flat Data)',	
+		'page callback' 	=> 'download_uploaded_doc',
+		'page arguments' 	=> array(2,3,4),
+		'file' 				=> 'includes/annual_return_pdf_download.inc',
+		'access arguments' 	=> array('permission_for_applicant'),
+		'weight' 			=> 	8,
+	);
+	
+	$items['applicant/download_uploaded_mb_doc/%/%/%'] = array(
+		//'title' => 'Update RHE Flat Master(Edit Flat Data)',	
+		'page callback' 	=> 'download_uploaded_doc',
+		'page arguments' 	=> array(2,3,4),
+		'file' 				=> 'includes/annual_return_pdf_download.inc',
+		'access arguments' 	=> array('permission_for_applicant'),
+		'weight' 			=> 	9,
+	);
+
+//-----------------PDF Create, Upload, Download----------------------------Endt------
+
+	
+	return $items;
+}
+	

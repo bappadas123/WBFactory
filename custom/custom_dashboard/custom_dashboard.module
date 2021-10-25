@@ -1,0 +1,654 @@
+<?php
+function custom_dashboard_permission() {
+	return array(
+	// PERMISSION RIMA //
+	
+	'cmsmanager' => array(
+      'title' => t('Permission For Cmsmanager'),
+    ),
+    'permission_for_applicant' => array(
+      'title' => t('Permission For Applicant'),
+    ),
+	'permission_for_plansection' => array(
+      'title' => t('Permission For Plansection'),
+    ),
+	'permission_for_inspector' => array(
+      'title' => t('Permission For Inspector'),
+    ),
+	'permission_for_deputychief' => array(
+      'title' => t('Permission For Deputy Chief'),
+    ),
+	'permission_for_inspector_chemical' => array(
+      'title' => t('Permission For Inspector Chemical'),
+    ),
+	'permission_for_jointchief' => array(
+      'title' => t('Permission For Joint Chief'),
+    ),
+	'permission_for_chief' => array(
+      'title' => t('Permission For Chief'),
+    ),
+	'permission_for_deputychief_chemical' => array(
+      'title' => t('Permission For Deputy Chief Chemical'),
+    ),
+	'permission_for_application_planview' => array(
+      'title' => t('Permission For Plan View - Applicant'),
+    ),
+	'permission_for_application_planview_plansection' => array(
+      'title' => t('Permission For Plan View - Plansection'),
+    ),
+	'permission_for_application_planview_inspector' => array(
+      'title' => t('Permission For Plan View - Inspector'),
+    ),
+	'permission_for_application_planview_deputychief' => array(
+      'title' => t('Permission For Plan View - Deputy Chief'),
+    ),
+	'permission_for_application_planview_jointchief' => array(
+      'title' => t('Permission For Plan View - Joint Chief'),
+    ),
+	'permission_for_application_planview_chief' => array(
+      'title' => t('Permission For Plan View - Chief'),
+    ),
+	'permission_for_application_planpdf' => array(
+      'title' => t('Permission For Plan Pdf'),
+    ),
+	'permission_for_backed_user' => array(
+      'title' => t('Permission For admin panel'),
+    ),
+	'permission_for_receivingcell' => array(
+      'title' => t('Permission For receiving cell'),
+    ),
+	'permission_for_statisticalcell' => array(
+      'title' => t('Permission For Statistical Cell'),
+    ),
+
+	/* RIMA HOME 25-09-2018 */
+	
+	'permission_for_inspector_medical' => array(
+      'title' => t('Permission For Inspector Medical'),
+    ),
+	'permission_for_deputychief_medical' => array(
+      'title' => t('Permission For Deputy Chief Medical'),
+    ),
+	'permission_for_jointchief_chemical' => array(
+      'title' => t('Permission For Joint Chief Chemical'),
+    ),
+	'permission_for_jointchief_medical' => array(
+      'title' => t('Permission For Joint Chief Medical'),
+    ),
+	
+	// PERMISSION TAMAL //
+	
+	'permission_for_regsection' => array(
+      'title' => t('Permission For Registration Section'),
+    ),
+	'permission_for_licsection' => array(
+      'title' => t('Permission For Licence Section'),
+    ),
+	'permission_for_applicant_admin' => array(
+      'title' => t('Permission For Applicant and Admin'),
+    ),
+  );
+}
+
+function custom_dashboard_menu() {
+	 $items = array();
+	 $items['cmsmanager-dashboard'] = array(
+		'title'				=>	'Cmsmanager Dashboard',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('cmsmanager_dashboard'),
+		'file' 				=> 	'includes/cmsmanager_dashboard.inc',
+		'access arguments' 	=> 	array('cmsmanager'),
+	  );
+	 $items['applicant-dashboard'] = array(
+		'title'				=>	'Applicant Dashboard',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('applicant_dashboard'),
+		'file' 				=> 	'includes/applicant_dashboard.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	  );
+	  
+	 // MENU FOR PLAN SECTION - RIMA // 
+	 
+	 /*$items['plansection-dashboard'] = array(
+		'title'				=>	'Plan Section Dashboard',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('plansection_dashboard'),
+		'file' 				=> 	'includes/plansection_dashboard.inc',
+		'access arguments' 	=> 	array('permission_for_plansection'),
+	  );
+	 $items['plansection-list'] = array(
+		'title'				=>	'Plan Section Lists',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('plansection_list'),
+		'file' 				=> 	'includes/plansection_list.inc',
+		'access arguments' 	=> 	array('permission_for_plansection'),
+	  );*/ 
+	 $items['inspector-dashboard'] = array(
+		'title'				=>	'Inspector Dashboard',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('inspector_dashboard'),
+		'file' 				=> 	'includes/inspector_dashboard.inc',
+		'access arguments' 	=> 	array('permission_for_inspector'),
+	  ); 
+	 $items['inspector-plan-list'] = array(
+		'title'				=>	'Inspector Plan List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('inspector_plan_list'),
+		'file' 				=> 	'includes/inspector_plan_list.inc',
+		'access arguments' 	=> 	array('permission_for_inspector'),
+	  );
+	 $items['deputychief-dashboard'] = array(
+		'title'				=>	'Deputy Chief Dashboard',
+		'page callback'		=>	'drupal_get_form',
+		//'page arguments'	=>	array('deputychief_dashboard'),
+		//'file' 				=> 	'includes/deputychief_dashboard.inc',
+		'page arguments'	=>	array('inspector_dashboard'),
+		'file' 				=> 	'includes/inspector_dashboard.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief'),
+	  );
+	  $items['deputychief-plan-list'] = array(
+		'title'				=>	'Deputy Chief Plan List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('deputychief_plan_list'),
+		'file' 				=> 	'includes/deputychief_plan_list.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief'),
+	  );
+	 $items['deputychief-chemical-dashboard'] = array(
+		'title'				=>	'Deputy Chief Chemical Dashboard',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('deputychief_chemical_dashboard'),
+		'file' 				=> 	'includes/deputychief_chemical_dashboard.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief_chemical'),
+	  );
+	  $items['deputychief-chemical-plan-list'] = array(
+		'title'				=>	'Deputy Chief Chemical Plan List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('deputychief_chemical_plan_list'),
+		'file' 				=> 	'includes/deputychief_chemical_plan_list.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief_chemical'),
+	  );
+	 $items['inspector-chemical-dashboard'] = array(
+		'title'				=>	'Inspector Chemical Dashboard',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('inspector_chemical_dashboard'),
+		'file' 				=> 	'includes/inspector_chemical_dashboard.inc',
+		'access arguments' 	=> 	array('permission_for_inspector_chemical'),
+	  );
+	  $items['inspector-chemical-plan-list'] = array(
+		'title'				=>	'Inspector Chemical Plan List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('inspector_chemical_plan_list'),
+		'file' 				=> 	'includes/inspector_chemical_plan_list.inc',
+		'access arguments' 	=> 	array('permission_for_inspector_chemical'),
+	  );
+	 $items['jointchief-dashboard'] = array(
+		'title'				=>	'Joint Chief Dashboard',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('jointchief_dashboard'),
+		'file' 				=> 	'includes/jointchief_dashboard.inc',
+		'access arguments' 	=> 	array('permission_for_jointchief'),
+	  ); 
+	  $items['jointchief-plan-list'] = array(
+		'title'				=>	'Joint Chief Plan List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('jointchief_plan_list'),
+		'file' 				=> 	'includes/jointchief_plan_list.inc',
+		'access arguments' 	=> 	array('permission_for_jointchief'),
+	  );
+	 $items['chief-dashboard'] = array(
+		'title'				=>	'Chief Dashboard',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('chief_dashboard'),
+		'file' 				=> 	'includes/chief_dashboard.inc',
+		'access arguments' 	=> 	array('permission_for_chief'),
+	  );
+	  $items['chief-plan-list'] = array(
+		'title'				=>	'Chief Plan List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('chief_plan_list'),
+		'file' 				=> 	'includes/chief_plan_list.inc',
+		'access arguments' 	=> 	array('permission_for_chief'),
+	  );
+	  
+	  /* RIMA HOME 25-09-2018 */ 
+	  
+	  $items['deputychief-medical-dashboard'] = array(
+		'title'				=>	'Deputy Chief medical Dashboard',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('deputychief_medical_dashboard'),
+		'file' 				=> 	'includes/deputychief_medical_dashboard.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief_medical'),
+	  );
+	  $items['deputychief-medical-plan-list'] = array(
+		'title'				=>	'Deputy Chief medical Plan List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('deputychief_medical_plan_list'),
+		'file' 				=> 	'includes/deputychief_medical_plan_list.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief_medical'),
+	  );
+	 $items['inspector-medical-dashboard'] = array(
+		'title'				=>	'Inspector medical Dashboard',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('inspector_medical_dashboard'),
+		'file' 				=> 	'includes/inspector_medical_dashboard.inc',
+		'access arguments' 	=> 	array('permission_for_inspector_medical'),
+	  );
+	  $items['inspector-medical-plan-list'] = array(
+		'title'				=>	'Inspector medical Plan List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('inspector_medical_plan_list'),
+		'file' 				=> 	'includes/inspector_medical_plan_list.inc',
+		'access arguments' 	=> 	array('permission_for_inspector_medical'),
+	  );
+	 $items['jointchief-chemical-dashboard'] = array(
+		'title'				=>	'Joint Chief Chemical Dashboard',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('jointchief_chemical_dashboard'),
+		'file' 				=> 	'includes/jointchief_chemical_dashboard.inc',
+		'access arguments' 	=> 	array('permission_for_jointchief_chemical'),
+	  );
+	  $items['jointchief-chemical-plan-list'] = array(
+		'title'				=>	'Joint Chief Chemical Plan List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('jointchief_chemical_plan_list'),
+		'file' 				=> 	'includes/jointchief_chemical_plan_list.inc',
+		'access arguments' 	=> 	array('permission_for_jointchief_chemical'),
+	  );
+	  $items['jointchief-medical-dashboard'] = array(
+		'title'				=>	'Deputy Chief medical Dashboard',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('jointchief_medical_dashboard'),
+		'file' 				=> 	'includes/jointchief_medical_dashboard.inc',
+		'access arguments' 	=> 	array('permission_for_jointchief_medical'),
+	  );
+	  $items['jointchief-medical-plan-list'] = array(
+		'title'				=>	'Deputy Chief medical Plan List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('jointchief_medical_plan_list'),
+		'file' 				=> 	'includes/jointchief_medical_plan_list.inc',
+		'access arguments' 	=> 	array('permission_for_jointchief_medical'),
+	  );
+	  
+	  // MENU FOR REGISTRATION SECTION - TAMAL //
+	  
+	  $items['regsection-dashboard'] = array(
+		'title'	 =>	'Registration Dashboard',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=>	array('regsection_dashboard'),
+		'file' 	 => 	'includes/regsection_dashboard.inc',
+		'access arguments' 	=>  array('permission_for_regsection'),
+	  );
+	  $items['regsection-list'] = array(
+		'title'	 =>	'Registration List',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=>	array('regsection_list'),
+		'file' 	 => 	'includes/regsection_list.inc',
+		'access arguments' 	=>  array('permission_for_regsection'),
+	  );
+	  
+	  $items['licsection-dashboard'] = array(
+		'title'	 =>	'Licence Section Dashboard',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=>	array('licsection_dashboard'),
+		'file' 	 => 	'includes/licsection_dashboard.inc',
+		'access arguments' 	=>  array('permission_for_licsection'),
+	  );
+	  
+	  /*$items['reginspector-dashboard'] = array(
+		'title'	 =>	'Inspector Dashboard',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('reginspector_dashboard'),
+		'file' 	 => 	'includes/reginspector_dashboard.inc',
+		'access arguments' 	=>  array('permission_for_reginspector'),
+	  );*/
+	  
+	  $items['inspector-registration-list'] = array(
+		'title'	 			=>	'All Registration List',
+		'page callback'	    =>	'drupal_get_form',
+		'page arguments'	=> array('inspector_registration_list'),
+		'file' 	            => 	'includes/inspector_registration_list.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+	  );
+ 	$items['deputychief-registration-list'] = array(
+		'title'				=>	'All Registration List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('deputychief_registration_list'),
+		'file' 				=> 	'includes/deputychief_registration_list.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief'),
+	  );
+	  $items['jointchief-registration-list'] = array(
+		'title'				=>	'All Registration List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('jointchief_registration_list'),
+		'file' 				=> 	'includes/jointchief_registration_list.inc',
+		'access arguments' 	=> 	array('permission_for_jointchief'),
+	  );
+	$items['chief-registration-list'] = array(
+		'title'				=>	'All Registration List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('chief_registration_list'),
+		'file' 				=> 	'includes/chief_registration_list.inc',
+		'access arguments' 	=> 	array('permission_for_chief'),
+	  );
+	  $items['inspector-view-chemical-registration-list'] = array(
+		'title'				=>	'Inspector Chemical Registration List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('inspector_view_chemical_registration_list'),
+		'file' 				=> 	'includes/inspector_view_chemical_registration_list.inc',
+		'access arguments' 	=> 	array('permission_for_inspector_chemical'),
+	  );
+	  $items['deputychief-view-chemical-registration-list'] = array(
+		'title'				=>	'Deputychief Chemical Registration List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('deputychief_view_chemical_registration_list'),
+		'file' 				=> 	'includes/deputychief_view_chemical_registration_list.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief_chemical'),
+	  );
+
+	/* RIMA 30-10-2018 */
+	$items['escalate-time-management'] = array(
+		'title'				=>	'Escalation Time Management',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('escalate_time_management'),
+		'file' 				=> 	'includes/escalate_time_management.inc',
+		'access arguments' 	=> 	array('permission_for_chief'),
+	  );
+	  
+	 // EXTENSION PLAN
+	 
+	$items['plan-extension-list'] = array(
+		'title'				=>	'Plan Section Extension Lists',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('plan_extension_list'),
+		'file' 				=> 	'includes/plan_extension_list.inc',
+		'access arguments' 	=> 	array('permission_for_plansection'),
+	  ); 
+
+	$items['inspector-extension-list'] = array(
+		'title'				=>	'Inspector Extension List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('inspector_extension_list'),
+		'file' 				=> 	'includes/inspector_extension_list.inc',
+		'access arguments' 	=> 	array('permission_for_inspector'),
+	  );
+	$items['inspector-chemical-extension-list'] = array(
+		'title'				=>	'Inspector Chemical Extension List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('inspector_chemical_extension_list'),
+		'file' 				=> 	'includes/inspector_chemical_extension_list.inc',
+		'access arguments' 	=> 	array('permission_for_inspector_chemical'),
+	  );
+    $items['deputychief-extension-list'] = array(
+		'title'				=>	'Deputy Chief Extension List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('deputychief_extension_list'),
+		'file' 				=> 	'includes/deputychief_extension_list.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief'),
+	  );
+	$items['deputychief-chemical-extension-list'] = array(
+		'title'				=>	'Deputy Chief Chemical Extension List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('deputychief_chemical_extension_list'),
+		'file' 				=> 	'includes/deputychief_chemical_extension_list.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief_chemical'),
+	  );
+	$items['jointchief-extension-list'] = array(
+		'title'				=>	'Joint Chief Extension List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('jointchief_extension_list'),
+		'file' 				=> 	'includes/jointchief_extension_list.inc',
+		'access arguments' 	=> 	array('permission_for_jointchief'),
+	  );
+	$items['chief-extension-list'] = array(
+		'title'				=>	'Chief Extension List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('chief_extension_list'),
+		'file' 				=> 	'includes/chief_extension_list.inc',
+		'access arguments' 	=> 	array('permission_for_chief'),
+	  ); 
+
+ //////////////////Renewal Permalink////////////////////
+	  
+	 $items['inspector-renewal-list'] = array(
+		'title'				=>	'Renewal List',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('inspector_renewal_list'),
+		'file' 				=> 	'includes/inspector_renewal_list.inc',
+		'access arguments' 	=> 	array('permission_for_inspector'),
+	  );
+	$items['deputy-renewal-list'] = array(
+		'title'	 			=>	'Renewal List',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>  array('deputy_renewal_list'),
+		'file' 	 			=> 	'includes/deputy_renewal_list.inc',
+		'access arguments' 	=>  array('permission_for_deputychief'),
+	);
+	
+	// NOTICE SECTION LIST	
+	 $items['inspector-form18-list'] = array(
+		'title'				=>	'Notice of Accident',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('inspector_form18_list'),
+		'file' 				=> 	'includes/inspector_form18_list.inc',
+		'access arguments' 	=> 	array('permission_for_inspector'),
+	  );
+	 $items['inspector-form19-list'] = array(
+		'title'				=>	'Dangerous Occurrence',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('inspector_form19_list'),
+		'file' 				=> 	'includes/inspector_form19_list.inc',
+		'access arguments' 	=> 	array('permission_for_inspector'),
+	  );
+	 $items['inspector-form20-list'] = array(
+		'title'				=>	'Notice of Poisoning',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('inspector_form20_list'),
+		'file' 				=> 	'includes/inspector_form20_list.inc',
+		'access arguments' 	=> 	array('permission_for_inspector'),
+	  );
+	 $items['deputychief-form18-list'] = array(
+		'title'				=>	'Notice of Accident',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('deputychief_form18_list'),
+		'file' 				=> 	'includes/deputychief_form18_list.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief'),
+	  );
+	 $items['deputychief-form18-view'] = array(
+		'title'				=>	'FORM18 View',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('deputychief_form18_view'),
+		'file' 				=> 	'includes/deputychief_form18_view.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief'),
+	  ); 
+	 $items['chief-form18-list'] = array(
+		'title'				=>	'Notice of Accident',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('chief_form18_list'),
+		'file' 				=> 	'includes/chief_form18_list.inc',
+		'access arguments' 	=> 	array('permission_for_chief'),
+	  );
+	 $items['chief-form18-view'] = array(
+		'title'				=>	'FORM18 View',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('chief_form18_view'),
+		'file' 				=> 	'includes/chief_form18_view.inc',
+		'access arguments' 	=> 	array('permission_for_chief'),
+	  ); 
+	 $items['inspector-form18-view'] = array(
+		'title'				=>	'FORM18 View',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('inspector_form18_view'),
+		'file' 				=> 	'includes/inspector_form18_view.inc',
+		'access arguments' 	=> 	array('permission_for_inspector'),
+	  ); 
+
+
+	 // RECEIVING CELL LIST
+	  
+	 $items['receiving-dashboard'] = array(
+		'title'				=>	'Receiving Cell Dashboard',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('receiving_dashboard'),
+		'file' 				=> 	'includes/receiving_dashboard.inc',
+		'access arguments' 	=> 	array('permission_for_receivingcell'),
+	  );
+	 $items['receiving-form18-list'] = array(
+		'title'				=>	'Receiving Cell Lists',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('receiving_form18_list'),
+		'file' 				=> 	'includes/receiving_form18_list.inc',
+		'access arguments' 	=> 	array('permission_for_receivingcell'),
+	  ); 
+	 $items['receiving-form19-list'] = array(
+		'title'				=>	'Receiving Cell Lists',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('receiving_form19_list'),
+		'file' 				=> 	'includes/receiving_form19_list.inc',
+		'access arguments' 	=> 	array('permission_for_receivingcell'),
+	  ); 
+	 $items['receiving-form20-list'] = array(
+		'title'				=>	'Receiving Cell Lists',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('receiving_form20_list'),
+		'file' 				=> 	'includes/receiving_form20_list.inc',
+		'access arguments' 	=> 	array('permission_for_receivingcell'),
+	  ); 
+	  
+	 $items['receiving-form18-view'] = array(
+		'title'				=>	'Receiving Cell View',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('receiving_form18_view'),
+		'file' 				=> 	'includes/receiving_form18_view.inc',
+		'access arguments' 	=> 	array('permission_for_receivingcell'),
+	  ); 
+	 $items['receiving-form19-view'] = array(
+		'title'				=>	'Receiving Cell View',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('receiving_form19_view'),
+		'file' 				=> 	'includes/receiving_form19_view.inc',
+		'access arguments' 	=> 	array('permission_for_receivingcell'),
+	  ); 
+	 $items['receiving-form20-view'] = array(
+		'title'				=>	'Receiving Cell View',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('receiving_form20_view'),
+		'file' 				=> 	'includes/receiving_form20_view.inc',
+		'access arguments' 	=> 	array('permission_for_receivingcell'),
+	  ); 
+
+	 // STATISTICAL CELL LIST
+	  
+	 $items['statistical-dashboard'] = array(
+		'title'				=>	'Statistical Cell Dashboard',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('statistical_dashboard'),
+		'file' 				=> 	'includes/statistical_dashboard.inc',
+		'access arguments' 	=> 	array('permission_for_statisticalcell'),
+	  );
+	 /*$items['statistical-list'] = array(
+		'title'				=>	'Statistical Cell Lists',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('statistical_list'),
+		'file' 				=> 	'includes/statistical_list.inc',
+		'access arguments' 	=> 	array('permission_for_statisticalcell'),
+	  );*/ 
+	 $items['statistical-form18-list'] = array(
+		'title'				=>	'FORM18 Lists',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('statistical_form18_list'),
+		'file' 				=> 	'includes/statistical_form18_list.inc',
+		'access arguments' 	=> 	array('permission_for_statisticalcell'),
+	  ); 
+	 $items['statistical-form19-list'] = array(
+		'title'				=>	'FORM19 Lists',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('statistical_form19_list'),
+		'file' 				=> 	'includes/statistical_form19_list.inc',
+		'access arguments' 	=> 	array('permission_for_statisticalcell'),
+	  ); 
+	 $items['statistical-form20-list'] = array(
+		'title'				=>	'FORM20 Lists',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('statistical_form20_list'),
+		'file' 				=> 	'includes/statistical_form20_list.inc',
+		'access arguments' 	=> 	array('permission_for_statisticalcell'),
+	  ); 
+	 $items['statistical-form18-view'] = array(
+		'title'				=>	'FORM18 View',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('statistical_form18_view'),
+		'file' 				=> 	'includes/statistical_form18_view.inc',
+		'access arguments' 	=> 	array('permission_for_statisticalcell'),
+	  ); 
+	 $items['statistical-form19-view'] = array(
+		'title'				=>	'FORM19 View',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('statistical_form19_view'),
+		'file' 				=> 	'includes/statistical_form19_view.inc',
+		'access arguments' 	=> 	array('permission_for_statisticalcell'),
+	  ); 
+	 $items['statistical-form20-view'] = array(
+		'title'				=>	'FORM20 View',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('statistical_form20_view'),
+		'file' 				=> 	'includes/statistical_form20_view.inc',
+		'access arguments' 	=> 	array('permission_for_statisticalcell'),
+	  ); 
+
+	  
+	//For Annual Return
+		
+		$items['statistical-annual-return-list'] = array(
+			'title'				=>	'Statistical Cell Annual Return Lists',
+			'page callback'		=>	'drupal_get_form',
+			'page arguments'	=>	array('statistical_annual_return_list_form'),
+			'file' 				=> 	'includes/statistical_annual_return_list.inc',
+			'access arguments' 	=> 	array('permission_for_statisticalcell'),
+		);
+		
+		$items['licenceno_autocomplete'] = array(
+			'page callback' 	=> 'get_licenceno_autocomplete',
+			'access arguments' 	=> 	array('permission_for_statisticalcell'),
+			'type' 				=> MENU_CALLBACK,
+  		); 
+		
+		$items['registrationno_autocomplete'] = array(
+			'page callback' 	=> 'get_registrationno_autocomplete',
+			'access arguments' 	=> 	array('permission_for_statisticalcell'),
+			'type' 				=> MENU_CALLBACK,
+  		); 
+		
+		$items['factoryname_autocomplete'] = array(
+			'page callback' 	=> 'get_factoryname_autocomplete',
+			'access arguments' 	=> 	array('permission_for_statisticalcell'),
+			'type' 				=> MENU_CALLBACK,
+  		);
+		
+	//end
+		
+		 $items['view-application-log/%'] = array(
+		'title'				=>	'Application Log',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('application_log_list_applicant',1),
+		'file' 				=> 	'includes/application_log_list_applicant.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	  ); 
+	  
+	 $items['factory-list-admin/CROSSED_OFF'] = array(
+		'title'				=>	'LIST OF CROSSED OFF FACTORIES',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('crossed_off_factory_list',1),
+		'file' 				=> 	'includes/crossed_off_factory_list.inc',
+		'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	  );     
+ $items['factory-list-admin/ACTIVE'] = array(
+		'title'				=>	'LIST OF ACTIVE FACTORIES',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('active_factory_list',1),
+		'file' 				=> 	'includes/active_factory_list.inc',
+		'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	  );
+return $items;
+
+}
+?>

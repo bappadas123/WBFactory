@@ -1,0 +1,1670 @@
+<?php
+
+	function miscellaneous_new_menu_alter(&$item) {
+		// Hide the "Create new account" tab
+		$item['user/register']['type'] = MENU_CALLBACK;
+		
+		// Disable "user/register" page
+		//$item['user/register']['access callback'] = FALSE;
+		
+		// Hide the "User Login" tab
+		//$item['user/login']['type'] = MENU_CALLBACK;
+		
+		// Hide the "Request new password" tab
+		$item['user/password']['type'] = MENU_CALLBACK;
+	}
+	
+ function miscellaneous_new_menu() {
+    $items = array();
+$items['add-new-factory'] = array(
+			'title'				=>	'Add Factory details',
+			'page callback'		=>	'drupal_get_form',
+			'page arguments'	=>	array('add_factory'),
+			'file' 				=> 	'includes/add_factory.inc',
+			'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	);
+$items['applicant/add-factory-part1/%/%/%']	= array(
+		'title'						=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'				=>	'drupal_get_form',
+		'page arguments'			=>	array('factory_parta',2,3,4),
+		'file' 						=> 	'includes/factory_parta.inc',
+		'access arguments' 			=> 	array('permission_for_applicant_admin'),
+	 ); 
+	 $items['applicant/backlog-factory-add/default/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('backlog_add_factory_parta',3,4,5,6),
+		'file' 	 			=> 'includes/backlog_add_factory_parta.inc',
+		'access arguments' 	=> array('permission_for_applicant_admin'),
+		
+ 	);
+	
+	$items['applicant/backlog-factory-add/details-worker-renewal/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('backlog_add_factory_worker',3,4,5,6),
+		'file' 	 			=> 'includes/backlog_add_factory_worker.inc',
+		'access arguments' 	=> array('permission_for_applicant_admin'),
+		
+ 	);
+	
+	$items['applicant/backlog-factory-add/details-of-occupier-renewal/%/%/%/%'] = array(
+		'title'	 			=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('backlog_add_factory_occupier',3,4,5,6),
+		'file' 	 			=> 	'includes/backlog_add_factory_occupier.inc',
+		'access arguments' 	=>  array('permission_for_applicant_admin'),
+		'weight' 	 		=> 	3,
+		
+	);
+	
+	
+	$items['applicant/backlog-factory-add/details-of-manager-renewal/%/%/%/%'] = array(
+			'title'	 			=>	'Online Application for Registration and grant or Renewal of License of Factories',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=>   array('backlog_add_factory_manager',3,4,5,6),
+			'file' 	 			=> 	'includes/backlog_add_factory_manager.inc',
+			'access arguments' 	=>  array('permission_for_applicant_admin'),
+			
+	);
+	
+	$items['applicant/backlog-factory-add/application-preview-renewal/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('backlog_add_factory_preview',3,4,5,6),
+		'file' 	 			=> 'includes/backlog_add_factory_preview.inc',
+		'access arguments' 	=> array('permission_for_applicant_admin')
+ 	);	
+ 
+	$items['applicant/application-preview-renewal/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('add_factory_preview',2,3,4,5),
+		'file' 	 			=> 'includes/add_factory_preview.inc',
+		'access arguments' 	=> array('permission_for_applicant_admin')
+ 	);	
+	$items['telmac_registration-genarate-file/%'] = array(
+			'title'	 			=>	'Licence View',
+			'page callback'	 	=>	'telmac_registration_certificates',
+			'page arguments'	=> 	array(1),
+			'file' 	 			=> 	'includes/telmac_registration_certificates.inc',
+			'access arguments' 	=>  array('permission_for_applicant_admin')
+	); 
+return $items;
+	
+  }
+  
+  
+
+
+//All new functions by Subhabrata Mukherjee
+	
+	//starting of normal function by Subhabrata
+	
+	function get_reg_lic_no($factory_id){ 
+		$query_reg_lic 		= db_select('fa_cafa', 'cafa');
+		$query_reg_lic      ->innerJoin('fa_nature_manufacturing', 'fnm', 'fnm.application_id=cafa.id');
+		$query_reg_lic		->fields('cafa',array('factory_name','factory_typeid','reference_number','factory_registrstion_no','backlog_registration_no','backlog_registration_date','registration_date','tm_factory_registration_no','backlog_license_number','factory_license_no','backlog_license_date','license_date','classification_no','service_id','nearest_landmark','factory_zone','pincode','state','district','subdivision','areatype','block','panchayat','policestation','postoffice','addrline', 'factory_plan_approval_number', 'plan_approval_date', 'backlog_plan_approval_no', 'backlog_plan_approval_date', 'factory_owershiptype'));
+		$query_reg_lic      ->fields('fnm', array('nature_manufacturing'));
+		$query_reg_lic		->condition('cafa.id',$factory_id,'=');
+		$result_reg_lic 	= $query_reg_lic->execute()->fetchAssoc();
+		return $result_reg_lic;
+	}
+	
+	
+	function get_factory_name($uid){
+		$default_select 	= array(""=>"--Select--");
+		$result 	 = db_query("SELECT id,factory_name FROM {fa_cafa} WHERE ((factory_registrstion_no !='') OR (backlog_registration_no !='')) AND created_by ='".$uid."'");
+		$list 	 = array();
+		foreach ($result as $record) {
+			$list[$record->id] = t('@factoryname', array(
+			'@factoryname' => $record->factory_name,
+			));
+		}
+		$last_select 	= array(0=>"Other");
+		return ($default_select+$list+$last_select);
+	}
+	
+	
+	function get_all_factory_name(){
+		$default_select 	= array(""=>"--Select--");
+		$result 	 = db_query("SELECT id,factory_name FROM {fa_cafa} WHERE ((factory_registrstion_no !='') OR (backlog_registration_no !=''))");
+		$list 	 = array();
+		foreach ($result as $record) {
+			$list[$record->id] = t('@factoryname', array(
+			'@factoryname' => $record->factory_name,
+			));
+		}
+		$last_select 	= array(0=>"Other");
+		return ($default_select+$list+$last_select);
+	}
+	
+	function get_all_annual_return_data($user) {
+		$fetch_details	= db_select('fa_annual_return', 'far');
+		$fetch_details	->fields('far', array());
+		$db_and = db_and();
+		$db_and	->condition('far.uid',$user,'=');
+		$db_and	->condition('far.service_id',NULL,'IS NOT');
+		$db_and ->condition('far.full_application_status',NULL,'IS NOT');
+		$fetch_details ->condition($db_and);
+		$fetch_details ->orderBy('far.id', 'asc');
+		$details_result = $fetch_details->execute()->fetchAll(); 
+		return $details_result;
+	}
+
+	function get_annual_return_factory_information($annual_return_ID = '') { 
+		$query_ar_factory 	= db_select('fa_annual_return', 'ar');
+		$query_ar_factory		->fields('ar',array());
+		if($annual_return_ID != '') {
+		$query_ar_factory		->condition('ar.id', $annual_return_ID, '=');
+		}
+		$result_ar_factory 	= $query_ar_factory->execute()->fetchObject();
+		return $result_ar_factory;
+	}
+	
+	function get_annual_return_common_details($factory_id = '') {
+		$query_ar_common 	= db_select('fa_annual_return', 'ar');
+		$query_ar_common	->fields('ar',array());
+		$query_ar_common	->condition('ar.cafa_id', $factory_id, '=');
+		$result_ar_common 	= $query_ar_common->execute()->fetchObject();
+		return $result_ar_common;
+		
+	}
+	
+	function get_worker_details_mandays($annual_return_ID = ''){ 
+		$query_worker_details_mandays 	= db_select('fa_ar_worker_details_mandays', 'wd_mandays');
+		$query_worker_details_mandays		->fields('wd_mandays',array());
+		$query_worker_details_mandays		->condition('wd_mandays.annual_return_id', $annual_return_ID, '=');
+		$result_worker_details_mandays 	= $query_worker_details_mandays->execute()->fetchObject();
+		return $result_worker_details_mandays;
+	}
+	
+	function get_worker_details_avg_daily($annual_return_ID = ''){ 
+		$query_worker_details_avg_worker 	= db_select('fa_ar_worker_details_avg_worker', 'avg_worker');
+		$query_worker_details_avg_worker	->fields('avg_worker',array());
+		$query_worker_details_avg_worker	->condition('avg_worker.annual_return_id', $annual_return_ID, '=');
+		$result_worker_details_avg_worker 	= $query_worker_details_avg_worker->execute()->fetchObject();
+		return $result_worker_details_avg_worker;
+	}
+	
+	function get_reg_factory_occupier($factory_id){ 
+		$query_reg_occupier     = db_select('fa_occupier_details', 'od');
+		$query_reg_occupier		->fields('od', array());
+		$query_reg_occupier		->condition('od.application_occupier_id', $factory_id, '=');
+		$query_reg_occupier		->orderBy('od.id', 'desc');
+		$query_reg_occupier		->range(0, 1);
+		$result_reg_occupier 	= $query_reg_occupier->execute()->fetchAssoc();
+		return $result_reg_occupier;
+	}
+	
+	function get_reg_factory_manager($factory_id){ 
+		$query_reg_manager     	= db_select('fa_manager_details', 'md');
+		$query_reg_manager		->fields('md', array());
+		$query_reg_manager		->condition('md.application_manager_id', $factory_id, '=');
+		$query_reg_manager		->orderBy('md.id', 'desc');
+		$query_reg_manager		->range(0, 1);
+		$result_reg_manager 	= $query_reg_manager->execute()->fetchAssoc();
+		return $result_reg_manager;
+	}
+	
+	function get_leave_wages_details($annual_return_ID = '') {
+		$query_leave_wages 	= db_select('fa_ar_leave_wages_details', 'lw');
+		$query_leave_wages	->fields('lw',array());
+		$query_leave_wages	->condition('lw.annual_return_id', $annual_return_ID, '=');
+		$result_leave_wages = $query_leave_wages->execute()->fetchObject();
+		return $result_leave_wages;
+		
+	}
+	
+	function get_total_wages_paid_include_deduction($annual_return_ID = ''){ 
+		$query_wages_paid_deduction 	= db_select('fa_ar_wages_paid_deduction', 'wages_paid_deduct');
+		$query_wages_paid_deduction		->fields('wages_paid_deduct',array());
+		$query_wages_paid_deduction		->condition('wages_paid_deduct.annual_return_id', $annual_return_ID, '=');
+		$result_wages_paid_deduction 	= $query_wages_paid_deduction->execute()->fetchObject();
+		return $result_wages_paid_deduction;
+		
+	} 
+	
+	function get_disbursement_fine_funds($annual_return_ID = ''){ 
+		$query_disbursement_fine_funds 	= db_select('fa_ar_disbursement_fine_funds', 'disburse_fine_fund');
+		$query_disbursement_fine_funds	->fields('disburse_fine_fund',array());
+		$query_disbursement_fine_funds	->condition('disburse_fine_fund.annual_return_id', $annual_return_ID, '=');
+		$result_disbursement_fine_funds 	= $query_disbursement_fine_funds->execute()->fetchObject();
+		return $result_disbursement_fine_funds;
+		
+	}
+	
+	function get_suggestion_scheme($annual_return_ID = ''){ 
+		$query_suggestion_scheme 	= db_select('fa_ar_suggestion_scheme', 'suggestion_scheme');
+		$query_suggestion_scheme	->fields('suggestion_scheme',array());
+		$query_suggestion_scheme	->condition('suggestion_scheme.annual_return_id', $annual_return_ID, '=');
+		$result_suggestion_scheme 	= $query_suggestion_scheme->execute()->fetchObject();
+		return $result_suggestion_scheme;
+		
+	}
+
+	function get_facilities_section($annual_return_ID = ''){ 
+		$query_facilities_section 	= db_select('fa_ar_facilities_factory_act', 'facilities_fa');
+		$query_facilities_section	->fields('facilities_fa',array());
+		$query_facilities_section	->condition('facilities_fa.annual_return_id', $annual_return_ID, '=');
+		$result_facilities_section 	= $query_facilities_section->execute()->fetchObject();
+		return $result_facilities_section;	
+		
+	}
+	
+	function get_dangerous_operation($annual_return_ID = ''){ 
+		$query_dangerous_operation 	= db_select('fa_ar_dangerous_operation_factory_act', 'dangerous_operation_fa');
+		$query_dangerous_operation	->fields('dangerous_operation_fa',array());
+		$query_dangerous_operation	->condition('dangerous_operation_fa.annual_return_id', $annual_return_ID, '=');
+		$result_dangerous_operation = $query_dangerous_operation->execute()->fetchAll();
+		return $result_dangerous_operation;	
+		
+	}
+	
+	function get_safety_officers($annual_return_ID = ''){ 
+		$query_safety_officers 	= db_select('fa_ar_safety_officers_factory_act', 'safety_officers_fa');
+		$query_safety_officers	->fields('safety_officers_fa',array());
+		$query_safety_officers	->condition('safety_officers_fa.annual_return_id', $annual_return_ID, '=');
+		$result_safety_officers = $query_safety_officers->execute()->fetchAll();
+		return $result_safety_officers;		
+		
+	}
+
+	function get_welfare_officers($annual_return_ID = ''){ 
+		$query_welfare_officers = db_select('fa_ar_welfare_officers_factory_act', 'welfare_officers_fa');
+		$query_welfare_officers	->fields('welfare_officers_fa',array());
+		$query_welfare_officers	->condition('welfare_officers_fa.annual_return_id', $annual_return_ID, '=');
+		$result_welfare_officers = $query_welfare_officers->execute()->fetchAll();
+		return $result_welfare_officers;			
+			
+	}
+	
+	function get_accidents_details($annual_return_ID = ''){ 
+		$query_accidents_details 	= db_select('fa_ar_accidents_details', 'accidents_details');
+		$query_accidents_details	->fields('accidents_details',array());
+		$query_accidents_details	->condition('accidents_details.annual_return_id', $annual_return_ID, '=');
+		$result_accidents_details 	= $query_accidents_details->execute()->fetchObject();
+		return $result_accidents_details;
+		
+	}
+	
+	function get_details_of_payment($annual_return_ID = ''){ 
+		$query_details_payment 	= db_select('fa_ar_details_payment', 'details_payment');
+		$query_details_payment	->fields('details_payment',array());
+		$query_details_payment	->condition('details_payment.annual_return_id', $annual_return_ID, '=');
+		$result_details_payment = $query_details_payment->execute()->fetchObject();
+		return $result_details_payment;
+		
+	}
+	
+	function get_medical_officer($annual_return_ID = ''){ 
+		$query_medical_officer = db_select('fa_ar_medical_officer', 'medical_officer');
+		$query_medical_officer	->fields('medical_officer',array());
+
+		$query_medical_officer	->condition('medical_officer.annual_return_id', $annual_return_ID, '=');
+		$result_medical_officer = $query_medical_officer->execute()->fetchAll();
+		return $result_medical_officer;
+		
+	}
+	
+	function get_hospital_details($annual_return_ID = ''){ 
+		$query_hospital_details = db_select('fa_ar_hospital_details', 'hospital');
+		$query_hospital_details	->fields('hospital',array());
+		$query_hospital_details	->condition('hospital.annual_return_id', $annual_return_ID, '=');
+		$result_hospital_details = $query_hospital_details->execute()->fetchAll();
+		return $result_hospital_details;
+		
+	}
+	
+	function get_emplm_dism_pay_bonus_women($annual_return_ID = ''){ 
+		$query_bonus_women = db_select('fa_ar_emplm_dism_pay_bonus_women', 'bonus_women');
+		$query_bonus_women	->fields('bonus_women',array());
+		$query_bonus_women	->condition('bonus_women.annual_return_id', $annual_return_ID, '=');
+		$result_bonus_women = $query_bonus_women->execute()->fetchObject();
+		return $result_bonus_women;
+		
+	}
+	
+	function get_factory_act_all_data($annual_return_ID = '') {
+		$get_factory_info = get_annual_return_factory_information($annual_return_ID);
+		
+		$query_factory_act_all = db_select('fa_annual_return', 'ar');
+		
+		if($get_factory_info->dangerous_operation_process_in_factory == 'Yes') {
+		$query_factory_act_all ->innerJoin('fa_ar_dangerous_operation_factory_act', 'dangerous_op', 'dangerous_op.annual_return_id = ar.id');
+		}
+		
+		$query_factory_act_all ->innerJoin('fa_ar_safety_officers_factory_act', 'safety_offi', 'safety_offi.annual_return_id = ar.id');
+		$query_factory_act_all ->innerJoin('fa_ar_welfare_officers_factory_act', 'welfare_offi', 'welfare_offi.annual_return_id = ar.id');
+		$query_factory_act_all ->innerJoin('fa_ar_facilities_factory_act', 'facilities_fac', 'facilities_fac.annual_return_id = ar.id');
+		$query_factory_act_all ->innerJoin('fa_ar_accidents_details', 'accidents_de', 'accidents_de.annual_return_id = ar.id');
+		$query_factory_act_all ->innerJoin('fa_ar_suggestion_scheme', 'suggestion_sch', 'suggestion_sch.annual_return_id = ar.id');
+		
+		$query_factory_act_all ->addField('ar','id','ar_id');
+		$query_factory_act_all ->fields('ar',array('factory_name','cafa_id','reference_number','industry_nature','registration_number','registration_date','licence_number',
+		'licence_date','classification_no','pincode','state','district','subdivision','areatype','block','panchayat','policestation','postoffice','factory_zone',
+		'nearest_landmark','addrline','days_worked_year','uid','created_date','modification_date','full_application_status','name_occupier','name_manager','payment_wages_flag',
+		'factories_act_flag ','maternity_benefit_flag','dangerous_operation_process_in_factory','no_of_safety_officers','no_of_welfare_officers','factory_typeid'));
+		
+		if($get_factory_info->dangerous_operation_process_in_factory == 'Yes') {
+		$query_factory_act_all ->fields('dangerous_op',array());
+		}
+		
+		$query_factory_act_all ->fields('safety_offi',array());
+		$query_factory_act_all ->fields('welfare_offi',array());
+		$query_factory_act_all ->fields('facilities_fac',array());
+		$query_factory_act_all ->fields('accidents_de',array());
+		$query_factory_act_all ->fields('suggestion_sch',array());
+		
+		$query_factory_act_all ->condition('ar.id', $annual_return_ID, '=');
+		$result_factory_act_all = $query_factory_act_all->execute()->fetchObject();
+		return $result_factory_act_all;
+		
+	}
+	
+	function get_maternity_benefit_all_data($annual_return_ID = '') {
+		$get_factory_info = get_annual_return_factory_information($annual_return_ID);
+		
+		$query_maternity_benefit_all = db_select('fa_annual_return', 'ar');
+		
+		if($get_factory_info->medical_officer_attached_factory == 'Yes') {
+		$query_maternity_benefit_all ->innerJoin('fa_ar_medical_officer', 'medical_offi', 'medical_offi.annual_return_id = ar.id');
+		}
+		
+		if($get_factory_info->hospital_attached_factory == 'Yes') {
+		$query_maternity_benefit_all ->innerJoin('fa_ar_hospital_details', 'hospital', 'hospital.annual_return_id = ar.id');
+		}
+		
+		$query_maternity_benefit_all ->innerJoin('fa_ar_emplm_dism_pay_bonus_women', 'emplm_dism', 'emplm_dism.annual_return_id = ar.id');
+		$query_maternity_benefit_all ->innerJoin('fa_ar_details_payment', 'details_pymt', 'details_pymt.annual_return_id = ar.id');
+		
+		$query_maternity_benefit_all ->addField('ar','id','ar_id');
+		$query_maternity_benefit_all ->fields('ar',array('factory_name','cafa_id','reference_number','industry_nature','registration_number','registration_date','licence_number',
+		'licence_date','classification_no','pincode','state','district','subdivision','areatype','block','panchayat','policestation','postoffice','factory_zone',
+		'nearest_landmark','addrline','days_worked_year','uid','created_date','modification_date','full_application_status','name_occupier','name_manager','payment_wages_flag',
+		'factories_act_flag ','maternity_benefit_flag','dangerous_operation_process_in_factory','no_of_safety_officers','no_of_welfare_officers','factory_typeid'));
+		
+		if($get_factory_info->medical_officer_attached_factory == 'Yes') {
+		$query_maternity_benefit_all ->fields('medical_offi',array());
+		}
+		
+		if($get_factory_info->hospital_attached_factory == 'Yes') {
+		$query_maternity_benefit_all ->fields('hospital',array());
+		}
+		
+		$query_maternity_benefit_all ->fields('emplm_dism',array());
+		$query_maternity_benefit_all ->fields('details_pymt',array());
+		
+		$query_maternity_benefit_all ->condition('ar.id', $annual_return_ID, '=');
+		$result_maternity_benefit_all = $query_maternity_benefit_all->execute()->fetchObject();
+		return $result_maternity_benefit_all;
+		
+	}
+	
+	function get_year_list() {
+		$default_select = array(""=>"--Select Year--");
+		$earliest_year = 1980; 
+		$latest_year = date('Y') - 1; 
+		$year_list = array();
+		
+		foreach(range( $latest_year, $earliest_year ) as $years) {
+			$year_list[$years] = t('@annual_return_year', array('@annual_return_year' => $years));
+		}
+		
+		return ($default_select+$year_list);
+	}
+	
+	function ar_common_application_data($annual_returnID = '') {
+		$query_ar_common_app_prev 	= db_select('fa_annual_return', 'ar');
+		$query_ar_common_app_prev	->innerJoin('fa_ar_worker_details_mandays', 'wdm', 'wdm.annual_return_id = ar.id');
+		$query_ar_common_app_prev	->innerJoin('fa_ar_worker_details_avg_worker', 'daw', 'daw.annual_return_id = ar.id');
+		$query_ar_common_app_prev	->innerJoin('fa_ar_leave_wages_details', 'lwd', 'lwd.annual_return_id = ar.id');
+		$query_ar_common_app_prev	->addField('ar','id','ar_id');
+		$query_ar_common_app_prev	->fields('ar',array('factory_name', 'cafa_id', 'reference_number', 'industry_nature', 'registration_number', 'registration_date', 
+		'licence_number', 'licence_date', 'classification_no', 'pincode', 'state', 'district', 'subdivision', 'areatype', 'block', 'panchayat', 'policestation', 		
+		'postoffice', 'factory_zone', 'nearest_landmark', 'addrline', 'days_worked_year', 'uid', 'created_date', 'modification_date', 	
+		'full_application_status', 'name_occupier', 'name_manager', 'factory_typeid'));
+		$query_ar_common_app_prev	->fields('wdm',array());
+		$query_ar_common_app_prev	->fields('daw',array());
+		$query_ar_common_app_prev	->fields('lwd',array());
+		
+		$db_and = db_and();
+		$db_and	->condition('ar.id', $annual_returnID, '=');
+		$query_ar_common_app_prev->condition($db_and);
+		
+		$result_ar_common_app_prev = $query_ar_common_app_prev->execute()->fetchAssoc();
+		return $result_ar_common_app_prev;	
+		
+		
+	}
+	
+	
+	function file_upload_validation($file, $res) {
+		$errors = array();
+		$res_array = explode(" ", $res);
+		
+		$finfo = finfo_open(FILEINFO_MIME_TYPE);
+		$mime = finfo_file($finfo, $file->uri);
+		$mime_array = explode("/", $mime);
+		// If the detected file extension is not allowed, raise an error.
+		if (!in_array($mime_array[1], $res_array)) {
+			$errors[] = t("There was a problem with this file's extension.");
+		}
+		finfo_close($finfo);
+		return $errors;
+	}
+	
+	
+	//Function for digital signed checking	
+	function isStringInFile($fid = '', $string){
+		$result1 = db_select('file_managed', 'fm')
+		->fields('fm')
+		->condition('fid', $fid)
+		->execute();
+		
+		$data1 = $result1->fetchObject();
+		$file = $data1->uri;
+		 
+		$handle = fopen($file, 'r');
+		$valid = false; // init as false
+		while (($buffer = fgets($handle)) !== false) {
+		if (strpos($buffer, $string) !== false) {
+		$valid = TRUE;
+		break; // Once you find the string, you should break out the loop.
+		}      
+		}
+		fclose($handle);
+		return $valid;
+	}
+	
+	//function to find service id
+	function get_service_details($service_name = '') { 
+		$query_service_id = db_select('fa_service_master', 'fsm');
+		$query_service_id ->fields('fsm',array());
+		$query_service_id ->condition('fsm.service_name', $service_name, '=');
+		$result_service_id = $query_service_id->execute()->fetchObject();
+		return $result_service_id;
+		
+	}
+	
+	//for file upload
+	function escapefile_url($url){
+		$parts = parse_url($url);
+		$path_parts = array_map('rawurldecode', explode('/', $parts['path']));
+		
+		return $parts['scheme'] . '://' .$parts['host'] .implode('/', array_map('rawurlencode', $path_parts));
+	}
+
+
+	//----Modify by Labani
+	function get_caf_upload_doc_details($application, $service, $upload_docType, $factorytype, $referance) {
+		//echo $service.'---'.$application.'--'.$factorytype.'---'. $referance.'---'. $upload_docType;die;
+		$query_caf_upload_doc = db_select('fa_caf_upload_all_doc', 'caf_up_doc');
+		$query_caf_upload_doc ->fields('caf_up_doc',array());
+		$db_and = db_and();
+		$db_and ->condition('caf_up_doc.application_id', $application, '=');
+		$db_and ->condition('caf_up_doc.service_id', $service, '=');
+	
+		
+		if(!empty($factorytype) && $factorytype != NULL){
+			$db_and ->condition('caf_up_doc.factory_typeid', $factorytype, '=');
+		}
+		if(!empty($referance) && $referance != NULL){
+			$db_and ->condition('caf_up_doc.application_reference_no', $referance, '=');
+		}if(!empty($upload_docType) && $upload_docType != NULL){
+				$db_and ->condition('caf_up_doc.upload_doc_type', $upload_docType, '=');
+		}
+		
+		$query_caf_upload_doc ->condition($db_and);
+		if(!empty($upload_docType) && $upload_docType != NULL){
+			$result_caf_upload_doc = $query_caf_upload_doc->execute()->fetchObject();
+		}else{
+			$result_caf_upload_doc = $query_caf_upload_doc->execute()->fetchAll();
+		}
+		
+		//print_r($query_caf_upload_doc->execute());die;
+		return $result_caf_upload_doc;	
+		
+	}
+	//-----------------
+	
+	
+	
+	function fetch_district_details($district_code = '') {
+	
+		$query_district_details	= db_select('fa_district_master', 'fdm');
+		$query_district_details	-> fields('fdm',array());
+		$query_district_details -> condition('fdm.district_code', $district_code, '=');
+		$result_district_details = $query_district_details->execute()->fetchObject();
+		return $result_district_details;
+	}
+	
+	function fetch_postoffice_details($postoffice = '') {
+	
+		$query_postoffice_details	= db_select('fa_all_india_pin_code', 'faipc');
+		$query_postoffice_details	-> fields('faipc',array());
+		$query_postoffice_details -> condition('faipc.id', $postoffice, '=');
+		$result_postoffice_details = $query_postoffice_details->execute()->fetchObject();
+		return $result_postoffice_details;
+	}
+	
+	function numberToRoman($num)  
+	{ 
+		// Be sure to convert the given parameter into an integer
+		$n = intval($num);
+		$result = ''; 
+	 
+		// Declare a lookup array that we will use to traverse the number: 
+		$lookup = array(
+			'm' => 1000, 'cm' => 900, 'd' => 500, 'cd' => 400, 
+			'd' => 100, 'xc' => 90, 'l' => 50, 'xl' => 40, 
+			'x' => 10, 'ix' => 9, 'v' => 5, 'iv' => 4, 'i' => 1
+		); 
+	 
+		foreach ($lookup as $roman => $value)  
+		{
+			// Look for number of matches
+			$matches = intval($n / $value); 
+	 
+			// Concatenate characters
+			$result .= str_repeat($roman, $matches); 
+	 
+			// Substract that from the number 
+			$n = $n % $value; 
+		} 
+	
+		return $result; 
+	}
+	
+	function get_all_blank_status_ar_data($user) {
+		$fetch_blank_status_details	= db_select('fa_annual_return', 'ar');
+		$fetch_blank_status_details	->fields('ar', array('id'));
+		$db_and = db_and();
+		$db_and	->condition('ar.uid',$user,'=');
+		$db_and	->condition('ar.service_id', NULL, 'IS');
+		$db_and ->condition('ar.full_application_status', NULL, 'IS');
+		$fetch_blank_status_details ->condition($db_and);
+		$fetch_blank_status_details ->orderBy('ar.id', 'asc');
+		$blank_status_details_result = $fetch_blank_status_details->execute()->fetchAll(); 
+		return $blank_status_details_result;
+	}
+	
+	function get_annual_return_occupier_information($annual_return_ID = '') { 
+		$query_ar_occupier 	= db_select('fa_annual_return', 'ar');
+		$query_ar_occupier		->fields('ar',array('id','name_occupier','pincodeoprmntadr','state_oprmntadr','district_oprmntadr','subdivision_oprmntadr','areatype_oprmntadr',
+											'block_oprmntadr','panchayat_oprmntadr','policestation_oprmntadr','postoffice_oprmntadr','addrline_oprmntadr',
+											'temp_cafa_id_occupier_data'));
+		$query_ar_occupier		->condition('ar.id', $annual_return_ID, '=');
+		$result_ar_occupier 	= $query_ar_occupier->execute()->fetchObject();
+		return $result_ar_occupier;
+	}
+	
+	function get_annual_return_manager_information($annual_return_ID = '') { 
+		$query_ar_manager 	= db_select('fa_annual_return', 'ar');
+		$query_ar_manager		->fields('ar',array('id','name_manager','pincode_manager','state_manager','district_manager','sub_division_manager','area_type_manager',
+											'block_mun_cor_sez_not_manager','grm_ward_sector_not_manager','police_station_manager','post_office_manager','adress_line1_manager',
+											'temp_cafa_id_manager_data'));
+		$query_ar_manager		->condition('ar.id', $annual_return_ID, '=');
+		$result_ar_manager		= $query_ar_manager->execute()->fetchObject();
+		return $result_ar_manager;
+	}
+	
+	function get_annual_return_factory_occupier_information($annual_return_ID = '') { 
+		$query_ar_occupier 	= db_select('fa_annual_return', 'ar');
+		$query_ar_occupier		->fields('ar',array('id', 'factory_name', 'cafa_id', 'reference_number', 'industry_nature', 'registration_number', 'registration_date', 
+											'licence_number', 'licence_date', 'classification_no', 'pincode', 'state', 'district', 'subdivision', 'areatype', 'block', 'panchayat', 
+											'policestation', 'postoffice', 'factory_zone', 'nearest_landmark', 'addrline', 'uid', 'created_date', 'modification_date', 	
+											'full_application_status', 'name_occupier', 'pincodeoprmntadr', 'state_oprmntadr', 'district_oprmntadr', 'subdivision_oprmntadr', 
+											'areatype_oprmntadr', 'block_oprmntadr', 'panchayat_oprmntadr', 'policestation_oprmntadr', 'postoffice_oprmntadr', 'addrline_oprmntadr',
+											'temp_cafa_id_occupier_data', 'factory_typeid'));
+		$query_ar_occupier		->condition('ar.id', $annual_return_ID, '=');
+		$result_ar_occupier 	= $query_ar_occupier->execute()->fetchObject();
+		return $result_ar_occupier;
+	}
+	
+	function get_annual_return_factory_manager_information($annual_return_ID = '') { 
+		$query_ar_manager 	= db_select('fa_annual_return', 'ar');
+		$query_ar_manager		->fields('ar',array('id', 'factory_name', 'cafa_id', 'reference_number', 'industry_nature', 'registration_number', 'registration_date', 
+											'licence_number', 'licence_date', 'classification_no', 'pincode', 'state', 'district', 'subdivision', 'areatype', 'block', 'panchayat', 
+											'policestation', 'postoffice', 'factory_zone', 'nearest_landmark', 'addrline', 'uid', 'created_date', 'modification_date', 	
+											'full_application_status', 'name_manager', 'pincode_manager', 'state_manager', 'district_manager', 'sub_division_manager',
+											'area_type_manager', 'block_mun_cor_sez_not_manager', 'grm_ward_sector_not_manager', 'police_station_manager', 'post_office_manager',
+											'adress_line1_manager', 'temp_cafa_id_manager_data', 'factory_typeid'));
+		$query_ar_manager		->condition('ar.id', $annual_return_ID, '=');
+		$result_ar_manager		= $query_ar_manager->execute()->fetchObject();
+		return $result_ar_manager;
+	}
+	
+	function get_annual_return_only_factory_information($annual_return_ID = '') { 
+		$query_ar_factory 	= db_select('fa_annual_return', 'ar');
+		$query_ar_factory		->fields('ar',array('id', 'factory_name', 'cafa_id', 'reference_number', 'industry_nature', 'registration_number', 'registration_date', 
+											'licence_number', 'licence_date', 'classification_no', 'pincode', 'state', 'district', 'subdivision', 'areatype', 'block', 'panchayat', 
+											'policestation', 'postoffice', 'factory_zone', 'nearest_landmark', 'addrline', 'uid', 'created_date', 'modification_date', 	
+											'full_application_status', 'factory_typeid'));
+		$query_ar_factory		->condition('ar.id', $annual_return_ID, '=');
+		$result_ar_factory 	= $query_ar_factory->execute()->fetchObject();
+		return $result_ar_factory;
+	}
+	
+	function get_all_annual_return_data_statistical($service_id = '', $ar_year = '', $ar_licence_no = '', $ar_registration_no = '', $ar_factory_name = '') {
+		$serviceid = $service_id;
+		$year = $ar_year;
+		$licence_no = $ar_licence_no;
+		$registration_no = $ar_registration_no;
+		$factory_name = $ar_factory_name;
+		
+		$fetch_details	= db_select('fa_annual_return', 'far');
+		$fetch_details	->fields('far', array());
+		$db_and = db_and();
+		$db_and	->condition('far.service_id', NULL, 'IS NOT');
+		$db_and ->condition('far.full_application_status', 'U', '=');
+		
+		if($serviceid != '') {
+			$db_and	->condition('far.service_id', 11, '=');
+		}
+		
+		if($year != '') {
+			$db_and	->condition('far.annual_return_year', $year, '=');			
+		}
+		
+		if($licence_no != '') {
+			$db_and	->condition('far.licence_number', $licence_no, '=');			
+		}
+		
+		if($registration_no != '') {
+			$db_and	->condition('far.registration_number', $registration_no, '=');			
+		}
+		
+		if($factory_name != '') {
+			$db_and	->condition('far.factory_name', $factory_name, '=');
+		}
+		
+		$fetch_details ->condition($db_and);
+		$fetch_details ->orderBy('far.id', 'asc');
+		$details_result = $fetch_details->execute()->fetchAll(); 
+		return $details_result;	
+		
+	}
+	
+	function get_licenceno_autocomplete($string = '') {
+		
+		$matches = array();
+		$qry = db_select('fa_annual_return', 'ar');
+		$qry->fields('ar', array('id', 'licence_number')); 
+		//$qry->condition('licence_number', '%' . trim($string) . '%', 'LIKE');
+		
+		$db_and = db_and();
+		$db_and->condition('licence_number', '%' . trim($string) . '%', 'LIKE');
+		$db_and->condition('full_application_status', 'U', '=');
+		$qry->condition($db_and);
+			
+		$qry->range(0, 10);
+		//echo $qry.$string; exit;
+		$result =  $qry->execute();
+		//save the query to matches
+		foreach ($result as $row) {
+			$matches[$row->licence_number] = check_plain($row->licence_number);
+		}
+	
+
+		// Return the result to the form in json
+		drupal_json_output($matches);
+	}
+	
+	
+	function get_registrationno_autocomplete($string = '') {
+		
+		$matches = array();
+		$qry = db_select('fa_annual_return', 'ar');
+		$qry->fields('ar', array('id', 'registration_number')); 
+		//$qry->condition('registration_number', '%' . trim($string) . '%', 'LIKE');
+		
+		$db_and = db_and();
+		$db_and->condition('registration_number', '%' . trim($string) . '%', 'LIKE');
+		$db_and->condition('full_application_status', 'U', '=');
+		$qry->condition($db_and);
+		
+		$qry->range(0, 10);
+		//echo $qry.$string; exit;
+		$result =  $qry->execute();
+		// save the query to matches
+		foreach ($result as $row) {
+			$matches[$row->registration_number] = check_plain($row->registration_number);
+		}
+	
+		// Return the result to the form in json
+		drupal_json_output($matches);
+	}
+	
+	
+	function get_factoryname_autocomplete($string = '') {
+		
+		$matches = array();
+		$qry = db_select('fa_annual_return', 'ar');
+		$qry->fields('ar', array('id', 'factory_name')); 
+		//$qry->condition('factory_name', '%' . trim($string) . '%', 'LIKE');
+		
+		$db_and = db_and();
+		$db_and->condition('factory_name', '%' . trim($string) . '%', 'LIKE');
+		$db_and->condition('full_application_status', 'U', '=');
+		$qry->condition($db_and);
+		
+		$qry->range(0, 10);
+		//echo $qry.$string; exit;
+		$result =  $qry->execute();
+		// save the query to matches
+		foreach ($result as $row) {
+			$matches[$row->factory_name] = check_plain($row->factory_name);
+		}
+	
+		// Return the result to the form in json
+		drupal_json_output($matches);
+	}
+	
+	function get_factory_licence_no($uid){
+		$default_select =  array("" => "-- Select Licence No. --");
+		
+		if($uid != '') {
+		$result = db_query("SELECT id, factory_name, factory_license_no, backlog_license_number, service_id, is_manager_tab, is_occupier_tab, is_worker_tab FROM {fa_cafa} WHERE ((factory_license_no != '') OR (backlog_license_number != '')) AND created_by = '".$uid."'");
+		} else {
+		$result = db_query("SELECT id, factory_name, factory_license_no, backlog_license_number, service_id, is_manager_tab, is_occupier_tab, is_worker_tab FROM {fa_cafa} WHERE ((factory_license_no != '') OR (backlog_license_number != '')) ");	
+		}
+							
+		$list = array();
+		
+		foreach($result as $record) {
+			
+			if($record->service_id == 16) {
+				if($record->is_manager_tab == 1 && $record->is_occupier_tab == 1 && $record->is_worker_tab == 1) {
+					if($record->factory_license_no != '')
+					{
+						$combineData = 'Licence No: '.$record->factory_license_no;
+					} else {
+						$combineData = 'Licence No: '.$record->backlog_license_number;
+					}
+				}
+			} else {
+				if($record->factory_license_no != '')
+				{
+					$combineData = 'Licence No: '.$record->factory_license_no;
+				} else {
+					$combineData = 'Licence No: '.$record->backlog_license_number;
+				}	
+			}
+			
+			$list[$record->id] = t('@factorylicenseno', array('@factorylicenseno' =>  $combineData,));
+		}
+		
+		return ($default_select+$list);
+		
+	}
+	
+	
+	function get_inspection_report_factory_information($inspection_report_id = '') { 
+		$query_ir_factory 	= db_select('fa_inspection_report', 'ir');
+		//$query_ir_factory	->fields('ir', array());
+		$query_ir_factory	->fields('ir',array('id', 'cafa_id', 'factory_name', 'service_id', 'reference_number', 'factory_typeid', 'registration_number', 'registration_date', 											
+											'licence_number', 'licence_date', 'classification_no', 'factory_classification_type', 'pincode', 'state', 'district', 'subdivision', 
+											'areatype', 'block', 'panchayat', 'policestation', 'postoffice', 'factory_zone', 'nearest_landmark', 'addrline', 'building_plan_no', 
+											'building_plan_date', 'inspected_by', 'person_during_inspection', 'nature_manufacturing', 
+											'factory_sector_ownership_type', 'type_power_station', 'power_unit', 'installed_power', 'uid', 'full_application_status', 
+											'created_date', 'modification_date',));
+		if($inspection_report_id != '') {
+		$query_ir_factory	->condition('ir.id', $inspection_report_id, '=');
+		}
+		$result_ir_factory 	= $query_ir_factory->execute()->fetchObject();
+		return $result_ir_factory;
+	}
+	
+	function get_inspection_report_occupier_information($inspection_report_id = '') { 
+		$query_ir_occupier 	= db_select('fa_inspection_report', 'ir');
+		$query_ir_occupier		->fields('ir',array('id','occupier_name','pincodeoprmntadr','state_oprmntadr','district_oprmntadr','subdivision_oprmntadr','areatype_oprmntadr',
+											'block_oprmntadr','panchayat_oprmntadr','policestation_oprmntadr','postoffice_oprmntadr','addrline_oprmntadr', 'occupier_type', 
+											'occupier_telephone', 'occupier_fax_no', 'occupier_email_id' , 'occupier_mobile'));
+		$query_ir_occupier		->condition('ir.id', $inspection_report_id, '=');
+		$result_ir_occupier 	= $query_ir_occupier->execute()->fetchObject();
+		return $result_ir_occupier;
+	}
+	
+	function get_inspection_report_manager_information($inspection_report_id = '') { 
+		$query_ir_manager 	= db_select('fa_inspection_report', 'ir');
+		$query_ir_manager		->fields('ir',array('id','manager_name','pincode_manager','state_manager','district_manager','sub_division_manager','area_type_manager',
+											'block_mun_cor_sez_not_manager','grm_ward_sector_not_manager','police_station_manager','post_office_manager','adress_line1_manager', 
+											'manager_telephone', 'manager_fax_no', 'manager_email_id' , 'manager_mobile'));
+		$query_ir_manager		->condition('ir.id', $inspection_report_id, '=');
+		$result_ir_manager		= $query_ir_manager->execute()->fetchObject();
+		return $result_ir_manager;
+	}
+	
+	function get_all_inspection_report_data($user) {
+		$fetch_details	= db_select('fa_inspection_report', 'fir');
+		$fetch_details	->fields('fir', array());
+		$db_and = db_and();
+		$db_and	->condition('fir.uid',$user,'=');
+		$db_and	->condition('fir.service_id',NULL,'IS NOT');
+		$db_and ->condition('fir.full_application_status',NULL,'IS NOT');
+		$fetch_details ->condition($db_and);
+		$fetch_details ->orderBy('fir.id', 'asc');
+		$details_result = $fetch_details->execute()->fetchAll(); 
+		return $details_result;
+	}
+	
+	function get_total_no_workers($inspection_report_id = ''){ 
+		$query_total_no_workers 	= db_select('fa_ir_total_no_workers', 'tot_no_workers');
+		$query_total_no_workers		->fields('tot_no_workers',array());
+		$query_total_no_workers		->condition('tot_no_workers.inspection_report_id', $inspection_report_id, '=');
+		$result_total_no_workers 	= $query_total_no_workers->execute()->fetchObject();
+		return $result_total_no_workers;
+		
+	}
+	
+	function get_max_no_workers_last_twelve_months($inspection_report_id = ''){ 
+		$query_max_no_workers 	= db_select('fa_ir_max_no_workers_last_twelve_months', 'max_no_workers');
+		$query_max_no_workers	->fields('max_no_workers',array());
+		$query_max_no_workers	->condition('max_no_workers.inspection_report_id', $inspection_report_id, '=');
+		$result_max_no_workers 	= $query_max_no_workers->execute()->fetchObject();
+		return $result_max_no_workers;
+		
+	}
+	
+	function get_act_name_list() {
+		$default_select 	= array(""=>"--Select Act--");
+		$result 	 = db_query("SELECT id, act_name FROM {fa_act_master}");
+		$list 	 = array();
+		foreach ($result as $record) {
+			$list[$record->id] = t('@actname', array(
+			'@actname' => $record->act_name,
+			));
+		}
+		
+		return ($default_select+$list);
+	}
+	
+	function get_section_name_list($act_id = '') {
+		$default_select 	= array(""=>"--Select Section--");
+		$result 	 = db_query("SELECT id, section FROM {fa_section_master} where act_id = :act_id", array(':act_id' => $act_id));
+		$list 	 = array();
+		foreach ($result as $record) {
+			$list[$record->id] = t('@section', array(
+			'@section' => $record->section,
+			));
+		}
+		
+		return ($default_select+$list);
+	}
+	
+	function get_rule_name_list($act_id = '', $section_id = '') {
+		$default_select 	= array(""=>"--Select Rule--");
+		$result 	 = db_query("SELECT id, rule FROM {fa_rule_master} where section_id = :section_id and act_id = :act_id", array(':section_id' => $section_id, ':act_id' => $act_id));
+		$list 	 = array();
+		foreach ($result as $record) {
+			$list[$record->id] = t('@rule', array(
+			'@rule' => $record->rule,
+			));
+		}
+		
+		return ($default_select+$list);
+	}
+	
+	function get_rule_name_data($act_id = '', $section_id = '') {
+		
+		$rule_details	= db_select('fa_rule_master', 'rule');
+		$rule_details	->fields('rule', array('id'));
+		$db_and 		= db_and();
+		$db_and			->condition('rule.section_id', $section_id,'=');
+		$db_and			->condition('rule.act_id', $act_id,'=');
+		$rule_details 	->condition($db_and);
+		$rule_details_result = $rule_details->execute()->fetchAll(); 
+		return $rule_details_result;
+	}
+	
+	function get_infringement_data($act_id = '', $section_id = '', $rule_id = '') {
+		
+		$infringement_details	= db_select('fa_infringement_master', 'fim');
+		$infringement_details	->fields('fim', array());
+		$db_and 				= db_and();
+		
+		if($rule_id != '') {
+		$db_and					->condition('fim.rule_id', $rule_id,'=');	
+		}
+		
+		$db_and					->condition('fim.section_id', $section_id,'=');
+		$db_and					->condition('fim.act_id', $act_id,'=');
+		$infringement_details 	->condition($db_and);
+		$infringement_details_result = $infringement_details->execute()->fetchAll(); 
+		return $infringement_details_result;
+	}
+	
+	function get_all_ir_infringement_data($inspection_report_id = '', $user = '') {
+		$fetch_details	= db_select('fa_ir_infringement_details', 'infringe_d');
+		
+		/*$fetch_details	->innerJoin('fa_rule_master', 'rm', 'infringe_d.rule_id = rm.id');
+		$fetch_details	->innerJoin('fa_section_master', 'sm', 'infringe_d.section_id = sm.id');
+		$fetch_details	->innerJoin('fa_act_master', 'am', 'infringe_d.act_id = am.id');*/
+		
+		//$fetch_details	->addField('infringe_d', 'id', 'infringement_details_id');
+		$fetch_details	->fields('infringe_d', array('id', 'inspection_report_id', 'rule_id', 'section_id', 'act_id', 'uid', 'created_date'));
+		/*$fetch_details	->fields('rm', array('rule'));
+		$fetch_details	->fields('sm', array('section'));
+		$fetch_details	->fields('am', array('act_name'));*/
+		
+		$db_and = db_and();
+		$db_and	->condition('infringe_d.inspection_report_id', $inspection_report_id, '=');
+		$db_and	->condition('infringe_d.uid', $user, '=');
+		$fetch_details ->condition($db_and);
+		$fetch_details ->orderBy('infringe_d.id', 'asc');
+		$details_result = $fetch_details->execute()->fetchAll(); 
+		return $details_result;
+	}
+	
+	function get_ir_infringement_data_by_id($inspection_report_id = '', $infringement_details_id = '') {
+		$fetch_details	= db_select('fa_ir_infringement_details', 'infringe_d');
+		$fetch_details	->fields('infringe_d', array('id', 'inspection_report_id', 'rule_id', 'section_id', 'act_id', 'uid', 'created_date'));
+		
+		$db_and = db_and();
+		$db_and	->condition('infringe_d.inspection_report_id', $inspection_report_id, '=');
+		$db_and	->condition('infringe_d.id', $infringement_details_id, '=');
+		$fetch_details ->condition($db_and);
+		$details_result = $fetch_details->execute()->fetchObject(); 
+		return $details_result;
+	}
+	
+	function get_act_details($act_id = '') {
+		$result = db_query("select id, act_name from {fa_act_master} WHERE id = :act_id", array(':act_id' => $act_id))->fetchObject();
+		
+		return $result;
+	}
+	
+	function get_section_details($section_id = '') {
+		$result = db_query("select id, section from {fa_section_master} WHERE id = :section_id", array(':section_id' => $section_id))->fetchObject();
+		
+		return $result;
+	}
+	
+	function get_rule_details($rule_id = '') {
+		$result = db_query("select id, rule from {fa_rule_master} WHERE id = :rule_id", array(':rule_id' => $rule_id))->fetchObject();
+		
+		return $result;
+	}
+	
+	//end of normal function by Subhabrata
+	
+	//starting of server-side validation function by Subhabrata
+	
+	function element_validate_date($element, &$form_state) {
+		$value = trim($element['#value']);
+		
+		if($value !== ''){
+			$date = DateTime::createFromFormat('d-m-Y', $value);
+			$date_errors = DateTime::getLastErrors();
+			if($date_errors['warning_count'] + $date_errors['error_count'] > 0) {
+				form_set_error($element['#name'], t('" %name " must be DD-MM-YYYY format.', array('%name' => $element['#title'])));
+			}
+		}
+		
+		/*if ($value !== '' && !preg_match("/(^(((0[1-9]|1[0-9]|2[0-8])[\/](0[1-9]|1[012]))|((29|30|31)[\/](0[13578]|1[02]))|((29|30)[\/](0[4,6,9]|11)))[\/](19|20)\d\d$)|(^29[\/]02[\/](19|20)(00|04|08|12|16|20|24|28|32|36|40|44|48|52|56|60|64|68|72|76|80|84|88|92|96)$)/",$value)) {
+			form_set_error($element['#name'], t('" %name " must be must be DD/MM/YYYY format.', array('%name' => $element['#title'])));
+		}*/
+	}
+	
+	function element_validate_numeric_positive($element, &$form_state) {
+		$value = trim($element['#value']);
+		if ($value !== '' && !preg_match("/^[1-9][0-9]*$/",$value)) {
+			form_set_error($element['#name'], t('" %name " must be positive numeric.', array('%name' => $element['#title'])));
+		}
+	}
+	
+	function element_validate_streetaddress($element, &$form_state) {
+		$value = trim($element['#value']);
+		if ($value !== '' && !preg_match("/^[a-zA-Z0-9][\.\-\/\,\w\s]+[a-zA-Z0-9]*$/",$value)) {
+			form_set_error($element['#name'], t('" %name " must be alphanumeric. Only special characters . , - / allowed.', array('%name' => $element['#title'])));
+		}
+	}
+	
+	function element_validate_hyphenfullstop($element, &$form_state) {
+		$value = trim($element['#value']);
+		if ($value !== '' && !preg_match("/^[a-z A-Z 0-9]+[\.\-\w\s]*[a-z A-Z 0-9]$/",$value)) {
+			form_set_error($element['#name'], t('" %name " must be alphabetic. Only special characters . - allowed.', array('%name' => $element['#title'])));
+		}
+	}
+	
+	function element_validate_alphabatic_fullstop($element, &$form_state) {
+		$value = trim($element['#value']);
+		if ($value !== '' && !preg_match("/^[A-Z]+[a-zA-Z\s\.]*$/",$value)) {
+			form_set_error($element['#name'], t('" %name " must be alphabatic.', array('%name' => $element['#title'])));
+		}
+	}
+	
+	function element_validate_alphabatic_text($element, &$form_state) {
+		$value = trim($element['#value']);
+		if ($value !== '' && !preg_match("/^[a-zA-Z\s]*$/",$value)) {
+			form_set_error($element['#name'], t('" %name " must be alphabatic.', array('%name' => $element['#title'])));
+		}
+	}
+	
+	function element_validate_hyphen_fullstop_ampersand($element, &$form_state) {
+		$value = trim($element['#value']);
+		if ($value !== '' && !preg_match("/^[a-z A-Z]+[\.\-\&\,\w\s]*[a-z A-Z 0-9 \.]$/",$value)) {
+			form_set_error($element['#name'], t('" %name " must be alphabetic. Only special characters . - & allowed.', array('%name' => $element['#title'])));
+		}
+	}
+	
+	function element_validate_factory_name($element, &$form_state) {
+		$value = trim($element['#value']);
+		if ($value !== '' && !preg_match("/^[A-Z]+[a-zA-Z\s\.\-\(\)]*$/",$value)) {
+			form_set_error($element['#name'], t('" %name " must be in proper format. Only special characters - ( ) . allowed.', array('%name' => $element['#title'])));
+		}
+	}
+	
+	function element_validate_factory_reg_no($element, &$form_state) {
+		$value = trim($element['#value']);
+		if ($value !== '' && !preg_match("/^[0-9]*[\-][A-Z]{2}[\/][A-Z][\/][0-9]*$/",$value)) {
+			form_set_error($element['#name'], t('" %name " must be in proper format. Only special characters - / allowed.', array('%name' => $element['#title'])));
+		}
+	}
+	
+	function element_validate_factory_classif_no($element, &$form_state) {
+		$value = trim($element['#value']);
+		if ($value !== '' && !preg_match("/^[0-9]*$/",$value)) {
+			form_set_error($element['#name'], t('" %name " must be numeric.', array('%name' => $element['#title'])));
+		}
+	}
+	
+	function element_validate_rs_amount($element, &$form_state) {
+		$value = trim($element['#value']);
+		if ($value !== '' && !preg_match("/^[0-9]+(\.[0-9]{1,2})?$/",$value)) {
+			form_set_error($element['#name'], t('" %name " must be numeric and upto 2 decimal places.', array('%name' => $element['#title'])));
+		}
+	}
+	
+	function element_validate_rs_amount_nontitle($element, &$form_state) {
+		$value = trim($element['#value']);
+		if ($value !== '' && !preg_match("/^[0-9]+(\.[0-9]{1,2})?$/",$value)) {
+			form_set_error($element['#name'], t('This field must be numeric and upto 2 decimal places.', array('%name' => $element['#title'])));
+		}
+	}
+	
+	function element_validate_alphabatic_fullstop_nontitle($element, &$form_state) {
+		$value = trim($element['#value']);
+		if ($value !== '' && !preg_match("/^[A-Z]+[a-zA-Z\s\.]*$/",$value)) {
+			form_set_error($element['#name'], t('This field must be alphabatic. Only . allowed.', array('%name' => $element['#title'])));	
+		}
+	}
+	
+	function element_validate_alphanumeric($element, &$form_state) {
+		$value = trim($element['#value']);
+		if ($value !== '' && !preg_match("/^[\w]+[\w ]+[\w]$/",$value)) {
+			form_error($element, t('%name must be alphnumeric.', array('%name' => $element['#title'])));
+			$form_state['rebuild'] = TRUE;
+		}
+	}
+	
+	function element_validate_telephoneno($element, &$form_state) {
+		$value = trim($element['#value']);
+		if ($value !== '' && !preg_match("/[0-9]+$/",$value)) {
+			form_error($element, t('" %name " must be a valid telephone no.', array('%name' => $element['#title'])));
+			$form_state['rebuild'] = TRUE;
+		}
+	}
+	
+	function element_validate_email($element, &$form_state) {
+		$value = strtolower(trim($element['#value']));
+		if ($value !== '' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+			form_set_error($element['#name'], t('" %name " must be valid.', array('%name' => $element['#title'])));
+		}
+	}
+	
+	function element_validate_mobile($element, &$form_state) {
+		$value = trim($element['#value']);
+		if ($value !== '' && !preg_match("/[6789][0-9]{9}/",$value)) {
+			form_error($element, t('" %name " must be a valid 10 digits no.', array('%name' => $element['#title'])));
+			$form_state['rebuild'] = TRUE;
+		}
+	}
+	
+	//end of server-side validation function by Subhabrata
+	
+//end of all function by Subhabrata Mukherjee
+
+
+
+ function get_licence_valid_to($service_id,$factorytype_id,$application_id,$reference_id){
+	$sql_licecne_valid	=  db_query("SELECT calculate_end_year  FROM {fa_calculate_year} WHERE application_id = '".$application_id."' AND factory_id = '".$factorytype_id."'AND service_id = '".$service_id."'AND reference_no = '".$reference_id."' ORDER BY id DESC  LIMIT 1")->fetchObject()->calculate_end_year;
+	return $sql_licecne_valid;
+	
+	}
+	
+function fun_fetch_cafa($license_no,$valid_upto,$service_id,$userid,$zone_id){
+	
+	$query_cafa = db_select('fa_cafa','caf');
+	$query_cafa->fields('caf', array('id','factory_typeid','service_id','reference_number','application_status','tm_migrated_flag','factor_add_inspector','factor_add_inspector_id','created_by'));
+	if(!empty($zone_id)|| ($zone_id!=NULL)){
+		$query_cafa->condition('caf.factory_zone', $zone_id, '=');
+	}
+	if(!empty($userid)|| ($userid!=NULL)){
+		
+		
+		$db_or2->condition('caf.created_by', $userid, '=');
+		
+		
+		
+	
+	}
+	if(!empty($valid_upto)|| ($valid_upto!=NULL)){
+		$db_or1 = db_or();
+		$db_or1->condition('caf.license_valid_upto', $valid_upto, '=');
+		$db_or1->condition('caf.backlog_registration_date', $valid_upto, '=');
+		$db_or1->condition('caf.registration_date', $valid_upto, '=');
+		$query_cafa->condition($db_or1);
+	}
+	
+	
+	$db_or = db_or();
+	$db_or->condition('caf.factory_license_no', $license_no, '=');
+	$db_or->condition('caf.backlog_license_number', $license_no, '=');
+	$db_or->condition('caf.backlog_registration_no', $license_no, '=');
+	$db_or->condition('caf.factory_reg_number', $license_no, '=');
+	
+	$query_cafa->condition($db_or);
+	
+	
+	
+	
+	
+	/*if($service_id!=NULL || $service_id!=0 || (!empty($service_id))){
+		$db_or1 = db_or();
+		$db_or1->condition('caf.tm_migrated_flag','E', '=');
+		$db_or1->condition('caf.tm_migrated_flag', 'L', '=');
+		$db_or1->condition('caf.tm_migrated_flag', 'I', '=');
+		$db_or1->condition('caf.tm_migrated_flag', 'S', '=');
+	
+	
+	
+	$query_cafa->condition($db_or1);
+	}*/
+	
+	
+	$result_cafa = $query_cafa->execute()->fetchAssoc();
+	
+	
+	
+	return $result_cafa;
+		
+		
+		  
+}
+function fun_fetch_fact_tm($license_no,$valid_upto,$factoy_status){
+
+try{
+	if(!empty($valid_upto)|| ($valid_upto!=NULL)){
+		$query_fact 	 = db_query("SELECT * FROM tm_factory_mst  WHERE (license_valid_upto_date::date = '".$valid_upto."' or registration_date::date = '".$valid_upto."') and ( registration_no = '".$license_no."' or license_no = '".$license_no."')and is_active = 1  ");
+		
+	$result_fact = $query_fact->fetchAssoc();
+	}
+if(!empty($license_no) || $license_no !=NULL){
+		$query_fact 	 = db_query("SELECT * FROM tm_factory_mst  WHERE   (license_no = '".$license_no."' or registration_no = '".$license_no."')
+		and is_active = 1");
+	$result_fact = $query_fact->fetchAssoc();	
+	}
+	if(!empty($factoy_status) && (empty($valid_upto)&& ($valid_upto==NULL) && empty($license_no) && $license_no ==NULL)){
+		if($factoy_status == 'CROSSED_OFF'){
+			$factoy_status = 'CROSSED OFF';
+			$query_fact 	 = db_query("SELECT * FROM tm_factory_mst  WHERE   status = '".$factoy_status."'");
+		}else{
+			
+			$query_fact 	 = db_query("SELECT factory_id, classification_type, unit_name, new_zone_id, unit_zone_id, 
+       amenability_date, registration_no, registration_date, license_no, last_license_date, unit_address, license_valid_upto_date, unit_comm_fax_no, 
+       unit_comm_email, unit_comm_mobile_no, loc_office_address,status, unit_comm_phone_no, backlog_registration_no, service_id, 
+       factory_name, addrline, comm_telephone, comm_mobile, comm_fax,comm_email, addrline_comm, backlog_license_number, backlog_license_date, 
+       license_valid_upto, id ,application_status,date_of_amenability,backlog_registration_date,factory_zone,reference_number,factory_typeid,license_date FROM public.tm_nic_common_active_fact where (service_id =16 )or service_id is null order by id limit 10");
+			//print_r($query_fact);
+		}
+		$result_fact = $query_fact->fetchAll();	
+	
+	}	 
+		
+}catch(Exception  $e){
+	drupal_set_message('Date mismatch','error');
+	drupal_goto('add-new-factory');
+	
+}
+
+
+return $result_fact;	  
+}
+
+function get_caf_upload_doc_all($application_id,$service_id,$content_type, $factory_id,$reference_id, $doc_id){
+	//echo $application_id.'--'.$service_id.'--'.$content_type.'--'. $factory_id.'--'.$reference_id.'--'.$doc_id; die;
+	$query_all_upload_doc = db_select('fa_caf_upload_all_doc', 'caf_up_doc');
+	$query_all_upload_doc -> InnerJoin('fa_caf_upload_doc_content', 'content' ,'caf_up_doc.upload_doc_content_id = content.id');
+	$query_all_upload_doc ->fields('caf_up_doc',array('id','file_name','upload_doc_content_id','upload_doc_type','doc_master_id'));
+	$query_all_upload_doc ->fields('content',array());
+	$db_and = db_and();
+	$db_and ->condition('caf_up_doc.application_id', $application_id, '=');
+	$db_and ->condition('caf_up_doc.service_id', $service_id, '=');
+	$db_and ->condition('caf_up_doc.factory_typeid', $factory_id, '=');
+	$db_and ->condition('caf_up_doc.application_reference_no', $reference_id, '=');
+	if(!empty($doc_id)){
+		$db_and ->condition('caf_up_doc.doc_master_id', $doc_id, '=');
+	}
+	$query_all_upload_doc ->condition($db_and);
+	$result_all_upload_doc = $query_all_upload_doc->execute()->fetchAll();
+	return $result_all_upload_doc;	
+
+}
+
+
+function get_challan_doc_all($service_id,$application_id,$factory_id,$reference_id){
+	$query_all_upload_doc = db_select('fa_caf_upload_all_doc', 'caf_up_doc');
+	$query_all_upload_doc -> InnerJoin('fa_manual_payment_history', 'payment' ,'caf_up_doc.id = payment.upload_challan_file');
+	$query_all_upload_doc -> InnerJoin('fa_caf_upload_doc_content', 'content' ,'caf_up_doc.upload_doc_content_id = content.id');
+	$query_all_upload_doc ->fields('caf_up_doc',array('id','file_name','upload_doc_content_id','upload_doc_type'));
+	$query_all_upload_doc ->fields('payment',array('brn_grn_challan_no','date_payment','payment_amount'));
+	$query_all_upload_doc ->fields('content',array());
+	$db_and = db_and();
+	$db_and ->condition('caf_up_doc.application_id', $application_id, '=');
+	$db_and ->condition('caf_up_doc.service_id', $service_id, '=');
+	$db_and ->condition('caf_up_doc.factory_typeid', $factory_id, '=');
+	$db_and ->condition('caf_up_doc.application_reference_no', $reference_id, '=');
+	$query_all_upload_doc ->condition($db_and);
+	$result_all_upload_doc = $query_all_upload_doc->execute()->fetchAll();
+	return $result_all_upload_doc;	
+
+}
+
+
+function fun_area_police_station_mst($area_police_station_id){
+	
+	$query_psmst = db_select('area_police_station_mst','psmst');
+	$query_psmst->fields('psmst', array('area_police_station_id','fa_police_station_id'));
+	$query_psmst->condition('psmst.area_police_station_id', $area_police_station_id, '=');
+	$result_psmst = $query_psmst->execute()->fetchAssoc();
+	
+	
+	
+	return $result_psmst;
+		
+		
+		  
+}
+
+function fun_area_post_office_mst($area_post_office_id){
+	
+	$query_pomst = db_select('area_post_office_mst','postmst');
+	$query_pomst->fields('postmst', array('area_post_office_id','fa_po_id','fa_pin_code'));
+	$query_pomst->condition('postmst.area_post_office_id', $area_post_office_id, '=');
+	$result_pomst = $query_pomst->execute()->fetchAssoc();
+	
+	
+	
+	return $result_pomst;
+		
+		
+		  
+}
+
+function fun_nic_code_mst_tm($nic_code_id){
+	
+	$query_nicmst_tm = db_select('labour_factory_nic_code_mst','nic_mst_tm');
+	$query_nicmst_tm->fields('nic_mst_tm', array('nic_code','nic_code_desc'));
+	$query_nicmst_tm->condition('nic_mst_tm.nic_code_id', $nic_code_id, '=');
+	$result_nicmst_tm = $query_nicmst_tm->execute()->fetchAssoc();
+	
+	
+	
+	return $result_nicmst_tm;
+		
+		
+		  
+}
+
+function fetch_telmacregistration_certificates($telmacfactoryid){
+	$sql_reg_data	=  db_query("SELECT certificate_data
+  FROM public.tm_factory_mst where factory_id = '".$telmacfactoryid."'")->fetchObject()->certificate_data;
+	
+	$sql_reg_data = unserialize($sql_reg_data);
+   return $sql_reg_data;
+
+}
+
+
+
+function fetch_telmacplan_approval($telmacfactoryid){
+	$sql_reg_data	=  db_query("SELECT plan_approval_data
+  FROM public.tm_factory_mst where factory_id = '".$telmacfactoryid."'")->fetchObject()->plan_approval_data;
+	
+	$sql_reg_data = unserialize($sql_reg_data);
+   return $sql_reg_data;
+
+}
+function get_doc_master_id($application_id,$service_id,$factory_type,$referance_id,$master_doc_id){ 
+	$ids = 	db_query('SELECT  doc_master_id  FROM {fa_caf_upload_all_doc} WHERE application_id = :application_id and service_id= :service_id and factory_typeid =:factory_typeid and application_reference_no =:app_referance and doc_master_id =:doc_master_id',
+		array(':application_id'=>$application_id,':service_id'=>$service_id,':factory_typeid'=> $factory_type,':app_referance'=> $referance_id,':doc_master_id'=>$master_doc_id))->fetchObject()->doc_master_id;
+		return $ids;
+	}
+	
+	
+	function fun_fetch_document_listid($document_name){
+	
+		$query_document_listid = db_select('fa_documents_masterlist','masterlist');
+		$query_document_listid->fields('masterlist', array('document_name','id','identity_flag'));
+		
+		/*$db_or = db_or();
+		$db_or->condition('masterlist.document_name', $document_name, '=');
+		$db_or->condition('masterlist.id', $document_name, '=');
+		$query_document_listid->condition($db_or);*/
+		
+		if(is_numeric($document_name)) {
+			$query_document_listid->condition('masterlist.id', $document_name, '=');	
+		} else {
+			$query_document_listid->condition('masterlist.document_name', $document_name, '=');	
+		}
+		
+		$document_listid = $query_document_listid->execute()->fetchAssoc();
+		return $document_listid;
+		
+	}
+	
+/**************************************** FOR NOTICE FORM MODULE SECTION ****************************************/
+
+//********************** FORM 18 *****************************
+
+function get_notice_accident_data($formid,$referenceid,$factory_typeid,$service_id){ 		// TO SHOW ALL DATA IN FACTORY EDIT MODE
+	//echo $formid.'--'.$referenceid.'--'.$factory_typeid.'--'.$service_id; //die;
+	$fetch_details	= db_select('fa_form18_notice_accident', 'fna');
+	$fetch_details	->fields('fna', array());
+	$fetch_details	->condition('fna.id',$formid,'=');
+	$fetch_details	->condition('fna.reference_number',$referenceid,'=');
+	$fetch_details	->condition('fna.factory_typeid',$factory_typeid,'=');
+ $fetch_details	->condition('fna.service_id',$service_id,'=');// die;
+	$details_result = $fetch_details->execute()->fetchAll(); 
+	return $details_result;
+}
+
+function get_all_notice_accident_data($user){								// TO SHOW ALL DATA IN LIST (USER SPECIFIC)
+	$fetch_details	= db_select('fa_form18_notice_accident', 'fdo');
+	$fetch_details	->fields('fdo', array());
+	$fetch_details	->condition('fdo.created_by',$user,'=');
+	$fetch_details	->orderBy('id', 'DESC');
+	$details_result = $fetch_details->execute()->fetchAll(); 
+	return $details_result;
+}
+
+
+function get_accident_injured_person_data($formid){							// TO SHOW ALL DATA IN INJURED PERSON EDIT MODE
+	$fetch_details	= db_select('fa_form18_injured_person_details', 'f18');
+	$fetch_details	->fields('f18', array());
+	$fetch_details	->condition('f18.accident_case_id',$formid,'=');
+	$fetch_details	->orderBy('id', 'DESC');
+	$d_result = $fetch_details->execute()->fetchAll(); 
+	return $d_result;
+}
+
+function get_accident_witness_data($formid){								// TO SHOW ALL DATA IN WITNESS VIEW LIST
+	$fetch_details	= db_select('fa_form18_witness_details', 'f18');
+	$fetch_details	->fields('f18', array());
+	$fetch_details	->condition('f18.accident_case_id',$formid,'=');
+	$fetch_details	->orderBy('id', 'DESC');
+	$d_result = $fetch_details->execute()->fetchAll(); 
+	return $d_result;
+}
+
+//************************ FORM 19 *************************************
+function get_dangerous_occurence_details($formid,$referenceid,$factorytypeid,$serviceid){ 	// TO SHOW ALL DATA IN EDIT MODE
+	//echo $formid.'--'.$referenceid.'--'.$factoryid;
+	$fetch_details	= db_select('fa_form19_dangerous_occurrence ', 'fdo');
+	//$fetch_details  ->InnerJoin('fa_cafa', 'fc', 'fdo.factory_id=fc.id');
+	$fetch_details	->fields('fdo', array());
+	//$fetch_details	->fields('fc', array('addrline'));
+	$fetch_details	->condition('fdo.id',$formid,'=');
+	$fetch_details	->condition('fdo.reference_number',$referenceid,'=');
+	$fetch_details	->condition('fdo.factory_typeid',$factorytypeid,'=');
+	$fetch_details	->condition('fdo.service_id',$serviceid,'='); //die;
+	$details_result = $fetch_details->execute()->fetchAll(); 
+	return $details_result;
+}
+
+function get_occurence_data($formid){											// TO SHOW IN ALL OCCURED CASE IN EDIT MODE
+	$data_result = db_query("SELECT * FROM {fa_form19_dangerous_occurrence_case_witness} where dangerous_occurrence_id = '$formid'")->fetchAll();
+	return $data_result;
+}
+
+function get_all_occurrence_data($user) 										// TO SHOW ALL DATA IN LIST (USER SPECIFIC)
+{
+	$fetch_details	= db_select('fa_form19_dangerous_occurrence', 'fdo');
+	$fetch_details	->fields('fdo', array());
+	$fetch_details	->condition('fdo.created_by',$user,'=');
+	$fetch_details	->orderBy('id', 'DESC');
+	$details_result = $fetch_details->execute()->fetchAll(); 
+	return $details_result;
+}
+
+//************************* FORM20 ****************************************
+
+function get_notice_poisoning_data($formid,$referenceid,$factory_typeid,$service_id){ 			// TO SHOW ALL DATA IN FACTORY EDIT MODE
+	//echo $formid.'--'.$referenceid.'--'.$factoryid; die;
+	$fetch_details	= db_select('fa_form20_notice_poisoning ', 'fnp');
+	//$fetch_details  ->InnerJoin('fa_cafa', 'fc', 'fdo.factory_id=fc.id');
+	$fetch_details	->fields('fnp', array());
+	//$fetch_details	->fields('fc', array('addrline'));
+	$fetch_details	->condition('fnp.id',$formid,'=');
+	$fetch_details	->condition('fnp.reference_number',$referenceid,'=');
+	$fetch_details	->condition('fnp.factory_typeid',$factory_typeid,'=');
+	$fetch_details	->condition('fnp.service_id',$service_id,'='); //die;
+	$details_result = $fetch_details->execute()->fetchAll(); 
+	return $details_result;
+}
+
+function get_notice_poisoning_patient_data($formid){							// TO SHOW ALL DATA IN PATIENT EDIT MODE
+	$fetch_details	= db_select('fa_form20_patient_details', 'f20');
+	$fetch_details	->fields('f20', array());
+	$fetch_details	->condition('f20.notice_poisoning_id',$formid,'=');
+	$fetch_details	->orderBy('id', 'DESC');
+	$d_result = $fetch_details->execute()->fetchAll(); 
+	return $d_result;
+}
+
+function get_all_notice_poisoning_data($user){									// TO SHOW ALL DATA IN LIST (USER SPECIFIC)
+	$fetch_details	= db_select('fa_form20_notice_poisoning', 'fdo');
+	$fetch_details	->fields('fdo', array());
+	$fetch_details	->condition('fdo.created_by',$user,'=');
+	$fetch_details	->orderBy('id', 'DESC');
+	$details_result = $fetch_details->execute()->fetchAll(); 
+	return $details_result;
+}
+
+function get_notice_full_address($table='', $type='', $id='', $fieldArr=''){
+		//echo $table.'<br/>'.$type.'<br/>'.$id.'<br/>'; print_r($fieldArr); //die;
+		$text_AreaType_loc ='';
+		if(($fieldArr=='')|| empty($fieldArr)){
+			$fieldArr				=	array();
+		}
+		$location_address_result	=	'';
+		$alias						=	$table.'ali';
+		
+		$query_location_address		= 	db_select($table, $alias);
+		if($fieldArr[0]!='' || $fieldArr[0]!=0){
+			$query_location_address		->	LeftJoin('fa_district_master', 'd', 'd.district_code='.$alias.'.'.$fieldArr[0]);
+			$query_location_address		->	fields('d', array('district_name'));
+			if($fieldArr[1]!='' || $fieldArr[1]!=0){
+				$query_location_address		->	LeftJoin('fa_sub_division', 's', 's.sub_div_code='.$alias.'.'.$fieldArr[1]);
+				$query_location_address		->	fields('s', array('sub_div_name'));
+				if($fieldArr[3]!='' || $fieldArr[3]!=0){
+					$query_location_address		->	LeftJoin('fa_block_mun_master', 'b', 'b.block_code='.$alias.'.'.$fieldArr[3]);
+					$query_location_address		->	fields('b', array('block_mun_name'));
+					if($fieldArr[4]!='' || $fieldArr[4]!=0){
+						$query_location_address		->	LeftJoin('fa_village_ward_master', 'v', 'v.village_code='.$alias.'.'.$fieldArr[4]);
+						$query_location_address		->	fields('v', array('village_name'));
+						if($fieldArr[5]!='' || $fieldArr[5]!=0){
+							$query_location_address		->	LeftJoin('fa_police_station', 'p', 'p.police_station_code='.$alias.'.'.$fieldArr[5]);
+							$query_location_address		->	fields('p', array('name_of_police_station'));
+							if($fieldArr[7]!='' || $fieldArr[7]!=0){
+								$query_location_address		->	LeftJoin('fa_state_master', 'state', 'state.id='.$alias.'.'.$fieldArr[7]);
+								$query_location_address		->	fields('state', array('statename'));
+							}if($fieldArr[8]!='' || $fieldArr[8]!=0){
+								$query_location_address		->	LeftJoin('fa_all_india_pin_code', 'pin', 'pin.id='.$alias.'.'.$fieldArr[8]);
+								$query_location_address		->	fields('pin', array('po_name'));
+							}
+						}
+					}
+				}
+			}		
+		}
+		
+		if($type=="sub-table"){
+			$query_location_address		->	fields($alias, $fieldArr);
+			$query_location_address		->	condition($alias.'.factory_id',$id,'=');		
+		}
+
+		$location_result = $query_location_address->execute()->fetchAssoc();
+		//print_r($location_result);die($query_location_address);
+		if(!empty($location_result)){
+			
+			if($location_result[$fieldArr[2]]=="B"){
+				$text_AreaType_loc = "Block - ";
+				$areatype_loc_name = ucwords($location_result['village_name']);
+			}elseif($location_result[$fieldArr[2]]=="M"){
+				$areatype_loc_name = 'Ward-'.$location_result['village_name']; 
+			}elseif($location_result[$fieldArr[2]]=="C"){
+				$areatype_loc_name = $location_result['village_name'];
+			}elseif($location_result[$fieldArr[2]]=="N"){
+				$areatype_loc_name = 'Notified Area - '.$location_result['village_name'];
+			}
+			
+			if($location_result[$fieldArr[0]] == 17){  //If the area is Kolkata ***/
+				
+					if(!empty($location_result['village_name'])){
+						
+						$location_address_result 	.= $areatype_loc_name;
+					}
+					
+					if(!empty($location_result['name_of_police_station'])){
+						$location_address_result 	.= ',&nbsp;PS - '.$location_result['name_of_police_station'];
+					}
+					
+					if(!empty($location_result['district_name'])){
+						$location_address_result 	.= ',&nbsp;'.$location_result['district_name'].'- '.$location_result[$fieldArr[6]];
+					}
+					
+			}else{
+				
+					//If the state is West Bengal ***/
+					
+					if($location_result[$fieldArr[7]] == 1 || empty($fieldArr[7])){ 
+						
+						if(!empty($location_result['village_name'])){
+							$location_address_result 	.= $areatype_loc_name;
+						}
+						
+						if(!empty($location_result[$fieldArr[2]]) && !empty($location_result['block_mun_name']) ){
+							$location_address_result 	.= ',&nbsp;'.$text_AreaType_loc.$location_result['block_mun_name'].',<br/>';
+						}
+						
+						if(!empty($location_result['sub_div_name'])){
+							$location_address_result 	.= $location_result['sub_div_name'];
+						}
+						
+						if(!empty($location_result['name_of_police_station'])){
+							$location_address_result 	.= ',&nbsp;PS - '.$location_result['name_of_police_station'];
+						}
+						if(!empty($location_result['po_name'])){
+							$location_address_result 	.= ',&nbsp;PO - '.$location_result['po_name'];
+						}
+						
+						if(!empty($location_result['district_name'])){
+							$location_address_result 	.= ',<br/>'.$location_result['district_name'];
+						}
+						
+						if(!empty($location_result[$fieldArr[6]])){
+							$location_address_result 	.= '&nbsp;, PIN- '.$location_result[$fieldArr[6]];
+						}
+						if(!empty($location_result[$fieldArr[7]])){
+							$location_address_result 	.= ',&nbsp;'.$location_result['statename'];
+						}else{
+							$location_address_result 	.= '';
+						}
+					}else{
+					
+						//If the state is Others ***/
+						
+						if(!empty($location_result['sub_div_name'])){
+							$location_address_result 		.= $location_result['sub_div_name'];
+						}else{
+							$location_address_result 		.= '';
+						}
+						
+						
+						if( (!empty($location_result['district_name'])) && !empty($location_result['sub_div_name'])) {
+							$location_address_result 	.= ',<br/>'.$location_result['district_name'];
+						}else if( (!empty($location_result['district_name'])) && empty($location_result['sub_div_name']) ){
+							$location_address_result 	.= $location_result['district_name'];
+						}else{
+							$location_address_result 	.= '';
+						}
+						
+						if ( (!empty($location_result[$fieldArr[7]])) && !empty($location_result['district_name'])){
+							$location_address_result 	.= ',&nbsp;'.$location_result['statename'];
+						}else if( (!empty($location_result[$fieldArr[7]])) && empty($location_result['district_name']) ){
+							$location_address_result 	.= $location_result['statename'];
+						}else{
+							$location_address_result 	.= '';
+						}
+				}
+			}
+		}
+		
+	return $location_address_result;
+}	
+		
+		
+function fun_fetch_irregularities_details($identity_flag,$application_id,$reference_number,$factory_type_id,$service_id){
+	//echo $identity_flag.'--'.$application_id.'--'.$reference_number.'--'.$factory_type_id.'--'.$service_id.'<br/>';
+	$query_irregularities = db_select('fa_checklist_observations', 'checklist_observations');
+	$query_irregularities -> InnerJoin('fa_checklist_observations_ref', 'checklist_observations_ref','checklist_observations_ref.id = checklist_observations.checklist_observations_ref_id' );
+	
+	$query_irregularities ->fields('checklist_observations',array('id','irregularities','remark_by_ad','ad_details','remark_by_dd','dd_details','remark_by_jd','jd_details','is_extra_observation','checklist_observations_ref_id','identity_flag'));
+	$query_irregularities ->fields('checklist_observations_ref',array('remark_table_id'));
+	$query_irregularities ->condition('checklist_observations_ref.application_id', $application_id, '=');
+	$query_irregularities ->condition('checklist_observations_ref.service_id', $service_id, '=');
+	$query_irregularities ->condition('checklist_observations_ref.factory_type_id', $factory_type_id, '=');
+	$query_irregularities ->condition('checklist_observations_ref.reference_number', $reference_number, '=');
+	if($identity_flag!=NULL && !empty($identity_flag)){
+		$query_irregularities ->condition('checklist_observations.identity_flag', $identity_flag, '=');	
+	}
+		$query_irregularities ->orderBy('checklist_observations.id', 'asc');
+		$irregularities = $query_irregularities->execute()->fetchAll();
+	return $irregularities;	
+	}
+	
+	function fun_fetch_observations_ref($application_id,$reference_number,$factory_type_id,$service_id){
+
+		$fetch_details	= db_select('fa_checklist_observations_ref ', 'ref');
+		$fetch_details	->fields('ref', array());
+		$fetch_details	->condition('ref.application_id',$application_id,'=');
+		$fetch_details	->condition('ref.factory_type_id',$factory_type_id,'=');
+		$fetch_details	->condition('ref.reference_number',$reference_number,'=');
+		$fetch_details	->condition('ref.service_id',$service_id,'='); //die;
+		$details_result = $fetch_details->execute()->fetchAll(); 
+//print_r($details_result);die;
+		return $details_result;
+	}
+	
+function get_caf_upload_doc_all_according_observation($application_id,$service_id,$content_type, $factory_id,$reference_id, $identity_flag){
+	//echo $application_id.'--'.$service_id.'--'.$content_type.'--'. $factory_id.'--'.$reference_id.'--'.$doc_id.'---'.$identity_flag; 
+	$query_all_upload_doc = db_select('fa_caf_upload_all_doc', 'caf_up_doc');
+	$query_all_upload_doc ->fields('caf_up_doc',array('id','file_name','upload_doc_content_id','upload_doc_type','doc_master_id'));
+	$db_and = db_and();
+	$db_and ->condition('caf_up_doc.application_id', $application_id, '=');
+	$db_and ->condition('caf_up_doc.service_id', $service_id, '=');
+	$db_and ->condition('caf_up_doc.factory_typeid', $factory_id, '=');
+	$db_and ->condition('caf_up_doc.application_reference_no', $reference_id, '=');
+	if($identity_flag!=NULL && !empty($identity_flag)){
+		$db_and ->condition('caf_up_doc.identity_flag', $identity_flag, '=');
+	}
+	if($content_type!=NULL && !empty($content_type)){
+		$db_and ->condition('caf_up_doc.upload_doc_type', $content_type, '=');
+	}
+	
+	$query_all_upload_doc ->condition($db_and);
+	$result_all_upload_doc = $query_all_upload_doc->execute()->fetchAll();
+	
+	//echo '<pre>';print_r( $result_all_upload_doc);	
+	return $result_all_upload_doc;
+	
+}

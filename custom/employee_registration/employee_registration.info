@@ -1,0 +1,8 @@
+;$Id$
+name = Employee Registration
+description = Employee Registration for Update Profile Module
+package = Custom Module
+version = "7.x"
+core = 7.x
+files[] = project.module
+;dependencies[] = autoload

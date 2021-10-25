@@ -1,0 +1,464 @@
+<?php
+
+function employee_registration_permission() {
+  return array(
+    'employee_per' => array(
+      'title' => t('Employee Update Profile permission'),
+    )
+	
+  );
+}
+
+function employee_registration_menu() {
+  $items = array();
+  $items['profileupdate'] = array(
+	'page callback' => 'drupal_get_form',
+	'page arguments' => array('employee_profile_form'),
+	'access arguments' => array('employee_per'),
+  );
+  return $items;
+}
+
+function employee_profile_form($form, &$form_state){
+	global $user,$base_root,$base_path;
+	
+	$query = db_select('users', 'u');
+  	$query->leftJoin('fa_employee_details', 'ud', 'u.uid = ud.uid');  
+	$query->fields('u', array('mail'));
+	$query->fields('ud', array('fname','date_of_birth','mobile','gender','religion','national_id','passport_no','other_typeid','other_typeid_no','photo','address','office_address','one_time_pass_flag'));
+	$query->condition('u.uid', $user->uid, '=');
+	$result = $query->execute();
+	$userData = $result->fetchAssoc();
+	
+	$form['#attributes']['class'][] = 'form-vertical';
+    $form['form_begin'] = array(
+    	'#type' => 'markup',
+    	'#markup' => '<div class="row">',
+		'#prefix' => '<div class="widget-box"><div class="widget-header"><h4 class="widget-title">Update Profile</h4></div><div class="widget-main">',
+		//'#suffix' => '</h4>'
+	 );
+	 
+	$form['fname'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Enter Your Full Name'),
+		'#required' => TRUE,
+		'#default_value' => !empty($userData['fname']) ? $userData['fname'] : '',
+		'#attributes' => array('class'=>array('form-control'),'placeholder'=>'Enter Your Full Name'),
+		'#prefix' => '<div class="col-md-4">',
+		'#suffix' => '</div>'
+		
+	  );
+	  
+	  //$form['date_of_birth'] = array(
+//		'#type' => 'textfield',
+//		'#title' => t('Enter Your Date of Birth'), 
+//		'#required' => TRUE,
+//		'#default_value' => !empty($userData['date_of_birth']) ? format_date(strtotime($userData['date_of_birth']), 'custom', 'd-m-Y') : '',
+//		'#attributes' => array('id' => 'dateofbirth', 'autocomplete' => 'off', 'class'=>array('form-control'),'placeholder'=>'Date Of Birth'),
+//		'#prefix' => '<div class="col-md-4">',
+//		'#suffix' => '</div>'
+//	  ); 
+	 $form['mobile'] = array(
+	   '#title'=>t('Enter Your Mobile No'),
+	   '#type' => 'textfield',
+	   '#required' => TRUE,
+	   '#default_value' => !empty($userData['mobile']) ? $userData['mobile'] : '',
+	   '#maxlength' => 12,
+	   '#attributes' => array('class'=>array('form-control'), 'placeholder'=>'Mobile Number', 'autocomplete' => 'off'),
+	   '#prefix' => '<div class="col-md-4">',
+	   '#suffix' => '</div>'
+	);
+	
+	 //$form['gender'] = array(
+//		'#title' => t('Gender'),
+//	   	'#type' => 'select',
+//		'#attributes' => array('class'=>array('form-control'), 'placeholder'=>'Select Gender', 'autocomplete' => 'off'),
+//		'#options' => array(''=>t('Select Gender'), 'M'=>t('Male'),'F'=>t('Female'),'T'=>t('3rd Gender')),
+//		'#default_value' => !empty($userData['gender']) ? $userData['gender'] : '',
+//		'#required' => TRUE,
+//		'#prefix' => '<div class="col-md-4">',
+//		'#suffix' => '</div>'
+//		
+//	  ); 
+	  
+	$form['email'] = array(
+	   '#title'=>t('Enter Your Email ID'),
+	   '#type' => 'textfield',
+	   '#required' => TRUE,
+	   '#default_value' => !empty($userData['mail']) ? $userData['mail'] : '',
+	   '#attributes' => array('class'=>array('form-control'), 'placeholder'=>'Email', 'autocomplete' => 'off', 'readonly'=>'readonly'),
+	   '#prefix' => '<div class="col-md-4">',
+	   '#suffix' => '</div>'
+	);	
+//	$form['religion'] = array(
+//	   '#title'=>t('Enter Your Religion'),
+//	   '#type' => 'select',
+//	   '#default_value' => !empty($userData['religion']) ? $userData['religion'] : '',
+//	   '#attributes' => array('class'=>array('form-control'), 'placeholder'=>'Religion', 'autocomplete' => 'off'),
+//	   '#options' => array(''=>t('Select Religion'), '1'=>t('Hinduism'),'2'=>t('Islam'),'3'=>t('Christianity'),'4'=>t('Sikhism'),'5'=>t('Buddhism'),'6'=>t('Jainism'),'7'=>t('Others')),
+//	  '#prefix' => '<div class="col-md-4">',
+//	   '#suffix' => '</div>'
+//	);
+//	
+//	$form['national_id'] = array(
+//	   '#title'=>t('Choose Your National ID'),
+//	   '#type' => 'select',
+//	   '#required' => TRUE,
+//	   '#options' => array(''=>t('National ID'), '1'=>t('Passport'),'2'=>t('Other')),
+//	   '#default_value' => !empty($userData['national_id']) ? $userData['national_id'] : '',
+//	   '#ajax' => array(
+//	   		'callback' => 'ajax_view_display_dropdown_callback',
+//			//'wrapper' => 'view_display_dropdown'
+//		),
+//	   '#attributes' => array('class'=>array('form-control'), 'placeholder'=>'Choose Your National ID', 'autocomplete' => 'off'),
+//	   '#prefix' => '<div class="col-md-4">',
+//	   '#suffix' => '</div>'
+//	);
+//	
+//	if(!isset($form_state['values']['national_id']) && $userData['national_id'] == 1){
+//		$form['passport_no'] = array(
+//		   '#title'=>t('Enter Your Passport No'),
+//		   '#type' => 'textfield',
+//		   '#required' => TRUE,
+//		   '#default_value' => !empty($userData['passport_no']) ? $userData['passport_no'] : '',
+//		   '#maxlength' => 10, 
+//		   '#attributes' => array('class'=>array('form-control'), 'placeholder'=>'Passport No', 'autocomplete' => 'off', 'style'=>'text-transform:uppercase'),
+//		   '#prefix' => '<div id="view_display_dropdown1"><div class="col-md-4">',
+//		   '#suffix' => '</div></div>'
+//		);
+//	}elseif(isset($form_state['values']['national_id']) && $form_state['values']['national_id'] == 1){
+//		$form['passport_no'] = array(
+//		   '#title'=>t('Enter Your Passport No'),
+//		   '#type' => 'textfield',
+//		   '#required' => TRUE,
+//		   '#default_value' => !empty($userData['passport_no']) ? $userData['passport_no'] : '',
+//		   '#maxlength' => 10, 
+//		   '#attributes' => array('class'=>array('form-control'), 'placeholder'=>'Passport No', 'autocomplete' => 'off', 'style'=>'text-transform:uppercase'),
+//		   '#prefix' => '<div id="view_display_dropdown1"><div class="col-md-4">',
+//		   '#suffix' => '</div></div>'
+//		);
+//	}else{
+//		$form['passport_no_blank_div'] = array(
+//		   '#prefix' => '<div id="view_display_dropdown1">',
+//		   '#suffix' => '</div>'
+//		);
+//	}
+//	
+//	if(!isset($form_state['values']['national_id']) && $userData['national_id'] == 2){
+//		$form['other_typeid'] = array(
+//		   '#title'=>t('Enter Your Other National ID Type'),
+//		   '#type' => 'textfield',
+//		   '#required' => TRUE,
+//		   '#default_value' => !empty($userData['other_typeid']) ? $userData['other_typeid'] : '',
+//		   //'#maxlength' => 10,
+//		   '#attributes' => array('class'=>array('form-control'), 'placeholder'=>'Other National ID Type', 'autocomplete' => 'off', 'style'=>'text-transform:uppercase'),
+//		   '#prefix' => '<div id="view_display_dropdown2"><div class="col-md-4">',
+//		   '#suffix' => '</div></div>'
+//		);
+//		$form['other_typeid_no'] = array(
+//		   '#title'=>t('Enter Your National No'),
+//		   '#type' => 'textfield',
+//		   '#required' => TRUE,
+//		    '#default_value' => !empty($userData['other_typeid_no']) ? $userData['other_typeid_no'] : '',
+//		   //'#maxlength' => 10,
+//		   '#attributes' => array('class'=>array('form-control'), 'placeholder'=>'Enter Your National No', 'autocomplete' => 'off', 'style'=>'text-transform:uppercase'),
+//		   '#prefix' => '<div id="view_display_dropdown3"><div class="col-md-4">',
+//		   '#suffix' => '</div></div>'
+//		);
+//		
+//	}elseif(isset($form_state['values']['national_id']) && $form_state['values']['national_id'] == 2){
+//		$form['other_typeid'] = array(
+//		   '#title'=>t('Enter Your Other National ID Type'),
+//		   '#type' => 'textfield',
+//		   '#required' => TRUE,
+//		   '#default_value' => !empty($userData['other_typeid']) ? $userData['other_typeid'] : '',
+//		   //'#maxlength' => 10,
+//		   '#attributes' => array('class'=>array('form-control'), 'placeholder'=>'Other National ID Type', 'autocomplete' => 'off', 'style'=>'text-transform:uppercase'),
+//		   '#prefix' => '<div id="view_display_dropdown2"><div class="col-md-4">',
+//		   '#suffix' => '</div></div>'
+//		);
+//		$form['other_typeid_no'] = array(
+//		   '#title'=>t('Enter Your National No'),
+//		   '#type' => 'textfield',
+//		   '#required' => TRUE,
+//		    '#default_value' => !empty($userData['other_typeid_no']) ? $userData['other_typeid_no'] : '',
+//		   //'#maxlength' => 10,
+//		   '#attributes' => array('class'=>array('form-control'), 'placeholder'=>'Enter Your National No', 'autocomplete' => 'off', 'style'=>'text-transform:uppercase'),
+//		   '#prefix' => '<div id="view_display_dropdown3"><div class="col-md-4">',
+//		   '#suffix' => '</div></div>'
+//		);
+//	}else{
+//		$form['other_typeid_blank_div'] = array(
+//		   '#prefix' => '<div id="view_display_dropdown2">',
+//		   '#suffix' => '</div>'
+//		);
+//		$form['other_typeid_no_blank_div'] = array(
+//		   '#prefix' => '<div id="view_display_dropdown3">',
+//		   '#suffix' => '</div>'
+//		);
+//	}
+//	
+//	//$require_pic = TRUE;
+	//if($userData['photo']!=""){
+//		$uri = 'public://upload/profilepic/'.trim($userData['photo']);
+//		if (file_exists($uri)) {
+//			$form['photo_exist'] = array(
+//				'#type' => 'hidden',
+//				'#default_value' => trim($userData['photo']),
+//			);
+//			$require_pic = FALSE;
+//		}
+//	}
+	
+	//echo "-->".$require_pic ;
+	
+//	$form['photo_start'] = array( 
+//		'#prefix' => '<div class="col-md-12">',
+//		'#suffix' => ''
+//	);
+	
+	//$form['photo'] = array( 
+//	   '#title'=>t('Select Your Photo'),
+//	   '#type' => 'file',
+//	   '#upload_validators' => array('file_validate_extensions' => array('png gif jpg jpeg'), 'file_validate_size' => array(1*1024*1024)),
+//	   '#upload_location' => 'public://upload/profilepic/',
+//	   '#process' => array('import_my_file_element_process'),
+//	   //'#required' => $require_pic,
+//	   '#attributes' => array('id' => 'address', 'autocomplete' => 'off', 'class'=>array('form-control'),'placeholder'=>'Photo'),
+//	   //'#field_prefix' => '<div class="col-md-12">Photo',
+//	   //'#field_suffix' => '</div>'
+//	);
+	
+	//$form['photo_end'] = array( 
+//		'#prefix' => '',
+//		'#suffix' => '</div>'
+//	);
+	
+//	$form['address'] = array( 
+//	   '#title'=>t('Enter Your Address'),
+//	   '#rows'=> 3,
+//	   '#type' => 'textarea',
+//	   '#required' => TRUE,
+//	   '#default_value'=>!empty($userData['address']) ? $userData['address'] : '',
+//	   '#attributes' => array('id' => 'address', 'autocomplete' => 'off', 'class'=>array('form-control'),'placeholder'=>'Address'),
+//	   '#prefix' => '<div class="col-md-12">',
+//	   '#suffix' => '</div>'
+//	);	
+	
+	$form['office_address'] = array( 
+	   '#title'=>t('Enter Your Office Address'),
+	   '#rows'=> 3,
+	   '#type' => 'textarea',
+	   '#required' => TRUE,
+	   '#default_value'=>!empty($userData['office_address']) ? $userData['office_address'] : '',
+	   '#attributes' => array('id' => 'address', 'autocomplete' => 'off', 'class'=>array('form-control'),'placeholder'=>'Office Address'),
+	   '#prefix' => '<div class="col-md-12">',
+	   '#suffix' => '</div>'
+	);	
+	
+	if($userData['one_time_pass_flag']==0){
+		$form['#account'] = $GLOBALS['user'];
+		
+		$form['current_pass'] = array(
+			'#type' => 'password',
+			'#title' => t('Current password'),
+			'#size' => 25,
+			'#required' => TRUE,
+			'#attributes' => array('class'=>array('form-control')),
+			'#prefix' => '<div class="col-md-12">',
+			'#suffix' => '</div>'
+		  );
+		 $form['account']['pass'] = array(
+			'#type' => 'password_confirm',
+			'#size' => 25,
+			//'#title' => t('New'),
+			'#required' => TRUE,
+			'#attributes' => array('class'=>array('form-control')),
+			'#prefix' => '<div class="col-md-12">',
+			'#suffix' => '</div>'
+		  ); 
+	}
+	$form['submit'] = array(
+    	'#type' => 'submit',
+		'#value' => 'Update',
+		'#attributes' => array('class'=>array('form-control btn btn-info')),
+		'#prefix' => '<div class="col-md-12"><div class="input-group">',
+		'#suffix' => '</div></div>'
+	); 
+	 
+    $form['form_end'] = array(
+         '#type' => 'markup',
+         '#markup' => '</div>',
+		 '#suffix' => '</div></div>'
+    );
+	
+	return $form;		 
+}
+
+function employee_profile_form_validate(&$form, &$form_state) { 
+	global $user;
+	
+	$userDataValidate = array();
+  	$query = db_select('fa_employee_details', 'ud');
+	$query->fields('ud', array('one_time_pass_flag'));
+	$query->condition('ud.uid', $user->uid, '=');
+	$result = $query->execute();
+	$userDataValidate = $result->fetchAssoc();	
+ 	
+	if($userDataValidate['one_time_pass_flag']==0){
+	  // Make sure the password functions are present.
+	  require_once DRUPAL_ROOT . '/' . variable_get('password_inc', 'includes/password.inc');
+	
+	  // Make sure the provided current password is valid for this account.
+	  if (!user_check_password($form_state['values']['current_pass'], $form['#account'])) {
+		form_set_error('current_pass', t('The current password you provided is incorrect.'));
+	  }
+	  
+	  if(trim($form_state['values']['current_pass'])==trim($form_state['values']['pass'])){
+		  form_set_error('pass', t('The new password you provided must not be same as previous.'));
+	  }
+
+	}
+}
+
+function employee_profile_form_submit($form, &$form_state){
+	global $user;
+	
+	$userDataSubmit = array();
+  	$query = db_select('fa_employee_details', 'ud');
+	$query->fields('ud', array('one_time_pass_flag'));
+    $query->condition('ud.uid', $user->uid, '=');
+	$result = $query->execute();
+	$userDataSubmit = $result->fetchAssoc();	
+	
+	if(empty($userDataSubmit)) { 
+		$profiledata =	array('uid' => $user->uid);
+		$dataInsert = db_insert('fa_employee_details')->fields($profiledata)->execute();
+	}
+	 	
+	/*$profilepicData = "";
+	$profilepic = file_load($form_state['values']['photo']);	
+	if(!empty($profilepic)){
+		// check if file is eixist
+		$query_file = db_select('file_managed', 'fm');
+		$query_file->fields('fm', array('fid'));
+		$query_file->condition('fm.uid', $user->uid, '=');
+		$result_file = $query_file->execute();
+		$fileData = $result_file->fetchAll();
+		if(!empty($fileData)){
+			foreach($fileData as $val){
+				$query_filemanage_update = db_update('file_managed');
+				$query_filemanage_update->fields(array('status'=> 0));
+				$query_filemanage_update->condition('fid', $val->fid);
+				$query_filemanage_update->execute();
+			}
+		}
+		//end checking
+		
+		$arr = explode("/", $profilepic->uri);
+		$profilepic->status = FILE_STATUS_PERMANENT;
+		file_save($profilepic);
+		$profilepicData = $arr[4];
+	 }else{
+		$profilepicData = $form_state['values']['photo_exist']; 
+	 }*/
+	 
+	 
+	 if(trim($form_state['values']['national_id']) == 1){
+		 $passport_no = trim($form_state['values']['passport_no']);
+	 }else{
+		$passport_no = ""; 
+	 }
+	 if(trim($form_state['values']['national_id']) == 2){
+		 $other_typeid = trim($form_state['values']['other_typeid']);
+		 $other_typeid_no = trim($form_state['values']['other_typeid_no']);
+	 }else{
+		 $other_typeid = "";
+		 $other_typeid_no = "";
+	 }
+	
+	$query = db_update('fa_employee_details');
+	$query->fields(array('fname'			=> $form_state['values']['fname'],
+						//'date_of_birth'		=> format_date(strtotime($form_state['values']['date_of_birth']), 'custom', 'Y-m-d'),
+						'mobile'			=> $form_state['values']['mobile'],
+						//'gender'			=> $form_state['values']['gender'],
+						//'religion'			=> $form_state['values']['religion'],
+						//'national_id'		=> $form_state['values']['national_id'],
+						//'passport_no'		=> $passport_no,
+						//'other_typeid'		=> $other_typeid,
+						//'other_typeid_no'	=> $other_typeid_no,
+						'photo'				=> $profilepicData,
+						'address'			=> $form_state['values']['address'],
+						//'office_address'	=> $form_state['values']['office_address'],
+						));
+	$query->condition('uid', $user->uid);
+	$rs = $query->execute();
+	
+	if($rs){
+		
+		if($userDataSubmit['one_time_pass_flag']==0){
+			$edit = array('pass' => $form_state['values']['pass']);
+			user_save($form['#account'], $edit);
+			
+			$query = db_update('fa_employee_details');
+			$query->fields(array('one_time_pass_flag'=> 1));
+			$query->condition('uid', $user->uid);
+			$query->execute();
+		}
+		
+		drupal_set_message(t('Your profile has been updated successfully.'));
+		$account = user_load($user->uid);
+		//echo "<pre>".print_r($account->roles); die;
+		if(array_key_exists('9',$account->roles)){
+			drupal_goto('inspector-dashboard');
+		}elseif(array_key_exists('10',$account->roles)){
+			drupal_goto('deputychief-dashboard');
+		}elseif(array_key_exists('11',$account->roles)){
+			drupal_goto('jointchief-dashboard');
+		}elseif(array_key_exists('12',$account->roles)){
+			drupal_goto('chief-dashboard');
+		}elseif(array_key_exists('13',$account->roles)){
+			drupal_goto('deputychief-chemical-dashboard');
+		}elseif(array_key_exists('14',$account->roles)){
+			drupal_goto('inspector-chemical-dashboard');
+		}elseif(array_key_exists('17',$account->roles)){
+			drupal_goto('jointchief-chemical-dashboard');
+		}elseif(array_key_exists('30',$account->roles)){
+			drupal_goto('statistical-dashboard');
+		}elseif(array_key_exists('31',$account->roles)){
+			drupal_goto('receiving-dashboard');
+		}else{
+			drupal_goto('profileupdate');
+		}
+		//drupal_goto('dashboard');
+	}else{
+		drupal_set_message(t('Your profile is not updated. Please update your profile first.','error'));
+	}
+}
+
+function ajax_view_display_dropdown_callback($form,&$form_state){
+	$commands   = array();
+	if($form_state['values']['national_id'] == 1){
+ 		$commands[] = ajax_command_replace('#view_display_dropdown1', drupal_render($form['passport_no']));
+	}else{
+		$commands[] = ajax_command_replace('#view_display_dropdown1', drupal_render($form['passport_no_blank_div']));
+	}
+	if($form_state['values']['national_id'] == 2){
+		$commands[] = ajax_command_replace('#view_display_dropdown2', drupal_render($form['other_typeid']));
+		$commands[] = ajax_command_replace('#view_display_dropdown3', drupal_render($form['other_typeid_no']));
+	}else{
+		$commands[] = ajax_command_replace('#view_display_dropdown2', drupal_render($form['other_typeid_blank_div']));
+		$commands[] = ajax_command_replace('#view_display_dropdown3', drupal_render($form['other_typeid_no_blank_div']));
+	}
+	return array('#type' => 'ajax', '#commands' => $commands);
+}
+
+/* It disables the default upload button that comes with this #managed_file form */
+function import_my_file_element_process($element, &$form_state, $form) {
+  $element = file_managed_file_process($element, $form_state, $form);
+  $element['upload_button']['#access'] = FALSE;
+ 
+  return $element;
+}
+
+

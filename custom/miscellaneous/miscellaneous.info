@@ -1,0 +1,5 @@
+name = miscellaneous
+description = Miscellaneous
+package = Common Application Form Modules
+core = 7.x
+version = "7.x"

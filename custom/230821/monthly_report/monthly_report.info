@@ -1,0 +1,4 @@
+name = Monthly Report
+description = Monthly Report module .
+package = Monthly Report Module Factories
+core = 7.x

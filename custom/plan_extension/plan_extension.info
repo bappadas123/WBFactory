@@ -1,0 +1,4 @@
+name = Plan Extension Module
+description = CAF API Testing
+core = 7.x
+package = Plan Extension Form Modules

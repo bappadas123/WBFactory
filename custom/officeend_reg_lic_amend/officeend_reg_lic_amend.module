@@ -1,0 +1,424 @@
+<?php
+function officeend_reg_lic_amend_menu() {
+	//-------Registration--------------------
+	//--------AD START-----------------------------
+	$items['admin/regsection/view-register-factory-information'] = array(
+		'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'type' 				=> 	 MENU_DEFAULT_LOCAL_TASK,
+		'weight' 			=> 	-10,
+	 );
+	$items['admin/regsection/view-register-factory-information/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('application_view_register_inspector',3,4,5,6),
+		'file' 	 			=> 	'includes/application_view_register_inspector.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	/*$items['admin/regsection/view-register-occupierinformation/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('details_of_occupier_registration',3,4,5,6),
+		'file' 	 			=> 	'includes/details_of_occupier_registration.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	$items['admin/regsection/view-register-ownerformation/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('caf_form_owner_registration',3,4,5,6),
+		'file' 	 			=> 	'includes/caf_form_owner_registration.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);*/
+	
+	$items['admin/regsection/view-register-documents/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('caf_form_documents_registration',3,4,5,6),
+		'file' 	 			=> 	'includes/caf_form_documents_registration.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	$items['admin/regsection/view-payments-data/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('view_payment_data_details',3,4,5,6),
+		'file' 	 			=> 	'includes/view_payment_data_details.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	$items['admin/regsection/irregularities-ad/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('irregularities_ad',3,4,5,6),
+		'file' 	 			=> 	'includes/irregularities_ad.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	$items['admin/regsection/send-concern-authority/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('send_concern_authority',3,4,5,6),
+		'file' 	 			=> 	'includes/send_concern_authority.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	// $items['admin/regsection/obsevation_preview/%/%/%/%'] = array(
+	// 	'page callback'	 	=>	'drupal_get_form',
+	// 	'page arguments'	=> 	array('application_view_register_inspector',3,4,5,6),
+	// 	'file' 	 			=> 	'includes/application_view_register_inspector.inc',
+	// 	'access arguments' 	=>  array('permission_for_inspector'),
+	// 	'type' 				=> 	MENU_LOCAL_TASK,
+	// );
+
+	
+
+	//--------AD END-----------------------------
+	//--------DD START-----------------------------
+	
+	$items['admin/ddregistration/view-register-factory-information-dd'] = array(
+		'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'type' 				=> 	 MENU_DEFAULT_LOCAL_TASK,
+		'weight' 			=> 	-10,
+	 );
+	$items['admin/ddregistration/view-register-factory-information-dd/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('application_view_register_inspector',3,4,5,6),
+		'file' 	 			=> 	'includes/application_view_register_inspector.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	
+	
+	$items['admin/ddregistration/view-register-documents-dd/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('caf_form_documents_registration',3,4,5,6),
+		'file' 	 			=> 	'includes/caf_form_documents_registration.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	$items['admin/ddregistration/view-payments-data-dd/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('view_payment_data_details',3,4,5,6),
+		'file' 	 			=> 	'includes/view_payment_data_details.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	$items['admin/ddregistration/irregularities-dd/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('irregularities_dd',3,4,5,6),
+		'file' 	 			=> 	'includes/irregularities_dd.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	$items['admin/ddregistration/send-concern-authority-dd/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('send_concern_authority',3,4,5,6),
+		'file' 	 			=> 	'includes/send_concern_authority.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	
+	
+
+	//--------DD END-----------------------------
+	//---------------------Start JD
+	$items['admin/jdregistration/view-register-factory-information-jd'] = array(
+		'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'type' 				=> 	 MENU_DEFAULT_LOCAL_TASK,
+		'weight' 			=> 	-10,
+	 );
+	 $items['admin/jdregistration/view-register-factory-information-jd/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('application_view_register_inspector',3,4,5,6),
+		'file' 	 			=> 	'includes/application_view_register_inspector.inc',
+		'access arguments' 	=> 	array('permission_for_jointchief'),
+		
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['admin/jdregistration/view-register-documents-jd/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('caf_form_documents_registration',3,4,5,6),
+		'file' 	 			=> 	'includes/caf_form_documents_registration.inc',
+		'access arguments' 	=> 	array('permission_for_jointchief'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	$items['admin/jdregistration/view-payments-data-jd/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('view_payment_data_details',3,4,5,6),
+		'file' 	 			=> 	'includes/view_payment_data_details.inc',
+		'access arguments' 	=> 	array('permission_for_jointchief'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['admin/jdregistration/irregularities-jd/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('irregularities_jd',3,4,5,6),
+		'file' 	 			=> 	'includes/irregularities_jd.inc',
+			'access arguments' 	=> 	array('permission_for_jointchief'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	$items['admin/jdregistration/send-concern-authority-jd/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('send_concern_authority',3,4,5,6),
+		'file' 	 			=> 	'includes/send_concern_authority.inc',
+			'access arguments' 	=> 	array('permission_for_jointchief'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	//-----------------------DD END-----------------
+	
+	//-----------------End registration---------------------------
+
+
+
+
+
+
+
+
+
+
+//-----------------------AD START-----------------
+
+	$items['admin/inspectorrenewal/view-renewal-inspector'] = array(
+		'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'type' 				=> 	 MENU_DEFAULT_LOCAL_TASK,
+		'weight' 			=> 	-10,
+	 );
+
+	$items['admin/inspectorrenewal/view-renewal-inspector/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('renewal_application_view_inspector',3,4,5,6),
+		'file' 	 			=> 	'includes/renewal_application_view_inspector.inc',
+		'access arguments' 	=> 	array('permission_for_inspector'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+
+	$items['admin/inspectorrenewal/view-renewal-documents/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('renewal_documents_inspector',3,4,5,6),
+		'file' 	 			=> 	'includes/renewal_documents_inspector.inc',
+		'access arguments' 	=> 	array('permission_for_inspector'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['admin/inspectorrenewal/view-payments-data/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('renewal_payment_inspector',3,4,5,6),
+		'file' 	 			=> 	'includes/renewal_payment_inspector.inc',
+		'access arguments' 	=> 	array('permission_for_inspector'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+
+
+	$items['admin/inspectorrenewal/irregularities-reneal-ad/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('renewal_irregularities_inspector',3,4,5,6),
+		'file' 	 			=> 	'includes/renewal_irregularities_inspector.inc',
+		'access arguments' 	=> 	array('permission_for_inspector'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+
+
+	$items['admin/inspectorrenewal/send-concern-renewal-inspector/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('renewal_send_concern_inspector',3,4,5,6),
+		'file' 	 			=> 	'includes/renewal_send_concern_inspector.inc',
+		'access arguments' 	=> 	array('permission_for_inspector'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+//-----------------------AD END-----------------
+
+
+
+//-----------------------DD Start-----------------
+
+$items['admin/deputyrenewal/view-renewal-deputy'] = array(
+	'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+	'type' 				=> 	 MENU_DEFAULT_LOCAL_TASK,
+	'weight' 			=> 	-10,
+ );
+
+$items['admin/deputyrenewal/view-renewal-deputy/%/%/%/%'] = array(
+	'page callback'	 	=>	'drupal_get_form',
+	'page arguments'	=> 	array('renewal_application_view_deputy',3,4,5,6),
+	'file' 	 			=> 	'includes/renewal_application_view_deputy.inc',
+	'access arguments' 	=> 	array('permission_for_deputychief'),
+	'type' 				=> 	MENU_LOCAL_TASK,
+);
+
+
+
+$items['admin/deputyrenewal/view-renewal-documents/%/%/%/%'] = array(
+	'page callback'	 	=>	'drupal_get_form',
+	'page arguments'	=> 	array('renewal_documents_inspector',3,4,5,6),
+	'file' 	 			=> 	'includes/renewal_documents_inspector.inc',
+	'access arguments' 	=> 	array('permission_for_deputychief'),
+	'type' 				=> 	MENU_LOCAL_TASK,
+);
+
+$items['admin/deputyrenewal/view-payments-data/%/%/%/%'] = array(
+	'page callback'	 	=>	'drupal_get_form',
+	'page arguments'	=> 	array('renewal_payment_data_details_dd',3,4,5,6),
+	'file' 	 			=> 	'includes/renewal_payment_data_details_dd.inc',
+	'access arguments' 	=> 	array('permission_for_deputychief'),
+	'type' 				=> 	MENU_LOCAL_TASK,
+);
+
+$items['admin/deputyrenewal/irregularities-reneal-dd/%/%/%/%'] = array(
+	'page callback'	 	=>	'drupal_get_form',
+	'page arguments'	=> 	array('renewal_irregularities_dd',3,4,5,6),
+	'file' 	 			=> 	'includes/renewal_irregularities_dd.inc',
+	'access arguments' 	=> 	array('permission_for_deputychief'),
+	'type' 				=> 	MENU_LOCAL_TASK,
+);
+
+$items['admin/deputyrenewal/send-concern-renewal-deputy/%/%/%/%'] = array(
+	'page callback'	 	=>	'drupal_get_form',
+	'page arguments'	=> 	array('renewal_concern_dd',3,4,5,6),
+	'file' 	 			=> 	'includes/renewal_concern_dd.inc',
+	'access arguments' 	=> 	array('permission_for_deputychief'),
+	'type' 				=> 	MENU_LOCAL_TASK,
+);
+
+//-----------------------DD END-----------------
+
+
+
+
+
+//-------------------AMENDMENT ----AD START-----------------
+
+$items['admin/inspectoramendment/view-amendment-inspector'] = array(
+	'title'				=>	'Online Application for Registration and grant or amendment of License of Factories',
+	'type' 				=> 	 MENU_DEFAULT_LOCAL_TASK,
+	'weight' 			=> 	-10,
+ );
+
+$items['admin/inspectoramendment/view-amendment-inspector/%/%/%/%'] = array(
+	'page callback'	 	=>	'drupal_get_form',
+	'page arguments'	=> 	array('renewal_application_view_inspector',3,4,5,6),
+	'file' 	 			=> 	'includes/renewal_application_view_inspector.inc',
+	'access arguments' 	=> 	array('permission_for_inspector'),
+	'type' 				=> 	MENU_LOCAL_TASK,
+);
+
+$items['admin/inspectoramendment/view-amendment-documents/%/%/%/%'] = array(
+	'page callback'	 	=>	'drupal_get_form',
+	'page arguments'	=> 	array('renewal_documents_inspector',3,4,5,6),
+	'file' 	 			=> 	'includes/renewal_documents_inspector.inc',
+	'access arguments' 	=> 	array('permission_for_inspector'),
+	'type' 				=> 	MENU_LOCAL_TASK,
+);
+
+$items['admin/inspectoramendment/view-payments-data/%/%/%/%'] = array(
+	'page callback'	 	=>	'drupal_get_form',
+	'page arguments'	=> 	array('renewal_payment_inspector',3,4,5,6),
+	'file' 	 			=> 	'includes/renewal_payment_inspector.inc',
+	'access arguments' 	=> 	array('permission_for_inspector'),
+	'type' 				=> 	MENU_LOCAL_TASK,
+);
+
+
+$items['admin/inspectoramendment/irregularities-reneal-ad/%/%/%/%'] = array(
+	'page callback'	 	=>	'drupal_get_form',
+	'page arguments'	=> 	array('renewal_irregularities_inspector',3,4,5,6),
+	'file' 	 			=> 	'includes/renewal_irregularities_inspector.inc',
+	'access arguments' 	=> 	array('permission_for_inspector'),
+	'type' 				=> 	MENU_LOCAL_TASK,
+);
+
+
+$items['admin/inspectoramendment/send-concern-amendment-inspector/%/%/%/%'] = array(
+	'page callback'	 	=>	'drupal_get_form',
+	'page arguments'	=> 	array('renewal_send_concern_inspector',3,4,5,6),
+	'file' 	 			=> 	'includes/renewal_send_concern_inspector.inc',
+	'access arguments' 	=> 	array('permission_for_inspector'),
+	'type' 				=> 	MENU_LOCAL_TASK,
+);
+//-----------------------AD END-----------------
+
+
+
+//-----------------------DD Start-----------------
+
+$items['admin/deputyamendment/view-amendment-deputy'] = array(
+'title'				=>	'Online Application for Registration and grant or amendment of License of Factories',
+'type' 				=> 	 MENU_DEFAULT_LOCAL_TASK,
+'weight' 			=> 	-10,
+);
+
+$items['admin/deputyamendment/view-amendment-deputy/%/%/%/%'] = array(
+'page callback'	 	=>	'drupal_get_form',
+'page arguments'	=> 	array('renewal_application_view_deputy',3,4,5,6),
+'file' 	 			=> 	'includes/renewal_application_view_deputy.inc',
+'access arguments' 	=> 	array('permission_for_deputychief'),
+'type' 				=> 	MENU_LOCAL_TASK,
+);
+
+
+
+$items['admin/deputyamendment/view-amendment-documents/%/%/%/%'] = array(
+'page callback'	 	=>	'drupal_get_form',
+'page arguments'	=> 	array('renewal_documents_inspector',3,4,5,6),
+'file' 	 			=> 	'includes/renewal_documents_inspector.inc',
+'access arguments' 	=> 	array('permission_for_deputychief'),
+'type' 				=> 	MENU_LOCAL_TASK,
+);
+
+$items['admin/deputyamendment/view-payments-data/%/%/%/%'] = array(
+'page callback'	 	=>	'drupal_get_form',
+'page arguments'	=> 	array('renewal_payment_data_details_dd',3,4,5,6),
+'file' 	 			=> 	'includes/renewal_payment_data_details_dd.inc',
+'access arguments' 	=> 	array('permission_for_deputychief'),
+'type' 				=> 	MENU_LOCAL_TASK,
+);
+
+$items['admin/deputyamendment/irregularities-reneal-dd/%/%/%/%'] = array(
+'page callback'	 	=>	'drupal_get_form',
+'page arguments'	=> 	array('renewal_irregularities_dd',3,4,5,6),
+'file' 	 			=> 	'includes/renewal_irregularities_dd.inc',
+'access arguments' 	=> 	array('permission_for_deputychief'),
+'type' 				=> 	MENU_LOCAL_TASK,
+);
+
+$items['admin/deputyamendment/send-concern-amendment-deputy/%/%/%/%'] = array(
+'page callback'	 	=>	'drupal_get_form',
+'page arguments'	=> 	array('renewal_concern_dd',3,4,5,6),
+'file' 	 			=> 	'includes/renewal_concern_dd.inc',
+'access arguments' 	=> 	array('permission_for_deputychief'),
+'type' 				=> 	MENU_LOCAL_TASK,
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$items['regsection/registration-not-view-notesheet/%/%/%/%'] = array(
+		'title'	 			=>	'NoteSheet View',
+		'page callback'	 	=>	'not_recomended_notesheet_file',
+		'page arguments'	=>  array(2,3,4,5),
+		'file' 	 			=> 	'includes/not_recomended_notesheet_file.inc',
+		'access arguments' 	=>  array('permission_for_backed_user'),
+	); 
+
+$items['applicant_notification/%/%/%/%'] = array(
+		'title'	 			=>	'NoteSheet View',
+		'page callback'	 	=>	'applicant_notification',
+		'page arguments'	=>  array(1,2,3,4),
+		'file' 	 			=> 	'includes/applicant_notification.inc',
+		'access arguments' 	=>  array('permission_for_applicant_admin'),
+	); 
+	return $items;	
+
+}
+
+
+

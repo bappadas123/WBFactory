@@ -1,0 +1,247 @@
+  <?php
+  
+   function notice_form_menu() {
+    $items = array();
+	
+   	 //FORM 19
+	 
+	 $items['applicant/form19/default'] = array(
+		'title' 	 => 'Online Application for Notice of Dangerous Occurrence',
+		'type' 	     => MENU_DEFAULT_LOCAL_TASK,
+		'weight' 	 => -10,
+	  );
+
+	$items['applicant/form19'] = array(
+		'title'				=>	'Online Application for Notice of Dangerous Occurrence',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('form19_form'),
+		'file' 				=> 	'includes/form19.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	); 
+	//for edit page
+   	 $items['applicant/form19/%/%/%/%'] = array(
+		'title'				=>	'Online Application for Notice of Dangerous Occurrence',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('form19_form',3,4,5,6),
+		'file' 				=> 	'includes/form19.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	); 
+	$items['download-pdf-form-19/%/%/%/%'] = array(
+		'page callback'		=>	'pdf_form_19',
+		'page arguments'	=>	array(1,2,3,4),
+		'file' 				=> 	'includes/pdf_form_19.inc',
+		//'access arguments' 	=>  array('permission_for_application_planpdf'),
+		'access arguments' 	=>  array('access content'),
+	  );
+	$items['applicant/form19-upload/%/%/%/%'] = array(
+		'title'	 =>	'Form19 Upload',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=>	array('form19_upload',2,3,4,5),
+		'file' 	 => 	'includes/form19_upload.inc',
+		'access arguments' 	=> 	array('permission_for_application_planview'),
+	);	  
+	$items['applicant/form19-list'] = array(
+		'title'				=>	'Dangerous Occurrence List (Form-19)',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('form19_list'),
+		'file' 				=> 	'includes/form19_list.inc',
+		'access arguments' 	=>  array('access content'),
+	  );
+	$items['applicant/form19-view/%/%/%/%'] = array(
+		'title'				=>	'Dangerous Occurrence View (Form-19)',
+		'page callback'		=>	'form19_view',
+		'page arguments'	=>	array(2,3,4,5),
+		'file' 				=> 	'includes/form19_view.inc',
+		'access arguments' 	=>  array('access content'),
+	  );
+	$items['applicant/form19/preview/%/%/%/%'] = array(
+		'title'				=>	'Dangerous Occurrence Preview (Form-19)',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('form19_preview',3,4,5,6),
+		'file' 				=> 	'includes/form19_preview.inc',
+		'access arguments' 	=>  array('access content'),
+	  );
+
+	 //FORM 20
+	  
+	 $items['applicant/form20/default'] = array(
+		'title' 	 => 'Notice of Poisoning or Disease',
+		'type' 	     => MENU_DEFAULT_LOCAL_TASK,
+		'weight' 	 => -10,
+	  );
+	   
+	  $items['applicant/form20'] = array(
+		'title'				=>	'Online Application for Notice of Poisoning or Disease',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('form20_form'),
+		'file' 				=> 	'includes/form20.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	  );
+	//for edit page
+   	 $items['applicant/form20/%/%/%/%'] = array(
+		'title'				=>	'Online Application for Notice of Poisoning or Disease',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('form20_form',3,4,5,6),
+		'file' 				=> 	'includes/form20.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	);
+	
+	$items['applicant/form20/occupier-details/%/%/%/%']= array( 
+		'title'	 	 		=> 	'Online Application for Notice of Poisoning or Disease',
+		'page callback' 	=> 	'drupal_get_form', 
+		'page arguments' 	=>  array('form20_occupier_details',3,4,5,6),
+		'file' 	 			=> 'includes/form20_occupier_details.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+		'weight' 	 		=> 	2,
+		'type' 	 			=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['applicant/form20/patient-details/%/%/%/%']= array( 
+		'title'	 	 		=> 	'Online Application for Notice of Poisoning or Disease',
+		'page callback' 	=> 	'drupal_get_form', 
+		'page arguments' 	=>  array('form20_patient_details',3,4,5,6),
+		'file' 	 			=> 'includes/form20_patient_details.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+		'weight' 	 		=> 	2,
+		'type' 	 			=> 	MENU_LOCAL_TASK,
+	);
+	
+	 $items['download-pdf-form-20/%/%/%/%'] = array(
+		'page callback'		=>	'pdf_form_20',
+		'page arguments'	=>	array(1,2,3,4),
+		'file' 				=> 	'includes/pdf_form_20.inc',
+		//'access arguments' 	=>  array('permission_for_application_planpdf'),
+		'access arguments' 	=>  array('access content'),
+	  );
+	$items['applicant/form20-upload/%/%/%/%'] = array(
+		'title'	 =>	'Form20 Upload',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=>	array('form20_upload',2,3,4,5),
+		'file' 	 => 	'includes/form20_upload.inc',
+		'access arguments' 	=> 	array('permission_for_application_planview'),
+	);	 
+ 
+	$items['applicant/form20-list'] = array(
+		'title'				=>	'Notice of Poisoning or Disease List (Form-20)',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('form20_list'),
+		'file' 				=> 	'includes/form20_list.inc',
+		'access arguments' 	=>  array('access content'),
+	  );
+	$items['applicant/form20-view/%/%/%/%'] = array(
+		'title'				=>	'Notice of Poisoning or Disease View (Form-20)',
+		'page callback'		=>	'form20_view',
+		'page arguments'	=>	array(2,3,4,5),
+		'file' 				=> 	'includes/form20_view.inc',
+		'access arguments' 	=>  array('access content'),
+	  );
+	$items['applicant/form20/preview/%/%/%/%'] = array(
+		'title'				=>	'Notice of Poisoning or Disease Preview (Form-20)',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('form20_preview',3,4,5,6),
+		'file' 				=> 	'includes/form20_preview.inc',
+		'access arguments' 	=>  array('access content'),
+	  );
+	$items['applicant/form20/del-patient-details/%/%/%/%/%'] = array(
+		'page callback' 	=> 'del_patient_details',
+		'page arguments' 	=> array(3,4,5,6,7),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 			=> 'includes/form20_patient_details.inc',
+  	);
+
+	//FORM 18
+	  
+	 $items['applicant/form18/default'] = array(
+		'title' 	 => 'Notice of Accident',
+		'type' 	     => MENU_DEFAULT_LOCAL_TASK,
+		'weight' 	 => -10,
+	  );
+	   
+	  $items['applicant/form18'] = array(
+		'title'				=>	'Online Application for Notice of Accident',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('form18_form'),
+		'file' 				=> 	'includes/form18.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	  );
+	//for edit page
+   	 $items['applicant/form18/%/%/%/%'] = array(
+		'title'				=>	'Online Application for Notice of Accident',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('form18_form',3,4,5,6),
+		'file' 				=> 	'includes/form18.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	);
+	$items['applicant/form18/accident-details/%/%/%/%']= array( 
+		'title'	 	 		=> 	'Online Application for Notice of Accident',
+		'page callback' 	=> 	'drupal_get_form', 
+		'page arguments' 	=>  array('form18_accident_details',3,4,5,6),
+		'file' 	 			=> 'includes/form18_accident_details.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+		'weight' 	 		=> 	2,
+		'type' 	 			=> 	MENU_LOCAL_TASK,
+	);
+	$items['applicant/form18/injured-person-details/%/%/%/%']= array( 
+		'title'	 	 		=> 	'Online Application for Notice of Accident',
+		'page callback' 	=> 	'drupal_get_form', 
+		'page arguments' 	=>  array('form18_injured_person_details',3,4,5,6),
+		'file' 	 			=> 'includes/form18_injured_person_details.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+		'weight' 	 		=> 	2,
+		'type' 	 			=> 	MENU_LOCAL_TASK,
+	);
+	$items['applicant/form18/witness-details/%/%/%/%']= array( 
+		'title'	 	 		=> 	'Online Application for Notice of Accident',
+		'page callback' 	=> 	'drupal_get_form', 
+		'page arguments' 	=>  array('form18_witness_details',3,4,5,6),
+		'file' 	 			=> 'includes/form18_witness_details.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+		'weight' 	 		=> 	2,
+		'type' 	 			=> 	MENU_LOCAL_TASK,
+	);
+	 $items['download-pdf-form-18/%/%/%/%'] = array(
+		'page callback'		=>	'pdf_form_18',
+		'page arguments'	=>	array(1,2,3,4),
+		'file' 				=> 	'includes/pdf_form_18.inc',
+		//'access arguments' 	=>  array('permission_for_application_planpdf'),
+		'access arguments' 	=>  array('access content'),
+	  );
+	$items['applicant/form18-upload/%/%/%/%'] = array(
+		'title'	 			=>	'Form18 Upload',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>	array('form18_upload',2,3,4,5),
+		'file' 	 			=> 	'includes/form18_upload.inc',
+		'access arguments' 	=> 	array('permission_for_application_planview'),
+	);	 
+	$items['applicant/form18-list'] = array(
+		'title'				=>	'Notice of Accident List (Form-18)',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('form18_list'),
+		'file' 				=> 	'includes/form18_list.inc',
+		'access arguments' 	=>  array('access content'),
+	  );
+	$items['applicant/form18-view/%/%/%/%'] = array(
+		'title'				=>	'Notice of Accident View (Form-18)',
+		'page callback'		=>	'form18_view',
+		'page arguments'	=>	array(2,3,4,5),
+		'file' 				=> 	'includes/form18_view.inc',
+		'access arguments' 	=>  array('access content'),
+	  );
+	$items['applicant/form18/preview/%/%/%/%'] = array(
+		'title'				=>	'Notice of Accident Preview (Form-18)',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('form18_preview',3,4,5,6),
+		'file' 				=> 	'includes/form18_preview.inc',
+		'access arguments' 	=>  array('access content'),
+	  );
+	$items['applicant/form18/del-witness-details/%/%/%/%/%'] = array(
+		'page callback' 	=> 'del_witness_details',
+		'page arguments' 	=> array(3,4,5,6,7),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 			=> 'includes/form18_witness_details.inc',
+  	);
+
+	return $items;
+  }
+
+?>

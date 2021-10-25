@@ -1,0 +1,239 @@
+<?php
+
+	function inspection_report_init() {
+		
+	}
+	
+	
+	function inspection_report_menu(){
+		
+		$items = array();
+		
+		$items['admin/inspection-report-list'] = array(
+			'title'				=>	'Inspection Report List',
+			'page callback'		=>	'drupal_get_form',
+			'page arguments'	=>	array('inspection_report_list'),
+			'file' 				=> 	'includes/inspection_report_list.inc',
+			'access arguments' 	=>  array('permission_for_inspector'),
+		);
+		
+		$items['admin/inspection-report-factories/default'] = array(
+			'title' 			=> 'Inspection Report Factory Information',
+			'type' 				=>  MENU_DEFAULT_LOCAL_TASK,
+			'weight' 			=>  -10,
+ 		);
+		
+		$items['admin/inspection-report-factories']= array( 
+			'page callback' 	=> 'drupal_get_form', 
+			'page arguments' 	=>  array('inspection_report_factory_info'),
+			'file' 				=> 'includes/inspection_report_factory_info.inc',
+			'access arguments' 	=> 	array('permission_for_inspector'),
+		);
+		
+		$items['admin/inspection-report-factories/%/%/%']= array( 
+			'page callback' 	=> 'drupal_get_form', 
+			'page arguments' 	=>  array('inspection_report_factory_info',3,4,5),
+			'file' 				=> 'includes/inspection_report_factory_info.inc',
+			'access arguments' 	=> 	array('permission_for_inspector'),
+		);
+		
+		$items['admin/inspection-report-factories/workers-details/%/%/%']= array( 
+			'page callback' 	=> 'drupal_get_form', 
+			'page arguments' 	=>  array('inspection_report_workers_details',3,4,5),
+			'file' 				=> 'includes/inspection_report_workers_details.inc',
+			'access arguments' 	=> 	array('permission_for_inspector'),
+		);
+		
+		$items['admin/inspection-report-factories/occupier-details/%/%/%']= array( 
+			'page callback' 	=> 'drupal_get_form', 
+			'page arguments' 	=>  array('inspection_report_occupier_details',3,4,5),
+			'file' 				=> 'includes/inspection_report_occupier_details.inc',
+			'access arguments' 	=> 	array('permission_for_inspector'),
+		);
+		
+		$items['admin/inspection-report-factories/manager-details/%/%/%']= array( 
+			'page callback' 	=> 'drupal_get_form', 
+			'page arguments' 	=>  array('inspection_report_manager_details',3,4,5),
+			'file' 				=> 'includes/inspection_report_manager_details.inc',
+			'access arguments' 	=> 	array('permission_for_inspector'),
+		);
+		
+		$items['admin/inspection-report-factories/infringement-details/%/%/%']= array( 
+			'page callback' 	=> 'drupal_get_form', 
+			'page arguments' 	=>  array('inspection_report_infringement_details',3,4,5),
+			'file' 				=> 'includes/inspection_report_infringement_details.inc',
+			'access arguments' 	=> 	array('permission_for_inspector'),
+		);
+
+
+		$items['randommization-inspection-view']= array( 
+			'page callback' 	=> 'drupal_get_form', 
+			'page arguments' 	=>  array('randomization_inspection_view'),
+			'file' 				=> 'includes/randomization_inspection_view_for_inspector.inc',
+			'access arguments' 	=> 	array('permission_for_inspector'),
+		);
+      
+      
+
+
+
+		
+		
+		return $items;
+	}
+	
+	
+	
+	
+	function get_ajax_factory_info($form, $form_state) {
+		
+		$commands[] = ajax_command_replace('#licence_certificate_id', drupal_render($form['factory_information']['licence_certificate']));
+		$commands[] = ajax_command_replace('#registration_certificate_id', drupal_render($form['factory_information']['registration_certificate']));
+		$commands[] = ajax_command_replace('#plan_approval_letter_id', drupal_render($form['factory_information']['plan_approval_letter']));
+		$commands[] = ajax_command_replace('#caf_application_id', drupal_render($form['factory_information']['caf_application']));
+		
+		$commands[] = ajax_command_replace('#reference_number_id', drupal_render($form['factory_information']['reference_number']));
+		$commands[] = ajax_command_replace('#factory_name_id', drupal_render($form['factory_information']['factory_name']));
+		
+		$commands[] = ajax_command_replace('#pincode_id', drupal_render($form['factory_information']['pincode']));
+		$commands[] = ajax_command_replace('#ld_edit_emp_state_replace', drupal_render($form['factory_information']['state']));
+		$commands[] = ajax_command_replace('#ld_edit_emp_district_replace', drupal_render($form['factory_information']['district']));
+		$commands[] = ajax_command_replace('#ld_empsubdv_replace', drupal_render($form['factory_information']['subdivision']));
+		$commands[] = ajax_command_replace('#ld_emp_areatype_replace', drupal_render($form['factory_information']['areatype']));
+		$commands[] = ajax_command_replace('#ld_empareatype_name_replace', drupal_render($form['factory_information']['block']));
+		$commands[] = ajax_command_replace('#ld_emp_vill_ward_replace', drupal_render($form['factory_information']['panchayat']));
+		$commands[] = ajax_command_replace('#ld_empps_replace', drupal_render($form['factory_information']['policestation']));
+		$commands[] = ajax_command_replace('#ld_post_office_div', drupal_render($form['factory_information']['postoffice']));
+		$commands[] = ajax_command_replace('#factory_zone_div', drupal_render($form['factory_information']['factory_zone_name']));
+		$commands[] = ajax_command_replace('#nearest_landmark_id', drupal_render($form['factory_information']['nearest_landmark']));
+		$commands[] = ajax_command_replace('#addrline_id', drupal_render($form['factory_information']['addrline']));
+		
+		$commands[] = ajax_command_replace('#building_plan_no_id', drupal_render($form['factory_information']['building_plan_no']));
+		$commands[] = ajax_command_replace('#building_plan_date_id', drupal_render($form['factory_information']['building_plan_date']));
+		$commands[] = ajax_command_replace('#licence_number_id', drupal_render($form['factory_information']['licence_number']));
+		$commands[] = ajax_command_replace('#licence_date_id', drupal_render($form['factory_information']['licence_date']));
+		$commands[] = ajax_command_replace('#registration_number_id', drupal_render($form['factory_information']['registration_number']));
+		$commands[] = ajax_command_replace('#registration_date_id', drupal_render($form['factory_information']['registration_date']));
+		$commands[] = ajax_command_replace('#factory_sector_ownership_type_id', drupal_render($form['factory_information']['factory_sector_ownership_type']));
+		$commands[] = ajax_command_replace('#factory_typeid_id', drupal_render($form['factory_information']['factory_typeid']));
+		$commands[] = ajax_command_replace('#classification_no_id', drupal_render($form['factory_information']['classification_no']));
+		$commands[] = ajax_command_replace('#factory_classification_type_id', drupal_render($form['factory_information']['factory_classification_type']));
+		$commands[] = ajax_command_replace('#inspected_by_id', drupal_render($form['factory_information']['inspected_by']));
+		$commands[] = ajax_command_replace('#person_during_inspection_id', drupal_render($form['factory_information']['person_during_inspection']));
+		$commands[] = ajax_command_replace('#nature_manufacturing_id', drupal_render($form['factory_information']['nature_manufacturing']));
+		
+		$commands[] = ajax_command_replace('#reload_power_details', drupal_render($form['power_details']));
+		
+	 	return array('#type' => 'ajax', '#commands' => $commands);
+	}
+	
+	
+	function get_ajax_factory_address_load($form, $form_state) {
+		$commands   = array();
+		$commands[] = ajax_command_replace('#ld_edit_emp_state_replace', drupal_render($form['factory_information']['state']));
+		$commands[] = ajax_command_replace('#ld_edit_emp_district_replace', drupal_render($form['factory_information']['district']));
+		$commands[] = ajax_command_replace('#ld_empsubdv_replace', drupal_render($form['factory_information']['subdivision']));
+		$commands[] = ajax_command_replace('#ld_emp_areatype_replace', drupal_render($form['factory_information']['areatype']));
+		$commands[] = ajax_command_replace('#ld_empareatype_name_replace', drupal_render($form['factory_information']['block']));
+		$commands[] = ajax_command_replace('#ld_emp_vill_ward_replace', drupal_render($form['factory_information']['panchayat']));
+		$commands[] = ajax_command_replace('#ld_empps_replace', drupal_render($form['factory_information']['policestation']));
+		$commands[] = ajax_command_replace('#ld_post_office_div', drupal_render($form['factory_information']['postoffice']));
+		$commands[] = ajax_command_replace('#factory_zone_div', drupal_render($form['factory_information']['factory_zone_name']));
+		return array(
+			'#type' => 'ajax',
+			'#commands' => $commands
+		);
+	}
+	
+	
+	function get_ajax_occupier_details_load_ir($form, $form_state) {
+		
+		$commands   = array();
+		$commands[] = ajax_command_replace('#state_oprmntadr_occupier_id_replace', drupal_render($form['occupier_details']['state_oprmntadr']));
+		$commands[] = ajax_command_replace('#district_oprmntadr_occupier_id_replace', drupal_render($form['occupier_details']['district_oprmntadr']));
+		$commands[] = ajax_command_replace('#subdivision_oprmntadr_occupier_id_replace', drupal_render($form['occupier_details']['subdivision_oprmntadr']));
+		$commands[] = ajax_command_replace('#areatype_oprmntadr_occupier_id_replace', drupal_render($form['occupier_details']['areatype_oprmntadr']));
+		$commands[] = ajax_command_replace('#block_oprmntadr_occupier_id_replace', drupal_render($form['occupier_details']['block_oprmntadr']));
+		$commands[] = ajax_command_replace('#panchayat_oprmntadr_occupier_id_replace', drupal_render($form['occupier_details']['panchayat_oprmntadr']));
+		$commands[] = ajax_command_replace('#policestation_oprmntadr_occupier_id_replace', drupal_render($form['occupier_details']['policestation_oprmntadr']));
+		$commands[] = ajax_command_replace('#postoffice_oprmntadr_occupier_id_replace', drupal_render($form['occupier_details']['postoffice_oprmntadr']));
+		return array(
+			'#type' => 'ajax',
+			'#commands' => $commands
+		);
+	}
+	
+	
+	function get_ajax_manager_details_load_ir($form, $form_state) {
+		
+		$commands   = array();
+		$commands[] = ajax_command_replace('#state_manager_id_replace', drupal_render($form['manager_details']['state_manager']));
+		$commands[] = ajax_command_replace('#district_manager_id_replace', drupal_render($form['manager_details']['district_manager']));
+		$commands[] = ajax_command_replace('#sub_division_manager_id_replace', drupal_render($form['manager_details']['sub_division_manager']));
+		$commands[] = ajax_command_replace('#area_type_manager_id_replace', drupal_render($form['manager_details']['area_type_manager']));
+		$commands[] = ajax_command_replace('#block_mun_cor_sez_not_manager_id_replace', drupal_render($form['manager_details']['block_mun_cor_sez_not_manager']));
+		$commands[] = ajax_command_replace('#grm_ward_sector_not_manager_id_replace', drupal_render($form['manager_details']['grm_ward_sector_not_manager']));
+		$commands[] = ajax_command_replace('#police_station_manager_id_replace', drupal_render($form['manager_details']['police_station_manager']));
+		$commands[] = ajax_command_replace('#post_office_manager_id_replace', drupal_render($form['manager_details']['post_office_manager']));
+		return array(
+			'#type' => 'ajax',
+			'#commands' => $commands
+		);
+	}
+	
+	
+	function get_ajax_power_details($form, $form_state) {
+		
+		$commands   = array();
+		$commands[] = ajax_command_replace('#reload_power_details', drupal_render($form['power_details']));
+		
+		/*$commands[] = ajax_command_replace('#is_generating_id', drupal_render($form['power_details']['is_generating']));
+		$commands[] = ajax_command_replace('#power_type_id', drupal_render($form['power_details']['power_type']));
+		$commands[] = ajax_command_replace('#installed_power_id', drupal_render($form['power_details']['installed_power']));*/
+		
+		return array(
+			'#type' => 'ajax',
+			'#commands' => $commands
+		);
+	}
+	
+	
+	function get_ajax_act_info($form, $form_state) {
+		
+		$commands   = array();
+		
+		$commands[] = ajax_command_replace('#section_id', drupal_render($form['infringement_details']['section']));
+		$commands[] = ajax_command_replace('#rule_id', drupal_render($form['infringement_details']['rule']));
+		
+		$commands[] = ajax_command_replace('#infringement_text_info_id', drupal_render($form['infringement_details']['infringement_text_info']));
+		return array(
+			'#type' => 'ajax',
+			'#commands' => $commands
+		);
+	}
+	
+	
+	function get_ajax_section_info($form, $form_state) {
+		
+		$commands   = array();
+		
+		$commands[] = ajax_command_replace('#rule_id', drupal_render($form['infringement_details']['rule']));
+		
+		$commands[] = ajax_command_replace('#infringement_text_info_id', drupal_render($form['infringement_details']['infringement_text_info']));
+		return array(
+			'#type' => 'ajax',
+			'#commands' => $commands
+		);
+	}
+	
+	
+	function get_ajax_rule_info($form, $form_state) {
+		
+		$commands   = array();
+		
+		$commands[] = ajax_command_replace('#infringement_text_info_id', drupal_render($form['infringement_details']['infringement_text_info']));
+		return array(
+			'#type' => 'ajax',
+			'#commands' => $commands
+		);
+	}

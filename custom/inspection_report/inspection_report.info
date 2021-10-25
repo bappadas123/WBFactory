@@ -1,0 +1,7 @@
+name = Inspection Report
+description = Inspection Report module Under The Factories Act.
+package = Inspection Report Module Factories
+core = 7.x
+
+scripts[] = css/inspection_report.css
+scripts[] = js/inspection_report.js

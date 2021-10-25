@@ -1,0 +1,4 @@
+name = Amendment
+description = Amendment License of the Factories
+core = 7.x
+package = Amendment Licence Modules

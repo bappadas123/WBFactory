@@ -1,0 +1,274 @@
+<?php
+function annual_report_permission() {
+  return array(
+    'annual_report_per' => array(
+      'title' => t('annual report application permission'),
+    ),
+  );
+}
+
+function annual_report_menu(){
+
+
+$items = array();
+
+
+
+$items['admin/annual-report-list'] = array( 
+      'title'       => 'Annual Report List',
+      'page callback'   => 'drupal_get_form',
+      'page arguments'  => array('annual_report_list'),
+      'file'        => 'inc/annual.report.inc',
+      'access callback'   => 'user_access',
+      'access arguments'  => array('annual_report_per'),
+    );
+
+$items['admin/annual-report'] = array( 
+			'title' 			=> 'Step 1',
+			'page callback' 	=> 'drupal_get_form',
+			'page arguments' 	=> array('annual_report_step1'),
+			'file' 				=> 'inc/annual.report.inc',
+			'access callback' 	=> 'user_access',
+			'access arguments'	=> array('annual_report_per'),
+       'weight' => 1,
+
+		);
+
+		
+	
+
+$items['admin/annual-report/default'] = array(
+			//'title' 			=> 'Establishment   Details',
+			'type'				=> MENU_DEFAULT_LOCAL_TASK,
+		
+			
+			
+			'title' 			=> 'Step 1',
+			'page callback' 	=> 'drupal_get_form',
+			'page arguments' 	=> array('annual_report_step1'),
+			'file' 				=> 'inc/annual.report.inc',
+			'access callback' 	=> 'user_access',
+			'access arguments'	=> array('annual_report_per'),
+       'weight' => 1,
+			
+			
+			
+			
+		);
+		
+	$items['admin/annual-report/%'] = array( 
+      'title'       => 'Step 1',
+      'page callback'   => 'drupal_get_form',
+      'page arguments'  => array('annual_report_step1',2),
+      'file'        => 'inc/annual.report.inc',
+      'access callback'   => 'user_access',
+      'access arguments'  => array('annual_report_per'),
+      'type' => MENU_LOCAL_TASK,
+       'weight' => 1,
+    );
+	
+	
+		
+		
+		
+	$items['admin/annual-report/step2'] = array(
+   'title' => 'Step 2',
+//'description' => 'Menu system example using a render array.',
+//'title' => 'STEP2',
+   'page callback' => 'drupal_get_form', //'page callback' => 'fun4_page',
+   'page arguments' => array('annual_report_step2',),
+  'file' => 'inc/annual.report.step2.inc',
+  'access callback' => 'user_access',
+  'access arguments' => array('annual_report_per'),
+  'weight' => 2,
+  'type' => MENU_LOCAL_TASK,
+ );	
+
+	$items['admin/annual-report/step3'] = array(
+   'title' => 'Step 3',
+//'description' => 'Menu system example using a render array.',
+//'title' => 'STEP2',
+   'page callback' => 'drupal_get_form', //'page callback' => 'fun4_page',
+   'page arguments' => array('annual_report_step3',),
+  'file' => 'inc/annual.report.step3.inc',
+  'access callback' => 'user_access',
+  'access arguments' => array('annual_report_per'),
+  'weight' => 3,
+  'type' => MENU_LOCAL_TASK,
+ );	
+
+  $items['admin/annual-report/step3/%'] = array( 
+      'title'       => 'Step 3',
+      'page callback'   => 'drupal_get_form',
+      'page arguments'  => array('annual_report_step3',3),
+       'file' => 'inc/annual.report.step3.inc',
+      'access callback'   => 'user_access',
+      'access arguments'  => array('annual_report_per'),
+        'weight' => 3,
+      'type' => MENU_LOCAL_TASK,
+    );
+
+
+	$items['admin/annual-report/step4'] = array(
+   'title' => 'Step 4',
+//'description' => 'Menu system example using a render array.',
+//'title' => 'STEP2',
+   'page callback' => 'drupal_get_form', //'page callback' => 'fun4_page',
+   'page arguments' => array('annual_report_step4',),
+  'file' => 'inc/annual.report.step4.inc',
+  'access callback' => 'user_access',
+  'access arguments' => array('annual_report_per'),
+  'weight' => 4,
+  'type' => MENU_LOCAL_TASK,
+ );	
+
+  $items['admin/annual-report/step4/%'] = array(
+   'title' => 'Step 4',
+//'description' => 'Menu system example using a render array.',
+//'title' => 'STEP2',
+   'page callback' => 'drupal_get_form', //'page callback' => 'fun4_page',
+   'page arguments' => array('annual_report_step4', 3),
+  'file' => 'inc/annual.report.step4.inc',
+  'access callback' => 'user_access',
+  'access arguments' => array('annual_report_per'),
+  'weight' => 4,
+  'type' => MENU_LOCAL_TASK,
+ );
+
+	$items['admin/annual-report/step5'] = array(
+   'title' => 'Step 5',
+//'description' => 'Menu system example using a render array.',
+//'title' => 'STEP2',
+   'page callback' => 'drupal_get_form', //'page callback' => 'fun4_page',
+   'page arguments' => array('annual_report_step5',),
+  'file' => 'inc/annual.report.step5.inc',
+  'access callback' => 'user_access',
+  'access arguments' => array('annual_report_per'),
+  'weight' => 5,
+  'type' => MENU_LOCAL_TASK,
+ );	
+
+
+   
+	$items['admin/annual-report/step6'] = array(
+   'title' => 'Step 6',
+//'description' => 'Menu system example using a render array.',
+//'title' => 'STEP2',
+   'page callback' => 'drupal_get_form', //'page callback' => 'fun4_page',
+   'page arguments' => array('annual_report_step6',),
+  'file' => 'inc/annual.report.step6.inc',
+  'access callback' => 'user_access',
+  'access arguments' => array('annual_report_per'),
+  'weight' => 6,
+  'type' => MENU_LOCAL_TASK,
+ );	
+
+  	$items['admin/annual-report/step7'] = array(
+   'title' => 'Step 7',
+//'description' => 'Menu system example using a render array.',
+//'title' => 'STEP2',
+   'page callback' => 'drupal_get_form', //'page callback' => 'fun4_page',
+   'page arguments' => array('annual_report_step7',),
+  'file' => 'inc/annual.report.step7.inc',
+  'access callback' => 'user_access',
+  'access arguments' => array('annual_report_per'),
+  'weight' => 7,
+  'type' => MENU_LOCAL_TASK,
+ );	
+
+ 	$items['admin/annual-report/step8'] = array(
+   'title' => 'Step 8',
+//'description' => 'Menu system example using a render array.',
+//'title' => 'STEP2',
+   'page callback' => 'drupal_get_form', //'page callback' => 'fun4_page',
+   'page arguments' => array('annual_report_step8',),
+  'file' => 'inc/annual.report.step8.inc',
+  'access callback' => 'user_access',
+  'access arguments' => array('annual_report_per'),
+  'weight' => 8,
+  'type' => MENU_LOCAL_TASK,
+ );	
+
+ 	$items['admin/annual-report/step9'] = array(
+   'title' => 'Step 9',
+//'description' => 'Menu system example using a render array.',
+//'title' => 'STEP2',
+   'page callback' => 'drupal_get_form', //'page callback' => 'fun4_page',
+   'page arguments' => array('annual_report_step9',),
+  'file' => 'inc/annual.report.step9.inc',
+  'access callback' => 'user_access',
+  'access arguments' => array('annual_report_per'),
+  'weight' => 9,
+  'type' => MENU_LOCAL_TASK,
+ );	
+
+ 	$items['admin/annual-report/step10'] = array(
+   'title' => 'Step 10',
+//'description' => 'Menu system example using a render array.',
+//'title' => 'STEP2',
+   'page callback' => 'drupal_get_form', //'page callback' => 'fun4_page',
+   'page arguments' => array('annual_report_step10',),
+  'file' => 'inc/annual.report.step10.inc',
+  'access callback' => 'user_access',
+  'access arguments' => array('annual_report_per'),
+  'weight' => 10,
+  'type' => MENU_LOCAL_TASK,
+ );	
+
+ 	$items['admin/annual-report/step11'] = array(
+   'title' => 'Step 11',
+//'description' => 'Menu system example using a render array.',
+//'title' => 'STEP2',
+   'page callback' => 'drupal_get_form', //'page callback' => 'fun4_page',
+   'page arguments' => array('annual_report_step11',),
+  'file' => 'inc/annual.report.step11.inc',
+  'access callback' => 'user_access',
+  'access arguments' => array('annual_report_per'),
+  'weight' => 11,
+  'type' => MENU_LOCAL_TASK,
+ );	
+$items['admin/annual-report/step12'] = array(
+   'title' => 'Attachments',
+//'description' => 'Menu system example using a render array.',
+//'title' => 'STEP2',
+   'page callback' => 'drupal_get_form', //'page callback' => 'fun4_page',
+   'page arguments' => array('annual_report_step12',),
+  'file' => 'inc/annual.report.step12.inc',
+  'access callback' => 'user_access',
+  'access arguments' => array('annual_report_per'),
+  'weight' => 12,
+  'type' => MENU_LOCAL_TASK,
+ ); 
+
+
+
+
+  $items['admin/annual-report-taba-partc-del/%/%'] = array(   
+          'page callback' => 'stpe1_tabc_del', 
+          'page arguments' => array(2,3),
+          'file' => 'inc/annual.report.inc',
+          'access callback' => 'user_access',
+          'access arguments' => array('annual_report_per'),
+            'type' => MENU_CALLBACK,
+          );
+
+  $items['admin/annual-report-tab3-del/%/%'] = array(   
+          'page callback' => 'step3_del', 
+          'page arguments' => array(2,3), 
+          'file' => 'inc/annual.report.step3.inc',
+          'access callback' => 'user_access',
+          'access arguments' => array('annual_report_per'),
+            'type' => MENU_CALLBACK,
+          ); 
+    $items['admin/annual-report-tab4-del/%/%'] = array(   
+          'page callback' => 'step4_del', 
+          'page arguments' => array(2,3), 
+          'file' => 'inc/annual.report.step4.inc',
+          'access callback' => 'user_access',
+          'access arguments' => array('annual_report_per'),
+            'type' => MENU_CALLBACK,
+          ); 
+
+ return $items;
+ }
+ 

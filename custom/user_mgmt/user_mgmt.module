@@ -1,0 +1,690 @@
+<?php
+function user_mgmt_permission() {
+  return array(
+    'create_user_per' => array(
+      'title' => t('Create User Permission'),
+    ),
+	'change_pass_per' => array(
+      'title' => t('Change Password Permission'),
+    ),
+  );
+}
+
+function user_mgmt_menu() {
+	$items=array();
+	
+	$items['add-user']=array(
+		'title'=>'Add user',
+		'page callback'=>'drupal_get_form',
+		'page arguments'=>array('user_mgmt_form'),
+		'access arguments' => array('create_user_per'),
+		//'access callback'=>TRUE
+	);
+	$items['edit-user/%']=array(
+		'title'=>'Add user',
+		'page callback'=>'drupal_get_form',
+		'page arguments'=>array('user_mgmt_edit_form',1),
+		'access arguments' => array('create_user_per'),
+		//'access callback'=>TRUE
+	);
+													
+	$items['user-list']=array(
+		'title'=>'List user',
+		'page callback'=>'drupal_get_form',
+		'page arguments'=>array('user_mgmt_list'),
+		'access arguments' => array('create_user_per'),
+		//'access callback'=>TRUE
+	);	
+	
+	$items['delete-user/%'] = array(
+	    'title' => 'Delete User',
+	    'page callback' => 'drupal_get_form',
+	    'page arguments' => array('user_mgmt_del',1),
+	    'access arguments' => array('create_user_per'),
+  	);
+	
+	$items['change-password'] = array(
+      'title' => t('Change password'),
+      //'description' => t('You can change your password here.'),
+	  'page callback'=>'drupal_get_form',
+	  'page arguments'=>array('passchng_render_user_pass_change_form'),
+      //'page callback' => 'passchng_render_user_pass_change_form',
+      'access arguments' => array('change_pass_per'),
+    );
+
+			
+	return $items;
+}
+
+function user_mgmt_list($form, &$form_state){
+	
+	$form['form_begin'] = array(
+    	'#type' => 'markup',
+    	'#markup' => '<div class="row">',
+		'#prefix' => '<div class="widget-box"><div class="widget-header"><h4 class="widget-title">User List</h4></div><div class="widget-main">',
+	 );
+	$form['user_list_details'] = array(
+	  '#type' => 'markup',
+	  '#markup' => get_user_list(),
+	  '#prefix' => '<div class="col-md-12">',
+	  '#suffix' => '</div>'
+    );		
+	
+	$form['form_end'] = array(
+         '#type' => 'markup',
+         '#markup' => '</div>',
+		 '#suffix' => '</div></div>'
+    );
+	
+	return $form;
+}
+
+
+
+function get_user_list(){
+  //drupal_add_css(drupal_get_path('module', 'project') . '/def.css');		
+  $output = '';
+  $header = array(
+				
+				array('data'=> 'User Name'),
+				array('data'=> 'Role'),
+				array('data'=> 'Zone'),
+				array('data'=> 'Status'),
+				array('data'=> 'Last Access'),
+				array('data'=> 'Created On'),
+				array('data'=> 'Action')
+				//array('data'=> 'Status'),
+			);
+  $rows = array();	
+  
+  $roles = array('administrator','cmsmanager','applicant');
+  
+  $query = db_select('users', 'u');
+  $query->leftJoin('users_roles', 'ur', 'u.uid = ur.uid');  
+  $query->leftJoin('role', 'r', 'ur.rid = r.rid'); 
+  $query->leftJoin('fa_employee_details', 'ud', 'u.uid = ud.uid');
+   
+  //$query->leftJoin('project_mst', 'pm', 'pum.pid = pm.pid'); 
+  /*$query->fields('pm', array('project_name')); */  
+  
+  $query->fields('ur', array('uid')); 
+  $query->fields('u', array('uid','name','access','created','status'));
+  $query->addField('r', 'name', 'rolename');
+  $query->condition('r.name', $roles, 'NOT IN');
+  $query->orderBy("r.name", "ASC");
+  $result = $query->execute();
+  $rsData = $result->fetchAll();
+  
+  
+  $i = 0;
+  $myNewArray = array();
+  for($i=0; $i<sizeof($rsData);){
+	  if(!in_array($rsData[$i]->uid, $myNewArray)){
+		  $myNewArray[$rsData[$i]->uid]['name'] = $rsData[$i]->name;
+		  $myNewArray[$rsData[$i]->uid]['access'] = $rsData[$i]->access;
+		  $myNewArray[$rsData[$i]->uid]['created'] = $rsData[$i]->created;
+		  $myNewArray[$rsData[$i]->uid]['status'] = $rsData[$i]->status;
+		  $myNewArray[$rsData[$i]->uid]['rolename'][] = $rsData[$i]->rolename;
+	  }
+	 $i++; 
+  }
+  //print_r($myNewArray);
+  //exit;
+ 	
+ foreach($myNewArray as $record=>$val) {
+	
+	 
+	 $query_p = db_select('fa_zone', 'fz');
+	 $query_p->leftJoin('fa_zone_user_map', 'zum', 'zum.zone_id = fz.zone_id'); 
+	 $query_p->fields('fz', array('zone_name'));
+	 $query_p->condition('zum.uid', $record, '=');
+	 //$query_p->condition('pum.status', '1', '=');
+	 $result_p = $query_p->execute();
+  	 $resultZoneData = $result_p->fetchAll();
+	 
+	 //print_r($resultZoneData);
+	 
+	 if(!empty($resultZoneData)){
+		 $zone_name = '<ul style="text-align:left">';
+		 foreach($resultZoneData as $p){
+			$zone_name .= '<li>'.$p->zone_name.'</li>';
+		 }
+		 $zone_name .='</ul>';
+	 }else{
+		 $zone_name = 'N/A';
+	 }
+	 
+	 
+	 if($val['status'] == 1){
+		 $status = 'Active';
+	 }else{
+		 $status = 'Blocked';
+	 }
+	 
+	 
+	 $user_role = '<ul style="text-align:left">';
+	 foreach($val['rolename'] as $rl){
+		  $user_role .= '<li>'.$rl.'</li>';
+	 }
+	 $user_role .='</ul>';
+	 
+	 $viewLink = l('<div class="hidden-sm hidden-xs action-buttons"><i class="ace-icon fa fa-pencil bigger-130"></i>','edit-user/'.$record,array('html' => TRUE,'attributes'=>array('title' => 'Edit','class'=>'green'))); 
+	 $delLink = l('<i class="ace-icon fa fa-trash-o bigger-130"></i></div>', 'delete-user/'.$record, array('html' => TRUE,'attributes'=>array('title' => 'Delete', 'class'=>'red')));
+	 
+	  /*if(strtotime(format_date($record['access']))==""){
+		$access = 'Never' ; 
+	  }else{
+		$access = format_date($record['access'], 'custom', 'd-m-Y H:i:s'); 
+	  }*/
+	  $rows[] = array(
+					array('data' => $val['name']),
+					array('data' => $user_role),
+					array('data' => $zone_name),
+					array('data' => $status),
+					array('data' => format_date($val['access'], 'custom', 'd-m-Y H:i:s')),
+					array('data' => format_date($val['created'], 'custom', 'd-m-Y H:i:s')),
+					array('data' => $viewLink.' '.$delLink)
+		);
+  }
+  
+  $output = theme_table(
+    array(
+      'header' => $header,
+      'rows' => $rows,
+      'attributes' => array('class' => array('table', 'pretty', 'table-bordered table-hover')),
+      'sticky' => true,
+      'caption' => '',
+      'colgroups' => array(),
+      'empty' => t("No data found!") // The message to be displayed if table is empty
+    )
+  ).theme('pager');
+
+  // Returning the output
+  return '<div class="formdvider viewlist">'.$output.'</div>';		
+
+}
+
+function user_mgmt_form($form, &$form_state) {
+	
+	$zone_list=array();
+	$query = db_select('fa_zone', 'fz');
+  	$query ->fields('fz', array( 'zone_id', 'zone_name', 'zone_type'));
+	$query->orderBy('fz.zone_name','ASC');
+  	$result = $query->execute();
+	$resultData = $result->fetchAll();
+	if(!empty($resultData)){
+		foreach($resultData as $val) {
+			$zone_list[$val->zone_id]=trim($val->zone_name);
+		}
+	}
+	
+	
+	$form['#attributes']['class'][] = 'form-vertical';
+	
+	$form['form_begin'] = array(
+    	'#type' => 'markup',
+    	'#markup' => '<div class="row">',
+		'#prefix' => '<div class="widget-box"><div class="widget-header"><h4 class="widget-title">Add New User</h4></div><div class="widget-main">',
+		//'#suffix' => '</h4>'
+	 );
+	 
+	$form['zone_id'] = array(
+		  '#title' => t('Zone Name'),	
+		  '#type' => 'select',
+		  '#multiple' => TRUE,
+		  '#required' => TRUE,
+		  '#options' => $zone_list,
+		  //'#default_value' => '',
+		  '#attributes' => array('class'=>array('form-control')),
+		  '#prefix' => '<div class="col-md-12">',
+		  '#suffix' => '</div>'
+    );	 
+	
+	$form['username'] = array(
+		  '#type'=>'textfield',
+		  '#title' => t('Username'),
+		  '#default_value'=>array(0=>""),
+		  '#required' => TRUE,
+		  '#attributes' => array('class'=>array('form-control'),'placeholder'=>'Enter Username'),
+		  '#prefix' => '<div class="col-md-12">',
+		  '#suffix' => '</div>'
+		);
+	$form['password'] = array(
+		  '#type'=>'password_confirm',
+		 // '#title' => t('Password'),
+		  '#default_value'=>array(0=>""),
+		  '#required' => TRUE,
+		  '#attributes' => array('class'=>array('form-control'),'placeholder'=>'Enter Password'),
+		  '#prefix' => '<div class="col-md-12">',
+		  '#suffix' => '</div>'
+		);	
+	
+	$form['email'] = array(
+		  '#type'=>'textfield',
+		  '#title' => t('Email'),
+		  '#default_value'=>array(0=>""),
+		  '#required' => TRUE,
+		  '#attributes' => array('class'=>array('form-control'),'placeholder'=>'Enter Email'),
+		  '#prefix' => '<div class="col-md-12">',
+		  '#suffix' => '</div>'
+		);	
+	
+	$role_list = array();	
+	$query = db_select('role', 'r');
+  	$query ->fields('r', array( 'rid', 'name'));
+	$query->orderBy('r.rid','ASC');
+  	$result = $query->execute();
+	$resultRole = $result->fetchAll();
+	
+	if(!empty($resultRole)){
+		foreach($resultRole as $val) {
+			if($val->rid != '1' && $val->rid != '2' && $val->rid != '3' && $val->rid != '4' && $val->rid != '7')
+			$role_list[$val->rid]=trim($val->name);
+		}
+	}	
+
+	
+	$form['roles'] = array(
+		  '#type'=>'select',
+		  '#title' => t('User Roles'),
+		  //'#multiple' => TRUE,
+		  '#options' => $role_list,
+		  //'#default_value'=>array(0=>""),
+		  '#required' => TRUE,
+		  '#attributes' => array('class'=>array('form-control'),'placeholder'=>'Please Select'),
+		  '#prefix' => '<div class="col-md-12">',
+		  '#suffix' => '</div>'
+		);
+		
+	$form['submit'] = array(
+		  '#type'=>'submit',
+		  '#value'=> t('Add'),
+		  '#attributes' => array('class'=>array('form-control btn btn-info')),
+		  '#prefix' => '<div class="col-md-6"><div class="input-group">',
+		  '#suffix' => '</div></div>'
+		);	
+		
+	$form['form_end'] = array(
+         '#type' => 'markup',
+         '#markup' => '</div>',
+		 '#suffix' => '</div></div>'
+    );	
+	
+	return $form;
+}
+
+function user_mgmt_edit_form($form, &$form_state, $arg='') {
+	$zone_list=array();
+	//$zone_list['0']='- select -';
+	$query = db_select('fa_zone', 'fz');
+  	$query ->fields('fz', array( 'zone_id', 'zone_name', 'zone_type'));
+	$query->orderBy('fz.zone_name','ASC');
+  	$result = $query->execute();
+	$resultData = $result->fetchAll();
+	if(!empty($resultData)){
+		foreach($resultData as $val) {
+			$zone_list[$val->zone_id]=trim($val->zone_name);
+		}
+	}
+	
+	$list_data = array();
+	$query = db_select('users', 'u');
+  	$query->leftJoin('fa_zone_user_map', 'zum', 'u.uid = zum.uid');  
+	$query->fields('zum', array('id','uid','zone_id'));
+	$query->condition('u.uid', $arg, '=');
+	//$query->condition('pum.status', '1', '=');
+	$result = $query->execute();
+	$userData = $result->fetchAll();
+	if(!empty($userData)){
+		foreach($userData as $val) {
+			$list_data[]=trim($val->zone_id);
+		}
+	}
+	
+	//print_r($list_data);
+	//$roleVal = array();
+	$existingUser = user_load($arg);
+	$form['#attributes']['class'][] = 'form-vertical';
+	
+	$form['form_begin'] = array(
+    	'#type' => 'markup',
+    	'#markup' => '<div class="row">',
+		'#prefix' => '<div class="widget-box"><div class="widget-header"><h4 class="widget-title">Edit User</h4></div><div class="widget-main">',
+		//'#suffix' => '</h4>'
+	 );
+	 
+	$form['zone_id'] = array(
+		  '#title' => t('Zone Name'),	
+		  '#type' => 'select',
+		  '#multiple' => TRUE,
+		  '#required' => TRUE,
+		  '#options' => $zone_list,
+		  '#default_value' => !empty($list_data) ? $list_data : '',
+		  '#attributes' => array('class'=>array('form-control')),
+		  '#prefix' => '<div class="col-md-12">',
+		  '#suffix' => '</div>'
+    ); 
+	
+	$form['user_id'] = array(
+		  '#type'=>'textfield',
+		  '#title' => t('UserID'),
+		  '#default_value'=>$arg,
+		  '#required' => TRUE,
+		  '#attributes' => array('class'=>array('form-control'),'placeholder'=>'User ID','readonly'=>'readonly'),
+		  '#prefix' => '<div class="col-md-12">',
+		  '#suffix' => '</div>'
+		);
+	$form['email'] = array(
+		  '#type'=>'textfield',
+		  '#title' => t('Email'),
+		  '#default_value'=>$existingUser->mail,
+		  '#required' => TRUE,
+		  '#attributes' => array('class'=>array('form-control'),'placeholder'=>'Email'),
+		  '#prefix' => '<div class="col-md-12">',
+		  '#suffix' => '</div>'
+		);	
+	$form['username'] = array(
+		  '#type'=>'textfield',
+		  '#title' => t('Username'),
+		  '#default_value'=>$existingUser->name,
+		  '#required' => TRUE,
+		  '#attributes' => array('class'=>array('form-control'),'placeholder'=>'User Name'),
+		  '#prefix' => '<div class="col-md-12">',
+		  '#suffix' => '</div>'
+		);
+		
+	$role_list = array();	
+	$query = db_select('role', 'r');
+  	$query ->fields('r', array( 'rid', 'name'));
+	$query->orderBy('r.rid','ASC');
+  	$result = $query->execute();
+	$resultRole = $result->fetchAll();
+	
+	if(!empty($resultRole)){
+		foreach($resultRole as $val) {
+			if($val->rid != '1' && $val->rid != '2' && $val->rid != '3' && $val->rid != '4' && $val->rid != '7')
+			$role_list[$val->rid]=trim($val->name);
+		}
+	}
+	
+	
+	$get_role = array();
+	$query = db_select('users_roles', 'ur');
+	$query->fields('ur', array('rid'));
+	$query->condition('ur.uid', $arg, '=');
+	$result = $query->execute();
+	$roleData = $result->fetchAll();
+	if(!empty($roleData)){
+		foreach($roleData as $val) {
+			$get_role[]=trim($val->rid);
+		}
+	}	
+	
+	$form['roles'] = array(
+		  '#type'=>'select',
+		  //'#multiple'=>TRUE,
+		  '#title' => t('User Roles'),
+		  '#options' => $role_list,
+		  '#default_value'=>$get_role,
+		  '#required' => TRUE,
+		  '#attributes' => array('class'=>array('form-control'),'placeholder'=>'Please Select'),
+		  '#prefix' => '<div class="col-md-12">',
+		  '#suffix' => '</div>'
+		);	
+		
+	$form['submit'] = array(
+		  '#type'=>'submit',
+		  '#value'=> t('Update'),
+		  '#attributes' => array('class'=>array('form-control btn btn-info')),
+		  '#prefix' => '<div class="col-md-6"><div class="input-group">',
+		  '#suffix' => '</div></div>'
+		);	
+		
+	$form['form_end'] = array(
+         '#type' => 'markup',
+         '#markup' => '</div>',
+		 '#suffix' => '</div></div>'
+    );	
+	
+	return $form;
+}
+
+function user_mgmt_edit_form_submit($form, &$form_state) {
+	//print_r($form_state['values']['roles']);
+	//exit;
+	$existingUserData = array(
+			'name' => trim($form_state['values']['username']),
+			'mail' => trim($form_state['values']['email']),
+			/*'status' => 1,*/
+			'roles' => array($form_state['values']['roles']=>$form_state['values']['roles']),
+		);
+	@user_save((object) array('uid' => $form_state['values']['user_id']), (array) $existingUserData);
+	
+	
+	$query = db_delete('fa_zone_user_map');
+	$query->condition('uid', trim($form_state['values']['user_id']));
+	$rs = $query->execute();
+	if($rs){
+		foreach($form_state['values']['zone_id'] as $val){
+			$zone_user_map = array( 
+				'uid' => $form_state['values']['user_id'],
+				'zone_id' => $val,
+				//'status' => 1
+			);
+			db_insert('fa_zone_user_map')->fields($zone_user_map)->execute();
+		}
+	}
+	
+	drupal_set_message("Your Record Updated Successfully");
+	drupal_goto('user-list');
+}
+
+
+
+function user_mgmt_form_submit($form, &$form_state) {
+	
+	
+	  $newUser = array(
+			'name' => trim($form_state['values']['username']),
+			'pass' => trim($form_state['values']['password']), 
+			'mail' => trim($form_state['values']['email']),
+			'status' => 1,
+			'init' => trim($form_state['values']['email']),
+			/*'roles' => array(
+			  DRUPAL_AUTHENTICATED_RID => $roleVal,
+			),*/
+		);
+		
+		user_save(null, $newUser);
+		$id = db_query("SELECT MAX(uid) as max_id FROM users")->fetchCol();
+		
+		/*foreach($form_state['values']['roles'] as $val){
+			$usinfo = array( 'uid' => $id['0'],
+				'rid' => $val,
+			);
+			db_insert('users_roles')->fields($usinfo)->execute();
+		}*/
+		
+		$usinfo = array( 'uid' => $id['0'],
+			'rid' => $form_state['values']['roles'],
+		);
+		db_insert('users_roles')->fields($usinfo)->execute();
+		
+		$zoneinfo = array( 'uid' => $id['0'],
+            //'pid' => $form_state['values']['project_id'],
+      	);
+		
+		$rs = db_insert('fa_employee_details')->fields($zoneinfo)->execute();
+		if($rs){
+			if(!empty($form_state['values']['zone_id'])){
+				foreach($form_state['values']['zone_id'] as $val){
+					$zone_user_map = array( 
+						'uid' => $id['0'],
+						'zone_id' => $val,
+						//'status' => 1
+					);
+					db_insert('fa_zone_user_map')->fields($zone_user_map)->execute();
+				}
+				drupal_set_message('User Has Been Successfully Registered');
+				drupal_goto('user-list');		
+			}else{
+				drupal_set_message('There is some problem. Please try after sometime');
+				drupal_goto('add-user');
+			}
+		}else{
+			drupal_set_message('There is some problem. Please try after sometime');
+			drupal_goto('add-user');
+		}
+}
+
+function user_mgmt_del($form, &$form_state, $uid='') {
+	user_delete($uid);
+	drupal_set_message('User Has Been Successfully Deleted');
+	drupal_goto('user-list');
+}
+
+function passchng_render_user_pass_change_form($form, &$form_state) {global $user;
+
+    if (!user_is_logged_in()) {
+        drupal_access_denied();
+    }
+  $status = getUserProfileStatus($user->uid);
+  if($status['one_time_pass_flag'] == '0') {
+			drupal_goto('profileupdate');
+			exit;
+  }else{			
+	  // Get the currently logged in user object.
+	  $form['#account'] 				= $GLOBALS['user'];
+	  
+	  $form['#attributes']['class'][] 	= 'form-vertical';
+		
+	  $form['form_begin'] = array(
+		'#type' 						=> 'markup',
+		'#markup' 						=> '',
+		'#prefix' 						=> '<div class="row"><div class="col-lg-8 col-md-4 col-sm-12 col-xs-12"><div class="box box-info change-pass-box"><div class="box-header"><h3 class="box-title">Change Password</h3></div><div class="box-body">',
+		);
+	
+	  // Textfield cor current password confirmation.
+	  $form['current_pass'] 			= array(
+		'#type' 						=> 'password',
+		'#title' 						=> t('Current password'),
+		'#size' 						=> 25,
+		'#required' 					=> TRUE,
+		'#attributes' 					=> array('class'=>array('form-control')),
+		'#prefix' 						=> '<div class="form-group"><div class="input-group label-block">',
+		'#suffix' 						=> '</div>'
+	  );
+	
+	  // Password confirm field.
+	  $form['account']['pass'] 			= array(
+		'#type' 						=> 'password_confirm',
+		'#size' 						=> 25,
+		//'#title' 						=> t('New'),
+		'#required' 					=> TRUE,
+		'#attributes' 					=> array('class'=>array('form-control')),
+		'#prefix' 						=> '<div class="form-group change-pass-field"><div class="input-group label-block">',
+		'#suffix' 						=> '</div></div>'
+	  );
+	
+	  $form['submit'] 					= array(
+		'#type' 						=> 'submit',
+		'#value' 						=> t('Submit'),
+		'#attributes' 					=> array('class'=>array('btn btn-dark')),
+		'#prefix' 						=> '<div class="form-group"><div class="input-group">',
+		'#suffix' 						=> '</div></div>'
+	  );
+	  
+	  $form['form_end'] 				= array(
+		'#type' 						=> 'markup',
+		'#markup' 						=> '</div>',
+		'#suffix' 						=> '</div></div></div></div>'
+		);	
+	
+	  return $form;
+  }}
+
+/**
+ * Validate handler for change_password_form().
+ */
+function passchng_render_user_pass_change_form_validate(&$form, &$form_state) {  
+  // Make sure the password functions are present.
+  require_once DRUPAL_ROOT . '/' . variable_get('password_inc', 'includes/password.inc');
+
+  // Make sure the provided current password is valid for this account.
+  if (!user_check_password($form_state['values']['current_pass'], $form['#account'])) {
+    form_set_error('current_pass', t('The current password you provided is incorrect.'));
+  }
+  
+  if(trim($form_state['values']['current_pass'])==trim($form_state['values']['pass'])){
+	  form_set_error('pass', t('The new password you provided must not be same as previous.'));
+  }
+  
+}
+
+ /**
+ * Submit handler for change_password_form().
+ */
+function passchng_render_user_pass_change_form_submit(&$form, &$form_state) {
+  // Set up the edit array to pass to user_save()
+  $edit = array('pass' => $form_state['values']['pass']);
+
+  // Save the account with the new password.
+  user_save($form['#account'], $edit);
+
+  // Inform the user.
+  drupal_set_message(t('Your password has been changed.'));
+}
+
+function getUserProfileStatus($uid=''){
+	if(($uid!=0) || ($uid!=1)) {
+		$query = db_select('users', 'u');
+		$query->leftJoin('fa_employee_details', 'ud', 'u.uid = ud.uid');  
+		$query->fields('ud', array('one_time_pass_flag'));
+		$query->condition('u.uid', $uid, '=');
+		$result = $query->execute();
+		$userData = $result->fetchAssoc();
+		return $userData;
+	}
+}
+
+/*function passchng_render_user_pass_change_form() {
+
+    global $user;
+
+    if (!user_is_logged_in()) {
+        drupal_access_denied();
+    }
+	
+
+    module_load_include('inc', 'user', 'user.pages');
+    $form = drupal_get_form('user_profile_form', $user);
+
+    $request_new = l(t('Request new password'), 'user/password', array('attributes' => array('title' => t('Request new password via e-mail.'))));
+    //$current_pass_description = t('Enter your current password to change the %pass. !request_new.', array('%pass' => t('Password'), '!request_new' => $request_new));
+	$current_pass_description = t('Enter your current password to change the password.');
+    $form['account']['current_pass']['#description'] = $current_pass_description;    
+	#krumo($form);
+	
+	
+	
+	$form['#attributes']['class'][] = 'form-vertical';
+	$form['account']['current_pass']['#attributes'] = array('class'=>array('form-control'));
+    unset(
+      $form['account']['name'],
+      $form['account']['mail'],
+      $form['account']['status'],
+      $form['account']['roles'],
+      $form['locale'],
+      $form['l10n_client'],
+      $form['picture'],
+      $form['overlay_control'],
+      $form['contact'],
+      $form['timezone'],
+      $form['ckeditor'],
+      $form['metatags'],
+      $form['redirect'],
+	  $form['user_designation']
+      );
+
+    return $form;
+}*/

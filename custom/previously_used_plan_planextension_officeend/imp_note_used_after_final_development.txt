@@ -1,0 +1,9 @@
+This instructions has to be follow after final development on SDC server:
+
+
+1. link which is in the previous_caf_links.php has to be delete from caf_form.module file after final development.
+
+
+2. file named inspector_application_verify.inc which is in the C:\xampp\htdocs\wbfactories\sites\all\modules\custom\caf_form\includes has to be delete from the folder after final development.
+
+

@@ -1,0 +1,97 @@
+<?php
+
+function all_notesheet($application_id,$referance_no,$ajax) {	
+	 if ($ajax) {
+     // Required includes for ctools to work:
+    ctools_include('ajax');
+    ctools_include('modal');
+	ctools_modal_add_js();
+     $form_state = array(
+       'ajax' => TRUE,
+       'title' => t(''),
+	   'app_id' => encryption_decryption_fun('decrypt',$application_id),
+	   'ref_no' => encryption_decryption_fun('decrypt',$referance_no),
+     );
+	 
+	 $output = ctools_modal_form_wrapper('view_notesheet', $form_state);
+	  
+    if (!empty($form_state['ajax_commands'])) {
+      $output = $form_state['ajax_commands'];
+    }
+    
+	print ajax_render($output);
+    drupal_exit();
+     
+   } else {
+     return drupal_get_form('view_notesheet');
+   }
+}
+   
+function view_notesheet($form, &$form_state) {
+global $base_root, $base_path, $user;
+
+	$query_note		= 	db_select('fa_cafa_remarks', 'rm');
+	$query_note     ->  InnerJoin('role', 'r', 'rm.remark_by_roleid=r.rid');
+	$query_note     ->  InnerJoin('users', 'u', 'rm.remark_by_uid=u.uid');
+	$query_note		->	fields('rm',array('id','sending_time','remarks','remark_by_name','remark_by_roleid','remark_by_uid','status'));
+	$query_note		->	fields('r',array('name'));
+	$query_note		->	fields('u',array('name'));
+	$query_note		-> 	condition('rm.app_id', $form_state['app_id']);
+	$query_note		-> 	condition('rm.app_reference_no', $form_state['ref_no']);
+	$query_note		-> 	condition('rm.remark_type', 'n');
+	$query_note		-> 	condition('rm.remarks',' ','!=');
+	$query_note		->	orderBy('rm.id','ASC');
+	$result_note	= $query_note->execute()->fetchAll();
+
+	
+	$output = '<table class="table pretty table-bordered table-hover">
+	  <tr align="center">
+		<th>Sl No.</th>
+		<th>Name</th>
+		<th>Notesheet</th>
+		<th>Date</th>
+	  </tr>';
+	 if(!empty($result_note))
+	 {
+		for ($i = 0 ; $i < count($result_note); $i++){
+			$j = $i+1;
+			
+		$date = date_create($result_note[$i]->sending_time); //die;
+		$send_date = date_format($date,'F j, Y');
+		if(!empty($result_note[$i]->remark_by_roleid)){
+			
+			$design = get_role_name($result_note[$i]->remark_by_roleid);
+			if($design == 'factoryinspector'){$designation='Assistance Director';}
+			elseif($design == 'deputychief'){$designation='Deputy Director';}
+			elseif($design == 'jointchief'){$designation='Joint Director';}
+			elseif($design == 'chief'){$designation='Director';}
+			$show = ' ( Designation:- '.$designation.')';
+			}else{$show = '';}
+		$output .= '<tr align="left">
+					<td>'.$j.'</td>
+					<td>'.$result_note[$i]->remark_by_name.'&nbsp;'.$show.'</td>';
+		if($result_note[$i]->status== 'DC'){	
+		$dt=$base_root.$base_path.'regsection/notesheet-view-register-details/'.encryption_decryption_fun('encrypt',$result_note[$i]->id).'/nojs'; 	
+		$link_dt=ctools_modal_text_button(t('Details'), $dt ,t('Details'),'label label-info') ;
+		//.$base_root.$base_path.'regsection/notesheet-view-register-details/'.encryption_decryption_fun('encrypt',$result_note[$i]->id).'/nojs
+		$output .= '<td><a href="'.$dt.'" target="_BLANK">'.$link_dt.'</a></td>';
+		}else{
+		$output .= '<td>'.$result_note[$i]->remarks.'</td>';	
+		}
+		$output .= '<td>'.$send_date.'</td>
+		  </tr>';
+		}
+	}
+	 else{ 
+	 	$output .= '<tr align="center"><td colspan="5">No Data Found</td></tr>';
+	  }
+	  
+	$output .= '</table>';
+	
+	$form['notesheet_view']['show_act_div'] = array(
+	   '#prefix' => '<div>'.$output,
+        '#suffix' => '</div>',
+     );
+	 
+	return $form;	
+}

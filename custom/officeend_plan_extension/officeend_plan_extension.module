@@ -1,0 +1,69 @@
+<?php
+function officeend_plan_extension_menu() {
+	//-------PLAN--------------------
+	//--------AD START-----------------------------
+	
+	//this section is by Rima
+	$items['inspector/factory-information-old'] = array(
+		'title'				=>	'Online Application for Approval of Plan',
+		'type' 				=> 	 MENU_DEFAULT_LOCAL_TASK,
+		'weight' 			=> 	-10,
+	 );
+	$items['inspector/plan/factory-information-old/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('plan_factory_information_old',3,4,5,6),
+		'file' 	 			=> 	'includes/plan_factory_information_old.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	//end of the section
+	
+	$items['inspector/factory-information'] = array(
+		'title'				=>	'Online Application for Approval of Plan',
+		'type' 				=> 	 MENU_DEFAULT_LOCAL_TASK,
+		'weight' 			=> 	-10,
+	 );
+	$items['inspector/plan/factory-information/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('plan_factory_information',3,4,5,6),
+		'file' 	 			=> 	'includes/plan_factory_information.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	/*$items['inspector/plan/occupier-information/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('plan_occupier_information',3,4,5,6),
+		'file' 	 			=> 	'includes/plan_occupier_information.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	$items['inspector/plan/owner-information/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('plan_owner_information',3,4,5,6),
+		'file' 	 			=> 	'includes/plan_owner_information.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	$items['inspector/plan/documents/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('plan_documents',3,4,5,6),
+		'file' 	 			=> 	'includes/plan_documents.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	$items['inspector/plan/obsevation-preview/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> 	array('plan_obsevation_preview',3,4,5,6),
+		'file' 	 			=> 	'includes/plan_obsevation_preview.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);*/
+
+	//--------AD END-----------------------------
+	return $items;	
+
+}
+
+
+

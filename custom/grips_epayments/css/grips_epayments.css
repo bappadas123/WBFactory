@@ -1,0 +1,31 @@
+.applicant_dashboard{width:100%;}
+.applicant_dashboard label{ width:187px; padding-left:10px;}
+.applicant_dashboard input[type="submit"]{border-bottom: medium none;margin: 14px 0 25px 202px;padding: 8px 17px 27px;text-transform: uppercase;}
+.messages{width:890px !important;}
+
+
+.loginLink {
+	background-color:#008ED5;
+	-moz-border-radius:28px;
+	-webkit-border-radius:28px;
+	border-radius:5px;
+	border:1px solid #008ED5;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:16px;
+	font-style:italic;
+	padding:9px 22px;
+	text-decoration:none;
+	text-shadow:-3px 9px 12px #006DFE;
+	float:right;
+	margin:0px 14px 0px 0px;
+}
+.loginLink:hover {
+	background-color:#006DFE;
+	text-decoration:none;
+	color:#ffffff;	
+}
+
+/*<?php echo l('CREATE NEW ACCOUNT', 'applicant-registration', array('attributes' => array('class' => 'createNewAccount')));?>*/

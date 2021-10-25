@@ -1,0 +1,710 @@
+<?php
+function amendment_menu() {
+	/////Amendment/////
+
+	$items['applicant/change-list-amendment/%/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>	array('change_amendment_list',2,3,4,5,6),
+		'file' 				=>	'includes/change_amendment_list.inc',
+		'access arguments' 	=>	array('permission_for_applicant'),
+	);
+	
+	$items['applicant/change-list-amendment-dashboard/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>	array('change_amendment_list_dashboard',2,3,4,5),
+		'file' 				=>	'includes/change_amendment_list_dashboard.inc',
+		'access arguments' 	=>	array('permission_for_applicant'),
+	);
+
+	$items['applicant/check-amendment-year/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>	array('check_amendment_year_form',2,3,4,5),
+		'file' 				=>	'includes/check_amendment_year.inc',
+		'access arguments' 	=>	array('permission_for_applicant'),
+	);
+		//////////CHANGE PANEL////////
+	$items['applicant/amendment/amendment-get-data/%/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>	array('amendment_first_data',3,4,5,6,7),
+		'file' 				=>	'includes/amendment_first_data.inc',
+		'access arguments' 	=>	array('permission_for_applicant'),
+	);
+
+	//////////CHANGE PANEL////////
+	$items['applicant/amendment/amendment-information/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>	array('amendment_information_form',3,4,5,6,7),
+		'file' 				=>	'includes/amendment_information.inc',
+		'access arguments' 	=>	array('permission_for_applicant'),
+	);
+	$items['applicant/transfer-delete-year/%/%/%/%/%'] = array(
+		'page callback'		=>	'delete_transfer_data',
+		'page arguments'	=>	array(2,3,4,5,6),
+		'file' 				=> 	'includes/amendment_information.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	$items['applicant/amendment/amendment-basic-information/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>	array('amendment_basic_information',3,4,5,6,7),
+		'file' 				=>	'includes/amendment_basic_information.inc',
+		'access arguments' 	=>	array('permission_for_applicant'),
+	);
+	$items['applicant/amendment/occupier-amendment-notice/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>	array('occupier_amendment_notice',3,4,5,6,7),
+		'file' 				=>	'includes/occupier_amendment_notice.inc',
+		'access arguments' 	=>	array('permission_for_applicant'),
+	);
+	$items['applicant/amendment/manager-amendment-notice/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>	array('manager_amendment_notice',3,4,5,6,7),
+		'file' 				=>	'includes/manager_amendment_notice.inc',
+		'access arguments' 	=>	array('permission_for_applicant'),
+	);
+	$items['applicant/del-manager-amendment/%/%/%/%/%'] = array(
+		'page callback'		=>	'delete_manager_data',
+		'page arguments'	=>	array(2,3,4,5,6),
+		'file' 				=> 	'includes/manager_amendment_notice.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	  );
+	$items['applicant/amendment/employee-amendment-notice/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>	array('employee_amendment_notice',3,4,5,6,7),
+		'file' 				=>	'includes/employee_amendment_notice.inc',
+		'access arguments' 	=>	array('permission_for_applicant'),
+	);
+	$items['applicant/del-dir-amendment/%/%/%/%/%'] = array(
+		'page callback'		=>	'delete_amendment_data',
+		'page arguments'	=>	array(2,3,4,5,6),
+		'file' 				=> 	'includes/employee_amendment_notice.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	  );
+
+	$items['applicant/amendment/amendment-document-information/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>	array('amendment_of_document',3,4,5,6,7),
+		'file' 				=>	'includes/amendment_of_document.inc',
+		'access arguments' 	=>	array('permission_for_applicant'),
+	);
+	$items['applicant/del-doc-amendment/%/%/%/%/%'] = array(
+		'page callback'		=>	'delete_uploaded_document_data',
+		'page arguments'	=>	array(2,3,4,5,6),
+		'file' 				=> 	'includes/amendment_of_document.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	$items['applicant/amendment/amendment-preview-information/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>	array('amendment_preview',3,4,5,6,7),
+		'file' 				=>	'includes/amendment_preview.inc',
+		'access arguments' 	=>	array('permission_for_applicant'),
+	);
+
+	
+	
+	
+	$items['download-pdf-application/%/%/%/%'] = array(
+		'page callback'		=>	'pdf_form_amendment',
+		'page arguments'	=>	array(1,2,3,4),
+		'file' 				=> 	'includes/pdf_form_amendment.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	  );
+	$items['amendment/fees-amendment/%/%/%/%'] = array(
+		'title'	 			=>	'Online Application for amendment of License of Factories',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('amenment_of_fees',2,3,4,5),
+		'file' 	 			=> 	'includes/amenment_of_fees.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	
+	$items['amendment/application-display-amendment/%/%/%/%'] = array(
+		'title'	 			=>	'Application view',
+		'page callback'	 	=>	'application_display_amendment',
+		'page arguments'	=>	array(2,3,4,5),
+		'file' 	 			=> 	'includes/application_display_amendment.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	);
+	
+	$items['applicant/upload-amendment-from/%/%/%/%'] = array(
+		'title'	 			=>	'Application view',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>	array('application_amendment_form',2,3,4,5),
+		'file' 	 			=> 	'includes/application_amendment_form.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	);
+	  $items['amendment-acknowledgement-certificate/%/%/%/%'] = array(
+		'page callback'		=>	'ack_amendment',
+		'page arguments'	=>	array(1,2,3,4),
+		'file' 				=> 	'includes/ack_amendment.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	  );
+	  
+	  ////////////////Payment Details view/////////////////
+	 $items['amendment/view-payment-details/%/%/%/%'] = array(
+		'title'	 			=>	'View Payment Details',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('view_amendment_payment_details',2,3,4,5),
+		'file' 	 			=> 	'includes/view_amendment_payment_details.inc',
+		'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	);
+	 ////////////////////////////////////////////////////////
+
+
+
+	$items['applicant/amendment-form/%/%/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('caf_form_amendment_parta',3,4,5,6,7),
+		'file' 	 			=> 'includes/caf_form_amendment_parta.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+ 	);
+	/*$items['applicant/amendment-form/renewal-applyingyear-service/%/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('caf_form_validyear_renewal',3,4,5,6,7,8),
+		'file' 	 			=> 'includes/caf_form_validyear_renewal.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+ 	);*/
+	$items['applicant/amendment-form/details-amendment-worker/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('caf_form_amendment_worker',3,4,5,6),
+		'file' 	 			=> 'includes/caf_form_amendment_worker.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+ 	);
+
+	$items['applicant/amendment-form/details-occupier-amendment/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('details_occupier_data_amendment',3,4,5,6),
+		'file' 	 			=> 'includes/details_occupier_data_amendment.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+ 	);
+	$items['applicant/amendment-form/details-director-amendment/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('details_employee_data_amendment',3,4,5,6),
+		'file' 	 			=> 'includes/details_employee_data_amendment.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+ 	);
+	$items['applicant/amendment-form/document-list-amendment/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('details_document_list_amendment',3,4,5,6),
+		'file' 	 			=> 'includes/details_document_list_amendment.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+ 	);		
+	$items['applicant/amendment-form/application-preview-amendment/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('application_preview_data_renewal',3,4,5,6),
+		'file' 	 			=> 'includes/application_preview_data_renewal.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+ 	);	
+	
+
+
+
+
+	 
+
+
+
+
+
+	
+	/////////////////////////////////Admin panel////////////////////
+	
+	$items['amendment-list'] = array(
+		'title'	 			=>	'List of Applications of Amendment',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('amendment_list'),
+		'file' 	 			=> 	'includes/admin_amendment_list.inc',
+		'access arguments' 	=> 	array('permission_for_inspector'),
+	);
+	
+	$items['amendment-section/view-amendment-inspector/%/%/%/%'] = array(
+		'title'	 			=>	'Details of Amendment Application',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('admin_amendment_inspector',2,3,4,5),
+		'file' 	 			=> 	'includes/admin_amendment_inspector.inc',
+		'access arguments' 	=> 	array('permission_for_inspector'),
+	);
+	
+	$items['amendment-list-deputy'] = array(
+		'title'	 			=>	'List of Applications of Amendment',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('amendment_list_deputy'),
+		'file' 	 			=> 	'includes/admin_amendment_list_deputy.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief'),
+	);
+	$items['amendment-section/view-amendment-deputy/%/%/%/%'] = array(
+		'title'	 			=>	'Details of Amendment Application',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('admin_amendment_deputy',2,3,4,5),
+		'file' 	 			=> 	'includes/admin_amendment_deputy.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief'),
+	);
+	$items['amendment-section/amendment-licence-file/%/%/%/%'] = array(
+		'title'	 			=>	'Details of Amendment Application',
+		'page callback'	 	=>	'amendment_certificate',
+		'page arguments'	=> array(2,3,4,5),
+		'file' 	 			=> 	'includes/amendment_certificate.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief'),
+	);
+	$items['amendment-section/amendment-view-notesheet/%/%/%/%'] = array(
+		'title'	 			=>	'Details of Amendment Application',
+		'page callback'	 	=>	'amendment_notesheet_file',
+		'page arguments'	=> array(2,3,4,5),
+		'file' 	 			=> 	'includes/amendment_notesheet_file.inc',
+		'access arguments' 	=> 	array('permission_for_backed_user'),
+	);
+	
+	$items['amendment-section/ledger-amendment-file/%/%/%/%'] = array(
+		'title'	 			=>	'Details of Amendment Application',
+		'page callback'	 	=>	'amendment_ledger_file',
+		'page arguments'	=> array(2,3,4,5),
+		'file' 	 			=> 	'includes/amendment_ledger_file.inc',
+		'access arguments' 	=> 	array('permission_for_backed_user'),
+	);
+
+
+	
+	return $items;	
+
+}
+
+
+
+///////////////////////AMENDMENT FUNCTIONS////////////////////////////
+
+
+//function get_checklist_data($app_id,$factory_type,$is_chemical){
+//	$fetch_observation	= db_select('fa_checklist_observations ', 'checklist');
+//	//$fetch_condition->InnerJoin('fa_cafa_remarks', 'remarks', 'checklist.remark_table_id = remarks.id');
+//	$fetch_observation->fields('checklist', array('checklist_id','observations_id','remark_by_ad','ad_details','remark_by_dd','dd_details','remark_by_jd','jd_details','ad_extra_observation','dd_extra_observation','jd_extra_observation','remark_table_id'));
+//	$fetch_observation->condition('checklist.app_id', $app_id, '=');
+//	$fetch_observation->condition('checklist.factory_type', $factory_type, '=');
+//	$fetch_observation->condition('checklist.is_chemical', $is_chemical, '=');
+//	//$fetch_condition->fields('remarks', array('id'));
+//	$fetch_observation-> orderBy('checklist.checklist_id', 'ASC');
+//	$observation_result = $fetch_observation->execute()->fetchAll(); 
+//	return $observation_result;
+//}
+//
+//function get_observations_details($id){
+//	$observations_details	=  db_query("SELECT observations  FROM {fa_observations_mst} WHERE id = '".$id."'")->fetchObject()->observations;
+//	return $observations_details;
+//}
+
+function get_amendment_checking($application_id,$service_id,$factory_type_id,$reference_no){	
+		$query_check_applicant = db_select('fa_caf_check_point','point');
+		$query_check_applicant->fields('point', array());
+		$query_check_applicant->condition('point.app_id', $application_id, '=');
+		$query_check_applicant->condition('point.factory_type', $factory_type_id, '=');
+		$query_check_applicant->orderBy('point.id','DESC');
+		$result = $query_check_applicant->execute();
+		$data = $result->fetchAssoc();
+	return $data;
+}
+
+function removeFromString($str, $item) {
+	//echo $str.'<br/>'.$item;die;
+  	$array1 = explode(',',$item);
+	$array2 = explode(',', $str);
+	$array3 = array_diff($array2, $array1);
+	$output = implode(',', $array3);
+
+	return $output;
+}
+
+function year_list($application_id,$factory_type_id, $referance_number,$userid){
+	//echo $application_id.'------'.$factory_type_id.'---'.$referance_number.'------'.$userid;die;
+	$query_app_period 	=  db_select('fa_caf_check_point', 'check_point');
+	$query_app_period	-> fields('check_point',array('application_period'));
+	$query_app_period	-> condition('check_point.factory_type', $factory_type_id);
+	$query_app_period	-> condition('check_point.reference_no', $referance_number);
+	$query_app_period	-> condition('check_point.app_id', $application_id);
+	//$query_app_period	-> condition('check_point.service_id', $service_id);
+	$query_app_period	-> condition('check_point.created_by', $userid);
+	$result_app_period	=	$query_app_period->execute();
+	$data_app_period	=	$result_app_period->fetchObject();
+	//print_r($data_app_period);die;
+
+	$application_period_detials = array();
+	$default_select 	= array(""=>"- Select period -");
+	$ids= explode(',',$data_app_period->application_period);
+	foreach($ids as $id){
+		$value = db_query("SELECT calculate_year  FROM {fa_calculate_year} WHERE id = ".$id)->fetchObject()->calculate_year;
+		 $application_period_detials[$id] = t('@application_period', array('@application_period' => $value));
+		}
+		return $application_period_detials;
+}
+
+function previous_year_list($application_id,$factory_type_id, $referance_number,$userid){
+	//echo $application_id.'------'.$factory_type_id.'---'.$referance_number.'------'.$userid;die;
+	
+	$query_app_period 	=  db_select('fa_caf_check_point', 'check_point');
+	$query_app_period	-> fields('check_point',array('application_period'));
+	$query_app_period	-> condition('check_point.factory_type', $factory_type_id);
+	$query_app_period	-> condition('check_point.reference_no', $referance_number);
+	$query_app_period	-> condition('check_point.app_id', $application_id);
+	//$query_app_period	-> condition('check_point.service_id', $service_id);
+	$query_app_period	-> condition('check_point.created_by', $userid);
+	$result_app_period	=	$query_app_period->execute();
+	$data_app_period	=	$result_app_period->fetchObject();
+	//print_r($data_app_period);die;
+	$current_date = date('yy-m-d');
+	$application_period_detials = array();
+	$default_select 	= array(""=>"- Select period -");
+	$ids= explode(',',$data_app_period->application_period);
+	foreach($ids as $id){
+		$value = db_query("SELECT calculate_year  FROM {fa_calculate_year} WHERE id = ".$id." AND calculate_starting_year <= "."'".$current_date."'")->fetchObject()->calculate_year;
+		if(!empty($value)){
+			$application_period_detials[$id] = t('@application_period', array('@application_period' => $value));
+		 }
+		
+	}
+
+	return $application_period_detials;
+}
+function next_update_value($application_id,$factory_type_id,$referance_number,$userid){
+	//echo $application_id.'------'.$factory_type_id.'---'.$userid;die;
+	$query_app_period 	=  db_select('fa_caf_check_point', 'check_point');
+	$query_app_period	-> fields('check_point',array('application_period'));
+	$query_app_period	-> condition('check_point.factory_type', $factory_type_id);
+	$query_app_period	-> condition('check_point.reference_no', $referance_number);
+	$query_app_period	-> condition('check_point.app_id', $application_id);
+	//$query_app_period	-> condition('check_point.service_id', $service_id);
+	$query_app_period	-> condition('check_point.created_by', $userid);
+	$result_app_period	=	$query_app_period->execute();
+	$data_app_period	=	$result_app_period->fetchObject();
+	$ids= explode(',',$data_app_period->application_period);
+	//foreach($ids as $id){
+//		$value = db_query("SELECT calculate_year  FROM {fa_calculate_year} WHERE id = ".$id)->fetchObject()->calculate_year;
+//		 $application_period_detials[$id] = t('@application_period', array('@application_period' => $value));
+//		}
+		return $ids;
+}
+
+function get_period_id($application_id,$changeid,$yid){
+	
+	$query_pe_id  =  db_query('SELECT id  FROM {fa_amendment_mapping} WHERE application_id = :aid and  change_field =:cid and  year_id =:yid', array(':aid'=>$application_id,':cid'=>$changeid,':yid'=>$yid))->fetchObject()->id;
+   return $query_pe_id;
+
+}
+///////////////////All LOG DATA FUNCTIONS/////////////////
+function get_cafa_log_data($application_id=''){
+	$query_factory_info = db_select('fa_cafa_log', 'cafa');
+	$query_factory_info	->fields('cafa',array());
+	$query_factory_info	->condition('cafa.previous_id',$application_id);
+	$query_factory_info_details = $query_factory_info->execute()->fetchAssoc(); 
+	return $query_factory_info_details;
+}
+function get_worker_previous_log($serviceid,$factory_typeid,$applicationid,$reference_no){
+//	echo $serviceid.'---'.$factory_typeid.'---'.$applicationid.'---'.$reference_no;die;
+	$query_worker_details 	=  db_select('fa_worker_details', 'worker_details');
+	$query_worker_details	-> fields('worker_details',array());
+	$query_worker_details	-> condition('worker_details.application_id', $applicationid);
+	$query_worker_details	-> condition('worker_details.service_id', $serviceid);
+	$query_worker_details	-> condition('worker_details.factory_type', $factory_typeid);
+	$query_worker_details	-> condition('worker_details.application_reference_no', $reference_no);
+	$query_worker_details	-> condition('worker_details.is_amendment', 1);
+	//$query_worker_details	-> orderBy('worker_details.id', 'desc');
+	//echo $query_worker_details;die;
+	$result_worker_details 	=  $query_worker_details->execute()->fetchAll();
+	//print_r($result_worker_details);die();
+	return $result_worker_details;
+}
+
+function year_data_set_period($application_id,$application_reference_no,$service_id,$factory_type_id){
+
+	//echo $application_id.'--'.$application_reference_no.'--'.$service_id.'--'.$factory_type_id;die;
+
+	$query_app_period 	=  db_select('fa_calculate_year', 'calculate_year');
+	$query_app_period	-> fields('calculate_year',array());
+	$query_app_period	-> condition('calculate_year.application_id', $application_id);
+	$query_app_period	-> condition('calculate_year.reference_no', $application_reference_no);
+	$query_app_period	-> condition('calculate_year.service_id', $service_id);
+	$query_app_period	-> condition('calculate_year.factory_id', $factory_type_id);
+	$data_app_period	=	$query_app_period->execute()->fetchAll();
+		
+	$new_data			= get_fa_cafa($application_id);
+	//print_r($data_app_period)	;die;
+	$reference_number 	= $new_data['reference_number'];
+	$factory_type 		= $new_data['factory_typeid'];
+	$service 			= $new_data['service_id'];
+	
+	$query_power 			=  db_select('amendment_fees', 'amendment');
+	
+	//$query_power	= db_select('power_worker_yearly ', 'amendment')->distinct();
+	
+	//$query_power	= db_select('amendment_fees ', 'fees')->distinct();
+	//$query_power->InnerJoin('fa_calculate_year', 'year', 'year.application_id=amendment.application_id');
+	//$query_power->InnerJoin('fa_calculate_year', 'amendment', 'amendment.application_id=fees.application_id');
+	$query_power			-> fields('amendment',array('id','power','worker','calculate_year','valid_time_period','calculate_starting_year','calculate_end_year','application_id','service_id','reference_no','factory_id','schedule_fees','late_fees'));
+	//$query_power			-> fields('fees',array('due_fees'));
+	
+	$query_power			-> condition('amendment.application_id', $application_id);
+	$query_power			-> condition('amendment.reference_no', $application_reference_no);
+	$query_power			-> condition('amendment.factory_id', $factory_type);
+	$query_power			-> condition('amendment.service_id', $service_id);
+	//$query_power			->	groupBy("amendment.id");
+	//$query_power   			-> orderBy('starting_year', 'ASC');//ORDER BY created
+	$query_power_details 	=  $query_power->execute()->fetchAll();
+	
+	//echo '<pre>';
+	//print_r($query_power_details);die;
+	
+	foreach($query_power_details as $data_app){
+			preg_match('#\((.*?)\)#', $data_app->power, $match);
+			$power_type =  $match[1];
+			$power =  preg_replace("/\([^)]+\)/","",$data_app->power);
+			if($power_type=='hp'){
+				$type_power_station ='other';
+				$installed_power_hp = $power;
+				}if($power_type=='KW'){
+					$type_power_station ='power_generating_station';
+					$installed_power_hp = $power*1.34102;//(1Kw => 1.34102 Hp)
+					}if($power_type==' '){
+						$type_power_station ='other';
+						$installed_power_hp = $power;
+						}
+
+		$year_list 	= array(
+			'application_id' 			=> $application_id,
+			'service_id' 				=> $service,
+			'referance_id'				=> $reference_number,
+			'factory_type' 				=> $factory_type,
+			'installed_power_hp' 		=> $installed_power_hp,
+			'worker_total'				=> $data_app->worker,
+			'type_power_station'		=> $type_power_station,
+			'installed_power'			=> $power,
+			'valid_time_period'			=> $data_app->valid_time_period,
+			'calculate_starting_year'	=> $data_app->calculate_starting_year,
+			'calculate_end_year'		=> $data_app->calculate_end_year,
+			'starting_year'				=> $data_app->calculate_starting_year,
+			'calculate_year'			=> $data_app->calculate_year,
+			'calculate_year_id'			=> $data_app->id,
+			'fees_paid'					=> ($data_app->schedule_fees + $data_app->late_fees),
+		);
+		//print_r($year_list);die;
+		$id = db_insert('fa_amendment_year_data')->fields($year_list)->execute();
+		
+	}
+}
+
+
+function is_amend_data($application_id,$service){
+	$query_dis 	=  db_query("SELECT application_id  FROM {fa_amendment_year_data} WHERE application_id = '".$application_id."' and service_id='".$service."' ")->fetchObject()->application_id;
+	return $query_dis;
+}
+
+function yearly_data_fees($application_id,$factory_type,$service_id,$application_reference_no){
+	//echo $application_id.'--'.$factory_type.'--'.$service_id.'--'.$application_reference_no;
+	$query_power 			=  db_select('fa_amendment_year_data', 'fee');
+	$query_power			-> fields('fee',array());
+	$query_power			-> condition('fee.application_id', $application_id);
+	$query_power			-> condition('fee.referance_id', $application_reference_no);
+	$query_power			-> condition('fee.factory_type', $factory_type);
+	$query_power			-> condition('fee.service_id', $service_id);
+	$query_power   			-> orderBy('id', 'ASC');//ORDER BY created
+	$query_power_details 	=  $query_power->execute()->fetchAll();
+	//print_r($query_power_details);die($query_power);
+	return $query_power_details;
+}
+/////////////////////////////ADMIN AREA FUNCTION //////////////////////
+
+function get_amend_application_list($zoneUserMap){
+	
+	$fetch_application	= db_select('fa_cafa ', 'cafa');
+	$fetch_application->InnerJoin('fa_service_master', 'service_master', 'service_master.id=cafa.service_id');
+	$fetch_application->InnerJoin('fa_factory_type_master', 'factory_type', 'factory_type.id=cafa.factory_typeid');
+	$fetch_application->InnerJoin('fa_zone', 'zone', 'zone.zone_id=cafa.factory_zone');
+	$fetch_application->fields('cafa', array('plan_approve_status','modification_date','application_status','service_id','factory_name','factory_reg_identification_number','id','created_date','factory_typeid','reference_number','plan_approve_identification_number','backlog_plan_approval_no','backlog_plan_approval_date','factory_registrstion_no','factory_license_no','license_date','backlog_license_number','backlog_license_date','backlog_registration_no','backlog_registration_date','factory_plan_approval_number','is_backlog','tm_migrated_flag','approve_dsc_licence_file','approve_dsc_reg_file','license_valid_upto','approve_dsc_reg_file_id','approve_amendment_file_id'));
+	$fetch_application->fields('service_master', array('service_name'));
+	$fetch_application->fields('factory_type', array('factory_type'));
+	$fetch_application->fields('zone', array('zone_name'));
+	$fetch_application->condition('cafa.factory_zone',$zoneUserMap,'in');
+	$fetch_application->condition('cafa.application_status','In','!=');
+	$fetch_application->condition('cafa.application_status','F','!=');
+	$fetch_application->condition('cafa.application_status','P','!=');
+	$fetch_application->condition('cafa.service_id',8);
+	$fetch_application	-> orderBy('cafa.id', 'desc');
+	$application_result = $fetch_application->execute()->fetchAll(); 
+	return $application_result;
+}
+
+
+
+	function get_licence_valid_to_amendment($service_id,$factorytype_id,$application_id,$reference_id){
+	
+	$sql_licecne_valid	=  db_query("SELECT calculate_end_year  FROM {fa_amendment_year_data} WHERE application_id = '".$application_id."' AND factory_type = '".$factorytype_id."'AND service_id = '".$service_id."'AND referance_id = '".$reference_id."' ORDER BY id DESC  LIMIT 1")->fetchObject()->calculate_end_year;
+	return $sql_licecne_valid;
+	
+	}
+function get_licence_valid_from_amendment($service_id,$factorytype_id,$application_id,$reference_id){
+	$sql_licecne_valid_from	=  db_query("SELECT calculate_starting_year  FROM {fa_amendment_year_data} WHERE application_id = '".$application_id."' AND factory_type = '".$factorytype_id."'AND service_id = '".$service_id."'AND referance_id = '".$reference_id."' ORDER BY id ASC  LIMIT 1")->fetchObject()->calculate_starting_year;
+	return $sql_licecne_valid_from;
+	
+	}
+	
+
+
+function get_worker_amendment_service($service_id,$factory_typeid,$application_id,$worker_referance_no){
+	//echo $service_id.'---'.$factory_typeid.'------'.$application_id.'----'.$worker_referance_no;
+	$query_worker_details 	=  db_select('fa_worker_details', 'worker_details');
+	$query_worker_details	-> fields('worker_details',array());
+	$query_worker_details	-> condition('worker_details.application_id', $application_id);
+	$query_worker_details	-> condition('worker_details.service_id', $service_id);
+	$query_worker_details	-> condition('worker_details.factory_type', $factory_typeid);
+	$query_worker_details	-> condition('worker_details.application_reference_no', $worker_referance_no);
+	//$query_worker_details	-> orderBy('worker_details.id', 'desc');
+	//echo $query_worker_details;
+	$result_worker_details 	=  $query_worker_details->execute()->fetchAll();
+	//print_r($result_worker_details);die();
+	return $result_worker_details;
+}
+function get_power_amendment_service($application_id,$service_id,$factory_type_id,$reference_no){
+	//echo $application_id.'</br/>'.$service_id.'</br/>'.$factory_type_id.'</br/>'.$reference_no;die();
+	$fetch_power	= db_select('fa_power_details ', 'power');
+	$fetch_power->InnerJoin('fa_service_master', 'service_master', 'service_master.id=power.service_id');
+	$fetch_power->InnerJoin('fa_factory_type_master', 'factory_type', 'factory_type.id=power.factory_type');
+	$fetch_power->fields('power', array());
+	$fetch_power->fields('service_master', array('service_name'));
+	$fetch_power->fields('factory_type', array('factory_type'));
+	$fetch_power->condition('power.application_id ',$application_id,'=');
+	$fetch_power->condition('power.application_reference_no ',$reference_no,'=');
+	$fetch_power-> orderBy('power.id', 'ASC');
+	$power_result = $fetch_power->execute()->fetchAll();
+	//print_r($power_result) ;
+	//die;
+	return $power_result;
+
+}function get_nature_manufacture_service($application_id){
+	///echo $application_id,$service_id,$factorytype_id,$reference_id;die();
+	$fetch_application	= db_select('fa_nature_manufacturing ', 'nature');
+	$fetch_application->InnerJoin('fa_service_master', 'service_master', 'service_master.id=nature.service_id');
+	$fetch_application->InnerJoin('fa_factory_type_master', 'factory_type', 'factory_type.id=nature.factory_type');
+	$fetch_application->fields('nature', array());
+	$fetch_application->fields('service_master', array('service_name'));
+	$fetch_application->fields('factory_type', array('factory_type'));
+	$fetch_application->condition('nature.application_id ',$application_id,'=');
+	//$fetch_application->condition('nature.factory_type ',$factorytype_id,'=');
+	//$fetch_application->condition('nature.application_reference_no ',$reference_id,'=');
+	//$fetch_application->condition('nature.service_id ',$service_id,'=');
+	$fetch_application	-> orderBy('nature.id', 'ASC');
+	$nature_result = $fetch_application->execute()->fetchAll(); 
+	return $nature_result;
+}
+
+function fun_period_point($application_id,$reference_no,$factory_type,$service_id){
+		//echo $application_id.'---'.$reference_no.'----'.$factory_type.'---'.$service_id;die;
+		$query_check 	=  db_select('fa_caf_check_point', 'check_p');
+		$query_check	-> fields('check_p',array('application_period'));
+		$query_check	-> condition('check_p.app_id', $application_id);
+		$query_check	-> condition('check_p.reference_no', $reference_no);
+		$query_check	-> condition('check_p.factory_type', $factory_type);
+		$query_check	-> condition('check_p.service_id', $service_id);
+		$query_check_period 	=  $query_check->execute()->fetchObject()->application_period;
+		return $query_check_period;
+}
+function fun_check_check_point($application_id,$reference_no,$factory_type,$service_id){
+	//echo $application_id.'---'.$reference_no.'----'.$factory_type.'---'.$service_id;
+	$query_check 	=  db_select('fa_caf_check_point', 'check1');
+	$query_check	-> fields('check1',array('id'));
+	$query_check	-> condition('check1.app_id', $application_id);
+	$query_check	-> condition('check1.reference_no', $reference_no);
+	$query_check	-> condition('check1.factory_type', $factory_type);
+	$query_check	-> condition('check1.service_id', $service_id);
+	$query_check_id 	=  $query_check->execute()->fetchObject()->id;
+	
+	//echo $query_check_id;die();
+	
+	return $query_check_id;
+}
+
+function get_amend_year($application_id){
+	
+		$query_calculate_year 	=  db_select('fa_calculate_year', 'calculate_year');
+		$query_calculate_year	-> fields('calculate_year',array('id','calculate_year'));
+		$query_calculate_year	-> condition('calculate_year.application_id', $application_id);
+		$query_calculate_year	 -> condition('calculate_year.is_previous',1,'=');
+		//$query_calculate_year	-> condition('calculate_year.service_id', $service_id);
+		//$query_calculate_year	-> condition('calculate_year.factory_id', $factory_typeid);
+		//$query_calculate_year	-> condition('calculate_year.reference_no', $reference_no);
+		//$query_calculate_year	 -> condition('calculate_year.is_previous',1,'=');
+		
+		$calculate_year 	=  $query_calculate_year->execute()->fetchAll();
+		
+		return $calculate_year;
+	}
+	
+function fun_next_amnd_year($yera_id,$application_id){
+	
+		$query_calculate_year 	=  db_select('fa_calculate_year', 'calculate_year');
+		$query_calculate_year	-> fields('calculate_year',array());
+		$query_calculate_year	-> condition('calculate_year.id', $yera_id,'>=');
+		$query_calculate_year	-> condition('calculate_year.application_id', $application_id);
+		$query_calculate_year	 -> condition('calculate_year.is_previous',1,'=');
+		$calculate_year_next 	=  $query_calculate_year->execute()->fetchAll();
+		
+		return $calculate_year_next;
+	}	
+	
+function fun_manufacturing_amend($application_id,$service_id,$factory_typeid,$calculate_year_id,$application_reference_no){
+	
+	
+	$query_power1 	=  db_select('fa_nature_manufacturing', 'manufacturing');
+	$query_power1	-> fields('manufacturing',array());
+	$query_power1	-> condition('manufacturing.application_id', $application_id);
+	$query_power1	-> condition('manufacturing.service_id', $service_id);
+	$query_power1	-> condition('manufacturing.factory_type', $factory_typeid);
+	$query_power1	-> condition('manufacturing.application_reference_no', $application_reference_no);
+	$query_power1	-> condition('manufacturing.is_amand',1);
+	$query_power1	-> condition('manufacturing.calculate_year_id',$calculate_year_id);
+	$query_power1	-> orderBy('manufacturing.id', 'desc');
+	 $query_power_amand_id 	=  $query_power1->execute()->fetchObject()->id;
+	
+	
+	return $query_power_amand_id;
+}	
+
+function get_manufacturing_amend($application_id,$service_id,$factory_typeid,$referance_number){
+	
+	//echo $service_id.','.$factory_typeid.','.$application_id.','.$referance_number	;die();
+	$query_manufacturing 	=  db_select('fa_nature_manufacturing', 'manufacturing');
+	$query_manufacturing	-> fields('manufacturing',array());
+	$query_manufacturing	-> condition('manufacturing.application_id', $application_id);
+	$query_manufacturing	-> condition('manufacturing.service_id', $service_id);
+	$query_manufacturing	-> condition('manufacturing.factory_type', $factory_typeid);
+	$query_manufacturing	-> condition('manufacturing.application_reference_no', $referance_number);
+	$query_manufacturing	-> condition('manufacturing.is_amand',1);
+	$query_manufacturing	-> orderBy('manufacturing.id', 'desc');
+	$query_manufacturing_details 	=  $query_manufacturing->execute()->fetchAll();
+	
+	
+	return $query_manufacturing_details;
+}
+
+function fun_check_point($application_id,$service_id,$factory_type,$reference_no){
+	
+ $query_check_applicant = db_select('fa_caf_check_point','ck');
+	   $query_check_applicant->fields('ck', array());
+	   $query_check_applicant	-> condition('ck.app_id', $application_id);
+		$query_check_applicant	-> condition('ck.reference_no', $reference_no);
+		$query_check_applicant	-> condition('ck.factory_type', $factory_type);
+		$query_check_applicant	-> condition('ck.service_id', $service_id);
+	   $query_check_applicant->orderBy('ck.id','DESC');
+	   $result = $query_check_applicant->execute();
+	   $content = $result->fetchAssoc();
+	  
+	   return $content;
+}
+
+function power_detials_data($application_no,$reference_no,$factory_id,$service_id){
+	
+	$query_power_details 	=  db_select('fa_power_details', 'power_details');
+	$query_power_details	-> fields('power_details',array());
+	$query_power_details	-> condition('power_details.application_id', $application_no);
+	$query_power_details	-> condition('power_details.factory_type', $factory_id);
+	$query_power_details	-> condition('power_details.application_reference_no', $reference_no);
+	$query_power_details	-> condition('power_details.service_id', $service_id);
+	//$query_power_details	-> orderBy('power_details.id', 'desc');
+	$result_power_details 	=  $query_power_details->execute()->fetchAll();
+
+	
+	return $result_power_details;
+}

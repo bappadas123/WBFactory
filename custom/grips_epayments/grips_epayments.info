@@ -1,0 +1,6 @@
+name = Grips Epayments
+description = grips_epayments Module
+package = Online Paymeny Module
+version = "7.x"
+core = 7.x
+

@@ -1,0 +1,5 @@
+name = Custom Google Map Area Locator
+description = Custom Google Map Area Locator Module
+core = 7.x
+version = 7.x
+package = Drupal 7 Development

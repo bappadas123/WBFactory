@@ -1,0 +1,2264 @@
+<?php
+function grips_epayments_menu(){
+	$items = array();
+	
+	
+	$items['epayments_preview/%/%/%/%'] = array( 
+						'title'=>'Fees Payment Preview',
+						'page callback'=>'drupal_get_form',
+						'page arguments'=>array('fees_epayment_preview_form',1,2,3,4),
+						'file' => 'includes/fees_epayment_preview_form.inc',
+						'access arguments' 	=> array('permission_for_applicant'),
+						'access callback'=>'user_access'
+	);
+	
+	$items['epayments'] = array( 
+						'title' => t('Payment for registration fees'),
+						'page callback' => 'drupal_get_form', 
+						'page arguments' => array('epaments_process'),
+						'access arguments' 	=> array('permission_for_applicant'),
+						'access callback'=>'user_access'
+	);
+	$items['epayments_extrafees_preview/%/%/%/%'] = array( 
+						'title'=>'Extra Fees Payment Preview',
+						'page callback'=>'drupal_get_form',
+						'page arguments'=>array('extra_fees_epayment_previw_form',1,2,3,4),
+						'file' => 'includes/extra_fees_epayment_previw_form.inc',
+						'access arguments' 	=> array('permission_for_applicant'),
+						'access callback'=>'user_access'
+	);					
+	$items['epayments/paystatrecvd'] = array(  
+						'title' => 'Payment success and receive data',
+						'page callback' => 'update_epaments_data',						
+						'access arguments' 	=> array('permission_for_applicant'),
+						'access callback'=>'user_access'
+						);
+						
+	$items['epayments/doubleverification'] = array( 
+						'title' => 'Payment status and verification',
+						'page callback'=>'drupal_get_form',
+						'page arguments'=>array('verified_epaments_data_form',1),
+						'file' => 'includes/verified_epaments_data_form.inc',
+						'access arguments' 	=> array('permission_for_applicant'),
+						'access callback'=>'user_access'
+						);				
+						
+	$items['epayments/deptpayverfn'] = array( 
+						'title' => 'Payment success and receive data',
+						'page callback'=>'drupal_get_form',
+						'page arguments'=>array('epaments_status_data_form'),
+						'access arguments' 	=> array('permission_for_applicant'),
+						'access callback'=>'user_access'
+						);						
+
+	$items['epayments/add_before_payment_data'] = array( 
+						'title' => 'Payment success and receive data',
+						'page callback' => 'add_before_payment_data',						
+						'access arguments' 	=> array('permission_for_applicant'),
+						'access callback'=>'user_access'
+						);
+	$items['epayments/payment_ack'] = array( 
+						'title' => 'Payment Acknowledgement Slip For Form I',
+						'page callback' => 'get_epayment_ack',						
+						'access arguments' 	=> array('permission_for_applicant'),
+						'access callback'=>'user_access'
+						);
+						
+	$items['repairer_epayments'] = array( 
+	'title' => t('Payment of fees for renewal recognition of repairer'),
+	'page callback' => 'drupal_get_form', 
+	'page arguments' => array('repairer_epayments_process'),
+	'access arguments' 	=> array('permission_for_applicant'),
+	'access callback'=>'user_access'
+	);
+	
+	$items['repairer_epayments_preview/%/%/%'] = array( 
+	'title'=>'Repairer Fees Payment Preview',
+	'page callback'=>'drupal_get_form',
+	'page arguments'=>array('repairer_fees_epayment_preview_form',1,2,3),
+	'file' => 'includes/repairer_fees_epayment_preview_form.inc',
+	'access arguments' 	=> array('permission_for_applicant'),
+	'access callback'=>'user_access'
+	);
+	
+	$items['repairer_extra_epayments_preview/%/%/%'] = array( 
+	'title'=>'Repairer Fees Payment Preview',
+	'page callback'=>'drupal_get_form',
+	'page arguments'=>array('repairer_extra_fees_epayment_preview_form',1,2,3),
+	'file' => 'includes/repairer_extra_fees_epayment_preview_form.inc',
+	'access arguments' 	=> array('permission_for_applicant'),
+	'access callback'=>'user_access'
+	);
+						
+						
+	return $items;
+}
+
+function grips_epayments_permission() {
+  return array(  
+	    'gep_per' => array(
+      'title' => t('GRIPS payment Gateway permission'),
+    ));
+}
+
+function epaments_status_data_form($form, &$form_state){
+	drupal_add_css('.tbl_hd {
+		background-color: #6d7fa4!important;
+		padding: 8px!important;
+		font-size: 13px!important;
+		color: #fff!important;
+		width: auto!important!important;
+	}
+	.tr_odd{background-color: #f3f3f3!important;}
+	.tr_even{background-color: #fff!important;}',
+	array('type' => 'inline'));
+	$epayement_status = NULL;
+	$ChallanRefId_Date = NULL;
+	$Transaction_Id = NULL;
+	$output = '<table width="100%" class="table table-striped table-bordered table-hover table-responsive table-condensed sticky-enabled datatables-processed dataTable "cellpadding="1" cellspacing="1"><tr class="tbl_hd" style="text-align:center;"><th colspan="2">Payment Details</th></tr>';
+	if(isset($_REQUEST['Merchant_Code']))
+		$Merchant_Code = $_REQUEST['Merchant_Code'];
+	else
+		drupal_goto('payments-list');
+	if(isset($_REQUEST['Merchant_Code'])){
+		$encdata = $_REQUEST['xmlString'];
+		$encdata_for_post = $_REQUEST['xmlString'];
+	}else
+		drupal_goto('payments-list');
+	if($encdata == NULL || $encdata == ''){
+		$output .= '<tr><td colspan="2">No Record found</td></tr>';
+	}else{
+		$encdata = decrypt($encdata);
+		$encdata_arr= explode('|', $encdata);
+		$i = 0;
+		foreach ($encdata_arr as $val){
+			$tmp_arr = explode('=',$val);
+			$tr_cls = $i % 2 == 0 ? 'tr_odd' : 'tr_even';
+			$output .= '<tr class='.$tr_cls.'><td>'.$tmp_arr[0].'</td><td>'.$tmp_arr[1].'</td></tr>';
+			
+			//------------------------------------------------------------------------
+				if($tmp_arr[0] == 'BankTransactionStatus'){
+					$epayement_status = $tmp_arr[1];
+				}
+				if($tmp_arr[0] == 'ChallanRefId_Date'){
+					$ChallanRefId_Date =  $tmp_arr[1];
+				}
+				if($tmp_arr[0] == 'Dept_Ref_No'){
+					$Dept_Ref_No =  $tmp_arr[1];
+				}
+				if($tmp_arr[0] == 'Transaction_Id'){
+					$Transaction_Id =  $tmp_arr[1];
+				}
+				
+				$test[] = $val;
+			//------------------------------------------------------------------------
+			$i++;
+		}
+	}
+	$output .= '</table>';
+	//-------------------------------------pending payement check--------------------------------------
+	global $base_root,$base_path,$user;
+ 	$uid   =  $user->uid;
+	$role_arr = $user->roles;
+	
+	$loginUserRole = NULL;
+	
+	$form = array();
+	
+	/*$form['output'] = array(
+		  '#type' => 'markup',
+		  '#markup' => $output,
+		  '#tree' => true,
+		);*/
+			
+	foreach($role_arr as $key => $val)
+	{
+		if($key == 7){
+			$loginUserRole = 'Director';
+		}else if($key == 4){
+			$loginUserRole = 'Applicant';	
+		}else if($key == 9){
+			$loginUserRole = 'Repairer';
+		}
+	}         
+	
+	if($loginUserRole != NULL && $loginUserRole == 'Director')
+	{		
+		$output .= '<br/><br/><br/>';
+		
+		$form['encdata'] = array(
+				'#type' => 'hidden',
+				'#value' => $encdata,				  
+		);
+		
+		$form['Dept_Ref_No'] = array(
+				'#type' => 'hidden',
+				'#value' => $Dept_Ref_No,				  
+		);
+		
+		$form['Transaction_Id'] = array(
+				'#type' => 'hidden',
+				'#value' => $Transaction_Id,				  
+		);
+		     
+		$Transaction_Id_last_digit = substr($Transaction_Id,-1);
+		$payment_status ='';
+		
+		if($Transaction_Id_last_digit == 1) //for registration.
+		{
+			$ercv_sql = db_select('boiler_epayments_receive_data','ercv')
+						->fields('ercv')
+						->condition('transaction_id',$Transaction_Id)
+						->execute();
+			if($ercv_sql->rowCount() > 0){
+				$payment_status ='paid';
+			}
+			else{
+				$payment_status ='not paid';
+			}			
+		}
+		else if($Transaction_Id_last_digit == 2) //for renewal.
+		{
+			$ercv_sql = db_select('boiler_epayments_receive_data','ercv')
+						->fields('ercv')
+						->condition('transaction_id',$Transaction_Id)
+						->execute();
+			if($ercv_sql->rowCount() > 0){
+				$payment_status ='paid';
+			}
+			else{
+				$payment_status ='not paid';
+			}	
+		}
+		else if($Transaction_Id_last_digit == 3) //for Form IIIA.
+		{
+			$frcv_sql = db_select('form3a_epayments_receive_data','frcv')
+						->fields('frcv')
+						->condition('transaction_id',$Transaction_Id)
+						->execute();
+			if($frcv_sql->rowCount() > 0){ 
+				$payment_status ='paid';
+			}
+			else{
+				$payment_status ='not paid';
+			}	
+		}
+		else if($Transaction_Id_last_digit == 4 || $Transaction_Id_last_digit == 5) //for repairer/erectors.
+		{
+			$ercv_sql = db_select('repairer_epayments_receive_data','rcv')
+						->fields('rcv')
+						->condition('transaction_id',$Transaction_Id)
+						->execute();
+			if($ercv_sql->rowCount() > 0){
+				$payment_status ='paid';
+			}
+			else{
+				$payment_status ='not paid';
+			}	
+		}
+		else if($Transaction_Id_last_digit == 6) //forboiler reg renewal extra fees.
+		{
+			$ercv_sql = db_select('boiler_epayments_receive_data','berd')
+						->fields('berd')
+						->condition('transaction_id',$Transaction_Id)
+						->execute();
+			if($ercv_sql->rowCount() > 0){
+				$payment_status ='paid';
+			}
+			else{
+				$payment_status ='not paid'; 
+			}	 
+		}   
+		
+		if($epayement_status == 'Success' && $epayement_status != NULL && $Transaction_Id != NULL && $payment_status =='not paid')
+		{	
+			$form['#action'] = '/update-epayement-rcve-data';		
+			$form['update'] = array(
+						  '#type' => 'submit',
+						  '#value' => t('Update Payment in Database'),
+					  );
+		}		
+	}else if($loginUserRole != NULL && ($loginUserRole == 'Applicant' || $loginUserRole == 'Repairer')){
+		$output .= '<br /><span style="text-align:center; color:blue;"><b>Please contact your Zonal Inspector for processing of the pending payment.</b></span><br /><br />'.l(t('<b class="add-dt-btn pull-left">Back to payment list</b>'), 'payments-list', array('html' => TRUE,));;;	
+	}
+	
+	//------------------------------------------------------------------------------------------------	
+	
+	$form['output'] = array(
+		  '#type' => 'markup',
+		  '#markup' => $output,
+		  '#tree' => true,
+		);
+		
+	return $form;
+}
+
+/*function epaments_status_data(){
+	$output = '<table width="70%" cellpadding="1" cellspacing="1"><th style="text-align:center;" colspan="2">Payment Details</th>';
+	$Merchant_Code = $_REQUEST['Merchant_Code'];
+	$encdata = $_REQUEST['xmlString'];
+	if($encdata == NULL || $encdata == ''){
+		$output = '<tr><td colspan="2">No Records Found</td></tr>';
+	}else{
+		$encdata = decrypt($encdata);
+		$encdata_arr= explode('|', $encdata);	
+		foreach ($encdata_arr as $val){
+			$tmp_arr = explode('=',$val);
+			$output .= '<tr><td>'.$tmp_arr[0].'</td><td>'.$tmp_arr[1].'</td></tr>';
+		}
+	}
+	$output .= '</table>';
+	return $output;
+}*/
+
+function get_epayment_ack(){	
+	$dlcid = 11;
+	$content = '<style type="text/css">
+					table, td, th {
+							font-size:22px;
+							font-family:Times New Roman;
+							height:25px;
+							color:#000;
+							margin-top:20px;
+							background:#fff;
+					}
+					th {
+						background-color: #008BD1;
+						color: white;
+					}
+					td:hover {
+						background-color:#d4e3e5;
+					}
+					.btn {
+  						background: #3498db;
+  						background-image: -webkit-linear-gradient(top, #3498db, #309ee3);
+  						background-image: -moz-linear-gradient(top, #3498db, #309ee3);
+  						background-image: -ms-linear-gradient(top, #3498db, #309ee3);
+  						background-image: -o-linear-gradient(top, #3498db, #309ee3);
+  						background-image: linear-gradient(to bottom, #3498db, #309ee3);
+  							-webkit-border-radius: 9;
+  							-moz-border-radius: 9;
+  							border-radius: 32px;
+  							text-shadow: 0px 0px 2px #666666;
+  							-webkit-box-shadow: 0px 1px 4px #666666;
+  							-moz-box-shadow: 0px 1px 4px #666666;
+  							box-shadow: 0px 1px 4px #666666;
+  							font-family: Georgia;
+  							color: #ffffff;
+  							font-size: 19px;
+  							padding: 8px 20px 10px 21px;
+  							text-decoration: none;
+					}
+
+					.btn:hover {
+  						background: #569fcc;
+  						background-image: -webkit-linear-gradient(top, #569fcc, #3498db);
+  						background-image: -moz-linear-gradient(top, #569fcc, #3498db);
+  						background-image: -ms-linear-gradient(top, #569fcc, #3498db);
+  						background-image: -o-linear-gradient(top, #569fcc, #3498db);
+  						background-image: linear-gradient(to bottom, #569fcc, #3498db);
+  						text-decoration: none;
+  						cursor: pointer;
+					}
+					.red-star{
+						color:#FF0000;
+					}
+					.final_submit_anchor{
+						text-decoration:none !important;
+					}
+					.final_download_anchor{
+						text-decoration:none !important;
+					}
+			</style>';
+			$content .= '<table width="100%">					 
+					 <tr><td colspan="2">&nbsp;</td></tr>
+					 <tr><td align="right" colspan="2" style="font-size:15px"><b>1001</b></td></tr>
+					 <tr><td align="center" colspan="2" style="font-size:15px"><b>FROM I</b></td></tr>
+					 <tr><td colspan="2" align="center" style="font-size:12px">[see rule 4]</td></tr>
+					 <tr><td colspan="2" align="center" style="font-size:15px">ACKNOWLEDGEMENT</td></tr>
+					 <tr><td colspan="2" align="center" style="font-size:13px">(West Bengal right to public service act, 2013)</td></tr>
+					 <tr><td colspan="2" style="font-size:13px;">From,<br><br><strong>Abcd Xpz Efg</strong>.<br>Assistant Labour Commissioner</td></tr>
+					 <tr><td colspan="2">&nbsp;</td></tr>
+					 <tr><td colspan="2" style="font-size:13px;">To,<br><br><strong>Payal Karmakar</strong><br>Address: xxxxxxx.<br> Dist: Bankura.</td></tr>
+					 <tr><td colspan="2">&nbsp;</td></tr>			 
+					 <tr><td colspan="2" style="font-size:13px;"><b>Sub.</b>-The West Bengal Right to Public Services Act,201 - Acknowlegement of applcation</td></tr>
+					 <tr><td colspan="2" style="font-size:13px;"><b>Ref.</b>-Your Application date &nbsp;&nbsp;28/10/2015</td></tr>
+					 <tr><td colspan="2">&nbsp;</td></tr>
+					 <tr><td colspan="2" style="font-size:13px;padding-left:25px;">I hereby acknowledge your application cited.due date of service to be provided is 28/01/2016</td></tr>
+					 <tr><td colspan="2">&nbsp;</td></tr>
+					 <tr><td style="font-size:13px;">The following defects in the application may be rectified, urgently:<br><br>(1)..................................................<br><br>(2)...................................................</td><tr>					 					 
+					 <tr><td colspan="2" align="right" style="font-size:13px;">Yours Faithfully</td></tr>
+					 <tr><td colspan="2">&nbsp;</td></tr>
+					 <tr><td colspan="2">&nbsp;</td></tr>
+					 <tr>
+					 	<td align="left" style="font-size:13px;">Place:.....................<br>Date:........................</td>
+						<td align="right" style="font-size:13px;">Designated Officer/Authories Officer<br><br>(Office Seal)</td>
+					 </tr>
+					 </table>';
+	// echo $content; die;
+	return pdf_using_mpdf_api($content, $dlcid);
+}
+
+/*function add_before_payment_data(){
+	
+	$result['dept_cd'] = $_POST['dept_cd'];
+	$result['makers_number'] = $_POST['makers_number'];
+	$result['service_cd'] = $_POST['service_cd'];
+	$result['dept_ref_no'] = $_POST['dept_ref_no'];	
+	$result['identification_no'] = $_POST['identification_no'];
+	$result['deposited_by'] = $_POST['deposited_by'];
+	$result['depositor_mobile_no'] = $_POST['depositor_mobile_no'];
+	$result['depositor_email_id'] = $_POST['depositor_email_id'];
+	$result['in_favor_of'] = $_POST['in_favor_of'];
+	$result['rtn_prd_frm'] = $_POST['rtn_prd_frm'];
+	$result['rtn_prd_to'] = $_POST['rtn_prd_to'];
+	$result['payment_mode'] = $_POST['payment_mode'];	
+	$result['total_amount'] = $_POST['total_amount'];
+	$result['remarks'] = $_POST['remarks'];
+	db_insert('boiler_epayments_data')->fields($result)->execute();
+}*/
+
+function update_epaments_data(){
+	global $base_root, $base_path,$user;
+
+	if(empty($_REQUEST['Merchant_Code'])){
+		drupal_goto('applicant-dashboard');		
+	}else{
+		$Merchant_Code = $_REQUEST['Merchant_Code'];
+		$encdata = $_REQUEST['xmlString'];
+		$encdata_arr = explode('|', decrypt($encdata));
+		//$encdata_arr = explode('|', $encdata);
+		$result_grips = '';
+		for($i=0; $i <= sizeof($encdata_arr)-1; $i++) {
+			$var_val_arr = explode('=', $encdata_arr[$i]);		
+			if(strtolower($var_val_arr[0]) == 'dept_ref_no')
+				$dept_ref_no = $var_val_arr[1];
+			if(strtolower($var_val_arr[0]) == 'transaction_id')
+				$transaction_id = $var_val_arr[1];
+			/*if(strtolower($var_val_arr[0]) == 'banktransactionstatus')
+				$banktransactionstatus = $var_val_arr[1];*/
+			$result_grips[strtolower($var_val_arr[0])] = $var_val_arr[1];
+		}
+		
+		$tmp = substr($transaction_id,-1);
+		//echo $tmp; die();
+		
+try{
+	$transaction = db_transaction();
+	    if($tmp == 4 ||$tmp == 5){
+			db_insert('repairer_epayments_receive_data')->fields($result_grips)->execute();
+			$result = db_query("SELECT rerd.*, red.* from repairer_epayments_receive_data as rerd, repairer_epayments_data as red WHERE rerd.transaction_id = red.identification_no AND rerd.id = (SELECT MAX(id) from repairer_epayments_receive_data)");
+		}
+		else if($tmp == 3){
+			db_insert('form3a_epayments_receive_data')->fields($result_grips)->execute();
+			$result = db_query("SELECT ferd.*, fed.* from form3a_epayments_receive_data as ferd, form3a_epayments_data as fed WHERE ferd.transaction_id = fed.identification_no AND ferd.id = (SELECT MAX(id) from form3a_epayments_receive_data)");
+		}
+		else
+		{
+		db_insert('boiler_epayments_receive_data')->fields($result_grips)->execute();
+		$result = db_query("SELECT berd.*, bed.* from boiler_epayments_receive_data as berd, boiler_epayments_data as bed WHERE berd.transaction_id = bed.identification_no AND berd.id = (SELECT MAX(id) from boiler_epayments_receive_data)");
+		}
+
+		if($result->rowCount() > 0){
+			while($data = $result->fetchObject()) {
+				$banktransactionstatus = $data->banktransactionstatus;
+				if($tmp==4 || $tmp==5)
+				{
+					$boiler_enroll_no = '';
+					$boiler_req_id = '';
+				}
+				else if($tmp==3)
+				{ 
+					$form3a_tag_id = $data->form3a_tag_id;
+				}  
+				else
+				{
+					$boiler_enroll_no = $data->boiler_enroll_no;
+					$boiler_req_id = $data->boiler_req_id;
+				}
+								
+				if($banktransactionstatus == 'Success'){					
+					$fieldvalue=array();
+					$feesfieldstatus=array();
+					$arr_form1_data=array();
+					$curr_date = date('Y-m-d'); 
+					if($tmp == '1'){
+						$result_uid_sender=db_query("select t2.uid from 
+							  (select district,subdivision,division_id from 
+							  boiler_details where boiler_enroll_no=".$boiler_enroll_no.") as t1 inner join 
+							  (select biam.subdiv_id, biam.division_id, biam.uid from  b_inspector_assign_master as biam inner join users as usr ON biam.uid = usr.uid inner join b_inspector_details as 
+							  bid ON bid.uid = usr.uid and biam.status='1' order by biam.uid) as t2 on t1.subdivision=t2.subdiv_id and t1.division_id=t2.division_id");
+							  $result_uid_sender_fetch=$result_uid_sender->fetchObject();
+							  
+							  $sender_rid_query=db_query("select rid from users_roles where uid=".$user->uid."");
+							  $sender_rid_result=$sender_rid_query->fetchObject();
+							  $receiver_rid=db_query("select rid from users_roles where uid=".$result_uid_sender_fetch->uid."");
+							  $receiver_rid_result=$receiver_rid->fetchObject();
+							  $applicant_req_id_query=db_query("select req_id from applicant_inspection_request where boiler_enroll_no=".$boiler_enroll_no." and type=1");
+							  $applicant_req_id_result=$applicant_req_id_query->fetchObject();
+							  $query_details_id=db_query("select id from boiler_details where boiler_enroll_no=".$boiler_enroll_no."");
+	                          $data_details_id=$query_details_id->fetchObject();
+						$sms_pay_type = 'Registration';
+						$date_diff = 30;
+						//$probable_inspection_dt = date('d-m-Y', strtotime("+30 days"));
+						$fieldvalue['status'] = 5;
+						$fieldvalue['application_date']=$curr_date;
+						$fieldvalue['inspector_uid']=$result_uid_sender_fetch->uid;
+						$sql = db_update('boiler_details')
+						->fields($fieldvalue)
+						->condition('boiler_enroll_no', $boiler_enroll_no)
+						->execute();
+						if($sql)
+						{
+							$feesfieldstatus['status']=1;
+							$feesfieldstatus['payment_date'] = date('Y-m-d');
+							$sql2 = db_update('boiler_fees_details')
+							->fields($feesfieldstatus)
+							->condition('boiler_enroll_no', $boiler_enroll_no)
+							->execute();
+							if($sql2)
+							{
+						    
+									$fieldsender=array();
+									$fieldsender['applicant_req_id']=$applicant_req_id_result->req_id;
+									$fieldsender['boiler_req_id']=$data_details_id->id;
+									$fieldsender['boiler_enroll_no']=$boiler_enroll_no;
+									$fieldsender['sender_uid']=$user->uid;
+									$fieldsender['receiver_uid']=$result_uid_sender_fetch->uid;
+									$fieldsender['sender_rid']=$sender_rid_result->rid;
+									$fieldsender['receiver_rid']=$receiver_rid_result->rid;
+									$fieldsender['type']=1;
+									$fieldsender['report_status']=0;
+									$fieldsender['time_of_request']=time();
+									$query_applicant_inspection_request_tracking=db_insert('applicant_inspection_request_tracking')
+									->fields($fieldsender)
+									->execute();
+								 $arr_form1_data['inspector_uid']=$result_uid_sender_fetch->uid;
+								 $query_form1=db_update('boiler_form1_data')
+									->fields($arr_form1_data)
+									->condition('boiler_enroll_no', $boiler_enroll_no)
+									->execute();
+								if($query_applicant_inspection_request_tracking)
+								{
+								drupal_set_message('Your Payment has been processed successfully.' );
+								}
+							}
+						}
+					}else if($tmp == '2'){
+						$date_diff = 15;
+						
+						$sms_pay_type = 'Renewal';
+						$result_uid_sender=db_query("select t2.uid from 
+  (select district,subdivision,division_id from 
+  boiler_details where boiler_enroll_no=".$boiler_enroll_no.") as t1 inner join 
+  (select biam.subdiv_id, biam.division_id, biam.uid from  b_inspector_assign_master as biam inner join users as usr ON biam.uid = usr.uid inner join b_inspector_details as 
+  bid ON bid.uid = usr.uid and biam.status='1' order by biam.uid) as t2 on t1.subdivision=t2.subdiv_id and t1.division_id=t2.division_id");
+							  $result_uid_sender_fetch=$result_uid_sender->fetchObject();
+							  
+							  $sender_rid_query=db_query("select rid from users_roles where uid=".$user->uid."");
+							  $sender_rid_result=$sender_rid_query->fetchObject();
+							  $receiver_rid=db_query("select rid from users_roles where uid=".$result_uid_sender_fetch->uid."");
+							  $receiver_rid_result=$receiver_rid->fetchObject();
+							  if($receiver_rid_result->rid==8)
+								{
+								$fieldvalue['forward_deputy']=1;
+								}
+						$fieldvalue['application_date']=date('Y-m-d');
+						$fieldvalue['inspector_uid']=$result_uid_sender_fetch->uid;
+						$sql_ren = db_update('boiler_renewal_details')
+						->fields($fieldvalue)
+						->condition('boiler_enroll_no', $boiler_enroll_no)
+						->condition('id', $boiler_req_id)
+						->execute();
+						//$probable_inspection_dt = date('d-m-Y', strtotime("+15 days"));
+						$feesfieldstatus['status']=1;
+						$feesfieldstatus['payment_date'] = date('Y-m-d');
+						$sql3 = db_update('boiler_renewal_fees_details')
+						->fields($feesfieldstatus)
+						->condition('boiler_enroll_no', $boiler_enroll_no)
+						->condition('boiler_req_id', $boiler_req_id)
+						->execute();
+						if($sql3)
+						{
+							
+							$applicant_req_id_query=db_query("select req_id from applicant_inspection_request where boiler_enroll_no=".$boiler_enroll_no." and boiler_req_id=".$boiler_req_id."");
+							  $applicant_req_id_result=$applicant_req_id_query->fetchObject();
+							  
+									$fieldsender=array();
+									$fieldsender['applicant_req_id']=$applicant_req_id_result->req_id;
+									$fieldsender['boiler_req_id']=$boiler_req_id;
+									$fieldsender['boiler_enroll_no']=$boiler_enroll_no;
+									$fieldsender['sender_uid']=$user->uid;
+									$fieldsender['receiver_uid']=$result_uid_sender_fetch->uid;
+									$fieldsender['sender_rid']=$sender_rid_result->rid;
+									$fieldsender['receiver_rid']=$receiver_rid_result->rid;
+									$fieldsender['type']=2;
+									$fieldsender['report_status']=0;
+									$fieldsender['time_of_request']=time();
+									$query_applicant_inspection_request_tracking=db_insert('applicant_inspection_request_tracking')
+									->fields($fieldsender)
+									->execute();
+									
+							$query_details_id=db_query("select district,subdivision,pin,usr_id,police_station,post_office,village_premises,division_id,boiler_reg_no,factory_name from boiler_details where boiler_enroll_no=".$boiler_enroll_no."");
+	                        $data_details_id=$query_details_id->fetchObject();		
+							
+							$arr_form1_data['boiler_enroll_no'] = $boiler_enroll_no;
+							$arr_form1_data['boiler_req_id'] = $boiler_req_id;
+							$arr_form1_data['district_code'] = $data_details_id->district;
+							$arr_form1_data['subdiv_code'] = $data_details_id->subdivision;
+							$arr_form1_data['pin'] = $data_details_id->pin;
+							$arr_form1_data['user_id'] = $data_details_id->usr_id;
+							$arr_form1_data['police_station'] = $data_details_id->police_station;
+							$arr_form1_data['post_office'] = $data_details_id->post_office;
+							$arr_form1_data['village_premises'] = $data_details_id->village_premises;
+							$arr_form1_data['division_code'] = $data_details_id->division_id;
+							$arr_form1_data['boiler_reg_no'] = $data_details_id->boiler_reg_no;
+							$arr_form1_data['factory_name'] = $data_details_id->factory_name;
+							$arr_form1_data['inspector_uid'] = $result_uid_sender_fetch->uid;
+							$query_form1 =db_insert('boiler_renewal_form1_data')
+							->fields($arr_form1_data)
+							->execute();									
+							drupal_set_message('Your Payment has been processed successfully. Your Inspection Application for Dry Test has been sent to the respective Inspector.' );
+						}
+					}
+					else if($tmp == '3')
+					{
+						$sms_pay_type = 'Pipeline FormIIIA Registration';
+						$form3a_fees_fields['status']=1;
+						$select_report_id=db_query("select form3a_serial_id from form3a_tag where id=".$form3a_tag_id."");
+						$fetch_report_id=$select_report_id->fetchObject();
+						if($fetch_report_id->form3a_serial_id=='')
+						{
+						$query_form3a_no=db_query("select max(substring(form3a_serial_id,13,4)) as form3a_serial_id from form3a_tag where form3a_serial_id like 'L/IIIA/".date('Y')."/%'");
+						if($query_form3a_no->rowCount()!=0)
+						{
+							$result_form3a_no=$query_form3a_no->fetchObject();
+							$digit=$result_form3a_no->form3a_serial_id;
+							$digit=$digit+1;
+							$len=strlen((string)$digit);
+							if($len==1)
+							$digit='000'.$digit;
+							else if($len==2)
+							$digit='00'.$digit;
+							else if($len==3)
+							$digit='0'.$digit;
+							else if($len==4)
+							$digit=$digit;
+							$report_id='L/IIIA/'.date('Y').'/'.$digit;
+						}
+						else
+						{
+							$report_id='L/IIIA/'.date('Y').'/0001';
+						}
+						$form3a_tag_fields['form3a_serial_id']=$report_id;
+						}
+						$form3a_tag_fields['payment_date'] = date('Y-m-d');
+						$form3a_tag_fields['status'] = 1;
+						
+						$form3a_fees_sql = db_update('form3a_fees_details')
+											->fields($form3a_fees_fields)
+											->condition('form3a_tag_id', $form3a_tag_id)
+											->execute();
+							
+						$form3a_tag_sql = db_update('form3a_tag')
+											->fields($form3a_tag_fields)
+											->condition('id', $form3a_tag_id)
+											->execute();
+								
+						if($form3a_fees_sql && $form3a_tag_sql)
+						{
+							drupal_set_message('Your Payment has been processed successfully. Please digitally sign and upload FORM IIIA pdf ducuments to complete application.');
+						}
+					}
+					else if($tmp=='6')
+					{
+						if($type_of_req==1)
+						{
+							$sms_pay_type = 'Extra Fees for Registration';
+						}
+						else if($type_of_req==2)
+						{
+							$sms_pay_type = 'Extra Fees for Registration';
+						}
+						else if($type_of_req==3)
+						{
+							$sms_pay_type = 'Extra Fees for Pipeline Registration';
+						}
+						$feesfieldstatus['status']=1;
+						$feesfieldstatus['payment_date'] = date('Y-m-d');
+						$select_msg_id=db_query("select message_id from message_count where boiler_enroll_no=".$boiler_enroll_no." and boiler_req_id=".$boiler_req_id."");
+						$fetch_msg_id=$select_msg_id->fetchObject();
+						$msg_id=$fetch_msg_id->message_id;
+						
+						$sql4=db_query("update message_extra_fees set status=1, payment_date=".date('Y-m-d')." where message_id=".$message_id."");
+					}
+					else if($tmp==4)
+					{
+						
+						$date_diff = 30;
+						$select_repairer_details=db_query("select red.repairer_renewal_request_id,rrr.type,rrr.repairer_enroll_no from repairer_epayments_data red,repairer_renewal_request rrr where red.dept_ref_no='".$dept_ref_no."' and red.repairer_renewal_request_id=rrr.id");
+						$fetch_repairer_details=$select_repairer_details->fetchObject();
+						if($fetch_repairer_details->type==1)
+						{
+							
+						$sms_pay_type = 'Recognition';
+						}
+						else if($fetch_repairer_details->type==2)
+						{
+							$sms_pay_type = 'Renewal';
+						}
+						else if($fetch_repairer_details->type==3)
+						{
+							$sms_pay_type = 'Endorsement';
+						}
+						$feesfieldstatus=array();
+						$feesfieldstatus['paid_status']=1;
+						$feesfieldstatus['payment_date'] = date('Y-m-d');
+						$sql_repairer = db_update('repairer_renewal_fees_details')
+						->fields($feesfieldstatus)
+						->condition('repairer_renewal_request_id', $fetch_repairer_details->repairer_renewal_request_id)
+						->condition('renewal_type', $fetch_repairer_details->type)
+						->execute();
+					}
+					else if($tmp==5)
+					{
+						$select_repairer_details=db_query("select red.repairer_renewal_request_id,rrr.type,rrr.repairer_enroll_no from repairer_epayments_data red,repairer_renewal_request rrr where red.dept_ref_no='".$dept_ref_no."' and red.repairer_renewal_request_id=rrr.id");
+						$fetch_repairer_details=$select_repairer_details->fetchObject();
+						
+						$select_repairer_extra_details=db_query("select red.fees_type from repairer_epayments_data red,repairer_epayments_receive_data rerd where red.dept_ref_no='".$dept_ref_no."' and red.repairer_renewal_request_id=".$fetch_repairer_details->repairer_renewal_request_id." and red.dept_ref_no=rerd.dept_ref_no");
+						$fetch_repairer_extra_details=$select_repairer_extra_details->fetchObject();
+						
+						
+						if($fetch_repairer_details->type==1)
+						{
+							
+						$sms_pay_type = 'Recognition';
+						}
+						else if($fetch_repairer_details->type==2)
+						{
+							$sms_pay_type = 'Renewal';
+						}
+						else if($fetch_repairer_details->type==3)
+						{
+							$sms_pay_type = 'Endorsement';
+						}
+						if($fetch_repairer_extra_details->fees_type==1)
+						{
+						$feesfieldstatus=array();
+						$feesfieldstatus['extra_fees_status']=1;
+						$feesfieldstatus['extra_fees_payment_date'] = date('Y-m-d');
+						$sql_repairer = db_update('repairer_renewal_fees_details')
+						->fields($feesfieldstatus)
+						->condition('repairer_renewal_request_id', $fetch_repairer_details->repairer_renewal_request_id)
+						->condition('renewal_type', $fetch_repairer_details->type)
+						->execute();
+						$select_error=db_query("select status from repairer_correction_list where renewal_req_id=".$fetch_repairer_details->repairer_renewal_request_id." and status=0 and error_type=2");
+		if($select_error->rowCount()>0)
+		{
+			$fieldvalueerror=array();
+			$fieldvalueerror['status']=1;
+			$sql_error_correction = db_update('repairer_correction_list')
+			->fields($fieldvalueerror)
+			->condition('renewal_req_id', $fetch_repairer_details->repairer_renewal_request_id)
+			->condition('error_type', 2)
+			->execute();
+		}
+						}
+					}
+	if($tmp == 1 || $tmp == 2 || $tmp==3 || $tmp==6)
+	{
+		if($tmp!=3 && $tmp!=6)
+		{
+		$holiday_query=db_query("select holiday_date from holiday_list");	
+			$holiday_result=$holiday_query->fetchAll();					 
+			while($date_diff > 0){
+				$curr_date = date("Y-m-d",strtotime("+1 day", strtotime($curr_date)));
+				$day = strtolower(date("l",strtotime($curr_date)));
+				if($day == "saturday" || $day == "sunday") {
+					//do nothing
+				} else {									
+					$date_diff--;
+				}
+				foreach($holiday_result as $holiday_date)
+					  {
+						 if($holiday_date->holiday_date==$curr_date)
+						 {
+							
+						$curr_date = date("Y-m-d",strtotime("+1 day", strtotime($curr_date)));
+						 }
+				}			
+			}
+
+
+		
+		$probable_inspection_dt = date("d-m-Y", strtotime($curr_date));
+		
+		$query1 = db_select('boiler_details', 'bd');
+		$query1 = $query1->fields('bd',array('makers_number','boiler_enroll_no','factory_name','boiler_reg_no','district','subdivision','division_id'));
+		$query1 = $query1->condition('boiler_enroll_no', $boiler_enroll_no);
+		$result1 = $query1->execute();
+		$data = $result1->fetchObject();
+		$boiler_enroll_no = $data->boiler_enroll_no;
+		$boiler_reg_no = $data->boiler_reg_no;
+		$factory_name = $data->factory_name;
+		$district = $data->district;
+		$subdivision = $data->subdivision;
+		$division_id = $data->division_id!='' || $data->division_id!='' ? '' : $data->division_id;
+		
+		
+		$query_ins_det = db_select('b_inspector_assign_master', 'bam');
+		$query_ins_det = $query_ins_det->fields('bam',array('uid'));
+		$query_ins_det = $query_ins_det->condition('district_id', $district);
+		$query_ins_det = $query_ins_det->condition('subdiv_id', $subdivision);
+		$query_ins_det = $query_ins_det->condition('status', 1);
+		if($division_id != '')
+			$query_ins_det = $query_ins_det->condition('division_id', $division_id);
+		$result_ins_det = $query_ins_det->execute();
+		$data_ins = $result_ins_det->fetchObject();
+		$uid_ins = $data_ins->uid;
+	$inspector_array1 =	db_query("select ph_no,full_name from b_inspector_details where uid= ".$uid_ins."");
+	$data2 = $inspector_array1->fetchAssoc();
+	$insp_phone = $data2['ph_no'];
+	$insp_name = $data2['full_name'];
+	
+	$inspector_array2 =	db_query("select mail from users where uid= ".$uid_ins."");
+	$data_insp_3 = $inspector_array2->fetchAssoc();
+	$insp_mail = $data_insp_3['mail'];
+		
+		}
+	$user_id = $user->uid;
+	$user_array1 =	db_query("select firstname, middlename, lastname, phone from b_user_additional_reg_details where uid= ".$user_id."");
+	$data1 = $user_array1->fetchAssoc();
+	$phone = $data1['phone'];
+	$firstname_app = $data1['firstname'];
+	$middlename_app = $data1['middlename'];
+	$lastname_app = $data1['lastname'];
+	
+	$user_array2 =	db_query("select mail from users where uid = ".$user_id."");
+	$app_data_2 = $user_array2->fetchAssoc();
+	$applicant_mail = $app_data_2['mail'];
+	
+	
+
+	if($tmp==1 || $tmp==2)
+	{
+	$msg = 'Your payment for '.$sms_pay_type.' of '.$boiler_enroll_no.' is successful. Your date of inspection will be within '.$probable_inspection_dt;
+	$msg2 = 'A new application for '.$sms_pay_type.' has been submitted with enrollment no '.$boiler_enroll_no.'('.$factory_name.'). Date of inspection will be within '.$probable_inspection_dt;
+	}
+	else if($tmp==3)
+	{
+	$msg = 'Your Payment has been processed successfully. Please digitally sign and upload FORM IIIA pdf ducuments to complete application.';
+	$msg2 = '';
+	}
+	else if($tmp==6)
+	{
+	$msg = 'Your extra fess payment for '.$sms_pay_type.' of '.$boiler_enroll_no.' is successful.';
+	$msg2 = 'A new application for '.$sms_pay_type.' has been submitted with enrollment no '.$boiler_enroll_no.'('.$factory_name.').';
+	}
+	/* SEND SMS AND MAIL FUNCTIONALITY */
+	
+	send_sms($phone,$msg);	//sms to applicant
+	if($msg2 !='' || !empty($msg2))
+	{
+		send_sms($insp_phone,$msg2);  //sms to inspector
+	}
+	/*MAIL TO APPLICANT */
+	$name_to_app = $firstname_app.' '.$middlename_app.' '.$lastname_app;		
+	$to_app = $applicant_mail;
+	$subject_app = "Successful Payment on WBBOILER Govt.Of WB";	
+	$message_app = "Dear ".$name_to_app."\r\n";
+	$message_app .= $msg;	
+	$message_app .= ""."\r\n";	
+	$message_app .= "Thanks"."\r\n". "WBBOILER Team"."\r\n"."Govt. Of West Bengal";		
+	$headers_app = "From:Boiler Directorate<no-reply.wbboilers-wb@gov.in>" . "\r\n";
+	mail($to_app,$subject_app,$message_app,$headers_app);
+	/*MAIL TO APPLICANT */
+	
+	/*MAIL TO INSPECTOR */
+	if($msg2 !='' || !empty($msg2))
+	{
+	$name_to_insp = $insp_name;		
+	$to_insp = $insp_mail;
+	$subject_insp = "New Application for Boiler/Economiser Registration/Renewal WBBOILER Govt.Of WB";	
+	$message_insp = "Dear ".$name_to_insp."\r\n";
+	$message_insp .= $msg2;
+	$message_insp .= ""."\r\n";	
+	$message_insp .= "Thanks"."\r\n". "WBBOILER Team"."\r\n"."Govt. Of West Bengal";		
+	$headers_insp = "From:Boiler Directorate<no-reply.wbboilers-wb@gov.in>" . "\r\n";
+	mail($to_insp,$subject_insp,$message_insp,$headers_insp);
+	}
+	/*MAIL TO INSPECTOR */
+		
+	/* SEND SMS AND MAIL FUNCTIONALITY */
+	
+   }
+	
+	
+		if($tmp == 3)
+		{
+			$redirect_to = 'formIIIA_tag';
+		}
+		else if($tmp == 4 || $tmp==5)
+		{
+			$redirect_to = 'repairer-dashboard';
+		}
+		else if($tmp == 1 || $tmp==2 || $tmp==6)
+		{
+			$redirect_to = 'applicant_details';
+		}
+		
+		$view_received_data = '<div class="panel panel-success"><div class="panel-heading">Payment Details</div><div class="panel-body">
+			  <table width="100%" class="application_view">   			 
+				 <tr>
+					 <td>Bank Code</td>
+					 <td>'.$result_grips['bank_cd'].'</td>
+				 </tr>
+				 <tr>
+					 <td>Bank Transaction Id</td>
+					 <td>'.$result_grips['banktransactionid'].'</td>
+				 </tr>
+				 <tr>
+					 <td>Bank Transaction Status</td>
+					 <td>'.$result_grips['banktransactionstatus'].'</td>
+				 </tr>
+				 <tr>
+					 <td>Bank Transaction Message</td>
+					 <td>'.$result_grips['banktransactionmessage'].'</td>
+				 </tr>
+				 <tr>
+					 <td>Government Unique Reference No. (GRN)</td>
+					 <td>'.$result_grips['challanrefid'].'</td>
+				 </tr>
+				 <tr>
+					 <td>Amount</td>
+					 <td>'.$result_grips['challanamount'].'</td>
+				 </tr>
+				 <tr>
+					 <td>Date Time of Transaction</td>
+					 <td>'.$result_grips['banktranstimestamp'].'</td>
+				 </tr>
+				 <tr>
+					 <td colspan="2">Click '.l('here',$redirect_to).' to redirect to the dashboard</td>					 
+				 </tr>		 
+			  </table></div></div>';
+				}
+				else
+				{
+					if($tmp == 3)
+					{
+						$redirect_to = 'formIIIA_tag';
+					}
+					else if($tmp == 4 || $tmp==5)
+					{
+						$redirect_to = 'repairer-dashboard';
+					}
+					else if($tmp == 1 || $tmp==2 || $tmp==6)
+					{
+						$redirect_to = 'applicant_details';
+					}
+					$view_received_data = '<div class="panel panel-success"><div class="panel-heading">Payment Details</div><div class="panel-body">There is some error.<br>Click '.l('here',$redirect_to).' to redirect to the dashboard</div></div>';
+				}
+			}	
+		}
+		
+	
+	
+	if(isset($_SESSION['param_type']) && ($_SESSION['param_type']=='32' || $_SESSION['param_type']=='33'))
+	{
+		drupal_goto('https://wblabour.gov.in/dashboard1/'.$_SESSION['param_username'].'/'.$_SESSION['param_username']);
+	}
+	else
+	{
+	return $view_received_data;
+	}
+	}
+catch (Exception $e) {
+    $transaction->rollback();
+    watchdog_exception('my_type', $e);
+	drupal_set_message(t("Something went wrong.Please try after some time.",'warning')); 
+	drupal_goto('applicant-details');
+}
+	
+	} 
+	
+}
+
+
+function epaments_process($form, &$form_state){	
+
+	 drupal_add_css(drupal_get_path('module', 'grips_epayments').'/css/grips_epayments.css');
+	 drupal_add_js(drupal_get_path('module', 'grips_epayments') . '/js/grips_epayments.js');
+	 print_r($_POST);
+	 $applicant_name = $_POST['factory_occupier_name'];
+	 $payment_mode	 = $_POST['payment_mode'];
+	echo $factory_service_name	 = $_POST['factory_service_name'];
+	 $dept_cd		 ='';
+	 if($factory_service_name == 'Registration and grant of License'){
+		 $service_cd = '';
+	 }
+	
+	 
+	  $xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>"
+     ."<GRIPS_EPAYMENT>"
+     ."<Dept_Cd>".$dept_cd."</Dept_Cd>"
+     ."<Service_Cd>".$service_cd."</Service_Cd>"
+     ."<Dept_Ref_No>".$dept_ref_no."</Dept_Ref_No>"          
+     ."<Identification_No>".$identification_no."</Identification_No>"
+     ."<Deposited_By>".ucwords($applicant_name)."</Deposited_By>"
+     ."<Depositor_Mobile_No>".$depositor_mobile_no."</Depositor_Mobile_No>"
+     ."<Depositor_Email_Id>".$depositor_email_id."</Depositor_Email_Id>"
+     ."<In_Favor_Of>".$in_favor_of."</In_Favor_Of>"
+     ."<Rtn_Prd_Frm>".$rtn_prd_frm."</Rtn_Prd_Frm>"
+     ."<Rtn_Prd_To>".$rtn_prd_to."</Rtn_Prd_To>"
+     ."<Payment_Mode>".$payment_mode."</Payment_Mode>"
+     ."<Total_Amount>".$total_amt."</Total_Amount>"
+     ."<Remarks>".$remarks."</Remarks>"
+     .$payemnt_xml
+     ."</GRIPS_EPAYMENT>";
+	  echo $xmlString;
+	 
+	 die();
+	 $xmlString = isset($form_state['values']['xmlString']) && !empty($form_state['values']['xmlString']) ? $form_state['values']['xmlString'] : ''; 
+	 //print_r($form_state['values']['xmlString']); die;
+	 $Dept_Cd = isset($form_state['values']['Dept_Cd']) && !empty($form_state['values']['Dept_Cd']) ? $form_state['values']['Dept_Cd'] : '';
+	  if(isset($_POST['extra_type']) && $_POST['extra_type']!='')
+		$extra_type	= $_POST['extra_type'];
+	 else
+		$extra_type = isset($form_state['values']['extra_type']) && !empty($form_state['values']['extra_type']) ? $form_state['values']['extra_type'] : '';
+	if(isset($_POST['message_id']) && $_POST['message_id']!='')
+		$message_id = $_POST['message_id'];
+	else
+		$message_id = isset($form_state['values']['message_id']) && !empty($form_state['values']['message_id']) ? $form_state['values']['message_id'] : '';
+	 if(isset($_POST['boiler_enroll_no']) && $_POST['boiler_enroll_no']!='')
+		$boiler_enroll_no	= $_POST['boiler_enroll_no'];
+	 else
+		$boiler_enroll_no = isset($form_state['values']['boiler_enroll_no']) && !empty($form_state['values']['boiler_enroll_no']) ? $form_state['values']['boiler_enroll_no'] : ''; 
+	 
+	 if(isset($_POST['boiler_req_id']) && $_POST['boiler_req_id']!='')
+		$boiler_req_id	= $_POST['boiler_req_id'];
+	 else
+		$boiler_req_id = isset($form_state['values']['boiler_req_id']) && !empty($form_state['values']['boiler_req_id']) ? $form_state['values']['boiler_req_id'] : '';
+		
+	 if(isset($_POST['type']) && $_POST['type']!='')
+		$type=$_POST['type'];
+	else
+		$type = isset($form_state['values']['type']) && !empty($form_state['values']['type']) ? $form_state['values']['type'] : ''; 
+	
+	 if(isset($_POST['payment_mode']) && $_POST['payment_mode']!='')
+		$payment_mode = $_POST['payment_mode'];
+	else
+		$payment_mode = isset($form_state['values']['payment_mode']) && !empty($form_state['values']['payment_mode']) ? $form_state['values']['payment_mode'] : '';
+
+	if($type==3)
+	{	
+	 if(isset($_POST['form3a_edit']) && $_POST['form3a_edit']!='')
+		$form3a_edit = $_POST['form3a_edit'];
+	else
+		$form3a_edit = isset($form_state['values']['form3a_edit']) && !empty($form_state['values']['form3a_edit']) ? $form_state['values']['form3a_edit'] : '';
+		
+	}
+	//echo $Dept_Cd; exit;	
+	$bd_arr =	db_query("select construction_type,makers_number,factory_name,boiler_reg_no,boiler_enroll_no from boiler_details where boiler_enroll_no= ".$boiler_enroll_no."");
+	 $bd_arr_data = $bd_arr->fetchAssoc();
+	 $factory_name = $bd_arr_data['factory_name'];
+	 $maker_no  = $bd_arr_data['makers_number'];
+	 $boiler_enroll_no = $bd_arr_data['boiler_enroll_no']?$bd_arr_data['boiler_enroll_no']:'-NIL-';
+	 $boiler_reg_no = $bd_arr_data['boiler_reg_no'];
+	 if($bd_arr_data['construction_type'] == 'e')
+	 	$cons_type = 'Economiser';
+	 else if($bd_arr_data['construction_type'] == 'b')
+	 	$cons_type = 'Boiler';
+	 else
+	 	$cons_type = '-NIL-';
+	$query1 = db_select('boiler_details', 'bd');
+	$query1 = $query1->fields('bd');
+	$query1 = $query1->condition('boiler_enroll_no', $boiler_enroll_no);
+	$result1 = $query1->execute();
+	$data = $result1->fetchObject();
+	
+	$district_id = $data->district;
+	if(	$data->district!='')
+	{	
+	$query2 = db_select('district_master', 'dist');
+	$query2 = $query2->fields('dist', array('district_name'));
+	$query2 = $query2->condition('district_code', $district_id);
+	$result2 = $query2->execute();
+	$data2 = $result2->fetchObject();
+	}
+	if($data->subdivision!='')
+	{
+	$subdivision_id = $data->subdivision;			
+	$query3 = db_select('sub_division', 'sub_div');
+	$query3 = $query3->fields('sub_div', array('sub_div_name'));
+	$query3 = $query3->condition('sub_div_code', $subdivision_id);
+	$result3 = $query3->execute();
+	$data3 = $result3->fetchObject();
+	}
+	if($data->areatype != NULL)
+		{
+		$areatype = $data->areatype;
+		if($district_id != 17)
+		{
+			switch($areatype){
+				case 'B': $area = 'Block'; break;
+				case 'M': $area = 'Municipality'; break;
+				case 'C': $area = 'Corporation'; break;
+				case 'S': $area = 'SEZ'; break;
+				case 'N': $area = 'Notified Area'; break;
+				case 'O': $area = 'Other'; break;	
+			}
+		}
+		else
+		{
+			$query_borough=db_query("select block_mun_name from block_mun_master where block_code=".$areatype."");
+			$fetch_query_borough=$query_borough->fetchObject();
+			$area=$fetch_query_borough->block_mun_name;
+		}
+		}
+	if($data->areatype != NULL)
+	{
+	$bmcsno_id = $data->bmcsno;
+	if($district_id!=17)
+	{
+		
+	$query4 = db_select('block_mun_master', 'bmcsno');
+	$query4 = $query4->fields('bmcsno',array('block_mun_name'));
+	$query4 = $query4->condition('block_code', $bmcsno_id);
+	$result4 = $query4->execute();
+	$data4 = $result4->fetchObject();
+	$block_mun_name=$data4->block_mun_name;
+	}
+	else
+	{
+	$query4 = db_select('ward_master', 'wm');
+	$query4 = $query4->fields('wm',array('ward_name'));
+	$query4 = $query4->condition('block_code', $areatype);
+	$result4 = $query4->execute();
+	$data4 = $result4->fetchObject();
+	$block_mun_name=$data4->ward_name;
+	}
+	}
+	if($data->police_station!= NULL)
+	{
+	$police_station_id = $data->police_station;			
+	$query5 = db_select('police_station', 'ps');
+	$query5 = $query5->fields('ps',array('name_of_police_station'));
+	$query5 = $query5->condition('police_station_code', $police_station_id);
+	$result5 = $query5->execute();
+	$data5 = $result5->fetchObject();
+	}
+
+	$village_premises = isset($data->village_premises) && $data->village_premises!= '' ?$data->village_premises.', ':'';
+	$areatype = isset($data->areatype) && $data->areatype!= ''?$block_mun_name.', ':'';
+	$sub_div_name = isset($data->subdivision) && $data->subdivision!= ''?$data3->sub_div_name.', ':'';
+	$district_name = isset($data->district) && $data->district!= ''?$data2->district_name.', ':'';
+	$police_station = isset($data->police_station) && $data->police_station!= ''?$data5->name_of_police_station.', ':'';
+	$post_office = isset($data->post_office) && $data->post_office != '' ?$data->post_office.', ':'';
+	$pin = isset($data->pin) && $data->pin!= ''?$data->pin:'';	
+	
+	//$factory_addr = 'test address'; 
+	$factory_addr = $areatype.$sub_div_name.$district_name.$police_station.$post_office.$pin;
+	$factory_addr=str_replace(array(',',':', '-', '/', '*','_','.','(',')'), ' ', $factory_addr);
+	if($extra_type=='')
+	 {
+	 if($type==2)
+	 {
+		$fees_query1 = db_query("select repair_required from boiler_renewal_details where boiler_enroll_no= ".$boiler_enroll_no." and id=".$boiler_req_id."");
+		$data_new=$fees_query1->fetchObject();
+		$repair_required = $data_new->repair_required;
+		if($repair_required == 1){
+			$fees_array =	db_query("select * from boiler_renewal_fees_details where boiler_enroll_no= ".$boiler_enroll_no." and boiler_req_id=".$boiler_req_id." and status=2");
+		}else{
+			$fees_array =	db_query("select * from boiler_renewal_fees_details where boiler_enroll_no= ".$boiler_enroll_no." and boiler_req_id=".$boiler_req_id." and status=0");
+		}
+		
+	 }
+	 else if($type==1)
+	 {
+	 	 $fees_array =	db_query("select * from boiler_fees_details where boiler_enroll_no= ".$boiler_enroll_no."");
+	 }
+	 else if($type==3)
+	 {
+		 $fees_array =	db_query("select * from form3a_fees_details where boiler_enroll_no= ".$boiler_enroll_no." and boiler_req_id=".$boiler_req_id."");
+	 }
+	 
+	 $data_fees = $fees_array->fetchAssoc();
+	 if($type==1)
+	 {
+	 $boiler_reg_fees = $data_fees['boiler_reg_fees'];
+	 }
+	 else if($type==2)
+	 {
+		 	 $boiler_reg_fees = 0;
+
+	 }
+	 if($type==1 || $type==2)
+	 {
+	 $boiler_inspection_fees = $data_fees['boiler_inspection_fees'];
+	 $boiler_ta_fees = $data_fees['boiler_ta_fees'];
+	 //$boiler_ta_fees = 10.00;
+	 $holiday_fees = $data_fees['holiday_fees'];
+	 $payableFees = $boiler_reg_fees + $boiler_inspection_fees + $holiday_fees;
+	
+	 //$payableFees = 10.00;
+	 $total_amt = $payableFees + $boiler_ta_fees;
+	 }
+	 else if($type==3)
+	 {
+		 if($form3a_edit==1)
+		 {
+			$previously_paid_fees=0;
+			$paid_fees_query=db_query("select bed.total_amount from boiler_epayments_receive_data as berd, boiler_epayments_data as bed where bed.boiler_enroll_no::integer=".$boiler_enroll_no." and bed.boiler_req_id::integer=".$boiler_req_id." and type::integer=3 and berd.transaction_id = bed.identification_no");
+			foreach($paid_fees_query as $row_paid_fees_query)
+			{
+				$previously_paid_fees=$previously_paid_fees+$row_paid_fees_query->total_amount;
+			}
+			$total_amt=$data_fees['total_fees']-$previously_paid_fees;		
+		 }
+		 else
+		 {
+		    $total_amt = $data_fees['total_fees']; 
+		 }
+	 }	
+	 }
+	  else
+	 {
+		 $fees_array_extra=db_query("select mef.status,mef.extra_fees_amount,mef.inspection_fees,mef.ta_fees from message_extra_fees mef, message_count mc where mc.boiler_enroll_no=".$boiler_enroll_no." and boiler_req_id=".$boiler_req_id." and type=".$type." and mc.message_id=".$message_id." and mef.message_id=mc.message_id");
+	 	 
+	 $data_fees = $fees_array_extra->fetchAssoc();	
+	 $total_amt = $data_fees['extra_fees_amount'];
+	 $inspection_fees = $data_fees['inspection_fees'];
+	 $ta_fees = $data_fees['ta_fees'];
+	 
+	 }
+	 	 
+	 $user_id = $data->usr_id;
+	 $user_array1 =	db_query("select firstname,middlename,lastname,phone from b_user_additional_reg_details where uid= ".$user_id."");
+	 $data1 = $user_array1->fetchAssoc();
+	 
+	 $user_array2 =	db_query("select mail from users where uid= ".$user_id."");
+	 $data2 = $user_array2->fetchAssoc();
+	
+	 $firstname = $data1['firstname'];
+	 $middlename = $data1['middlename'];
+	 $lastname = $data1['lastname'];
+	 $phone = $data1['phone'];
+	 $mail = $data2['mail'];
+	 $dept_cd = '086';
+	 $service_cd = '301';
+	 
+	 $status = $data_fees['status'];
+	
+	 $fact_nm = str_replace(array(':', '-', '/', '*','_','.','(',')'),' ', $factory_name);
+	 $in_favor_of = $fact_nm;
+	 $factory_addr = str_replace(array(',',':', '-', '/', '*','_','.','(',')'),' ', $factory_addr);
+	 $deposited_by = ucwords($firstname.' '.$middlename.' '.$lastname);
+	 $depositor_mobile_no = $phone;
+	 $depositor_email_id  = $mail;
+	 
+	 /*$uno = substr(time(),0,9);
+	 $dept_ref_no = '0862016'.$uno;*/
+	 
+	 $tmp_arr_idn_no =	db_query("select max(id) as max_id from boiler_epayments_data");
+	 $tmp_idn_no_data = $tmp_arr_idn_no->fetchAssoc();
+	 $mid = $tmp_idn_no_data['max_id']+1;
+	 //$p = 9-strlen($mid);
+	 $uno = str_pad($mid, 9, "0", STR_PAD_LEFT);
+	 //$uno = rand(pow(10, $p - 1) - 1, pow(10, $p) - 1).$mid;
+	 //$uno1 = rand(pow(10, $p - 2) - 1, pow(10, $p - 1) - 1).$mid;
+	 $dept_ref_no = '086'.date('Y').$uno;
+	  if($extra_type=='')
+	 {
+	 if($type==2)
+	 {
+		 $x='2';
+		 $remarks = 'Renewal of '.$cons_type.' Regn No : '.$boiler_reg_no.' and Enrollment No :'.$boiler_enroll_no;
+	 }
+	 else if($type==1)
+	 {
+		 $x='1';
+		 $remarks = 'Registration of '.$cons_type.' MK No : '.$maker_no.' and Enrollment No :'.$boiler_enroll_no;
+	 }
+	 else if($type==3)
+	 {
+		 $x='3';
+		 $remarks = 'Pipeline Registration of '.$cons_type.' MK Number No : '.$maker_no.' and Enrollment No :'.$boiler_enroll_no;
+	 }
+	 }
+	 else
+	 {
+		 $x='6';
+		 if($type==2)
+	 {
+		 
+		 $remarks = 'Extra Fees for Renewal of '.$cons_type.' Regn No : '.$boiler_reg_no.' and Enrollment No :'.$boiler_enroll_no;
+	 }
+	 else if($type==1)
+	 {
+		 
+		 $remarks = 'Extra Fees of Registration of '.$cons_type.' MK No : '.$maker_no.' and Enrollment No :'.$boiler_enroll_no;
+	 }
+	 else if($type==3)
+	 {
+		 
+		 $remarks = 'Extra Fees of Pipeline Registration of '.$cons_type.' MK No : '.$maker_no.' and Enrollment No :'.$boiler_enroll_no;
+	 }
+	 }
+	 //$identification_no = '08600208602'.$uno.$x;
+	 //$identification_no = '08612308615'.$uno.$x;
+	 $identification_no = $dept_ref_no.$x;
+	 //$identification_no = '08600208602'.$uno1.$x;
+	 
+	 $rtn_prd_frm = date("dmY");
+	 $rtn_prd_to  = date("dmY");
+	 //$payment_mode = 1;
+	 //$remarks = 'Boiler Economisers fees Online Payment';
+	 
+	 $epayments_data = array(
+	 				'dept_cd' 				=> $dept_cd,								
+       				'service_cd' 			=> $service_cd,
+					'dept_ref_no' 			=> $dept_ref_no,
+					'identification_no' 	=> $identification_no,
+					'deposited_by' 			=> ucwords($firstname.' '.$middlename.' '.$lastname),
+					'depositor_mobile_no' 	=> $depositor_mobile_no,
+					'depositor_email_id'	=> $depositor_email_id,
+					'rtn_prd_frm'			=> date("Y-m-d"),
+					'rtn_prd_to'			=> date("Y-m-d"),
+					'payment_mode'			=> $payment_mode,
+					'total_amount'			=> $total_amt,
+					'remarks'				=> $remarks,
+      );
+	  
+	  $form['type'] = array(
+				'#type' => 'hidden',
+				'#value' => $type,				  
+	  );
+	  
+	  $form['dept_ref_no'] = array(
+				'#type' => 'hidden',
+				'#value' => $dept_ref_no,				  
+	  );
+	  
+	  $form['maker_no'] = array(
+				'#type' => 'hidden',
+				'#value' => $maker_no,				  
+	  );
+	  
+	   $form['boiler_enroll_no'] = array(
+				'#type' => 'hidden',
+				'#value' => $boiler_enroll_no,				  
+	  );
+	  $form['boiler_req_id'] = array(
+				'#type' => 'hidden',
+				'#value' => $boiler_req_id,				  
+	  );
+	  
+	  $form['identification_no'] = array(
+				'#type' => 'hidden',
+				'#value' => $identification_no,				  
+	  );
+	  
+	  $form['deposited_by'] = array(
+				'#type' => 'hidden',
+				'#value' => $deposited_by,				  
+	  );
+	  
+	  $form['depositor_mobile_no'] = array(
+				'#type' => 'hidden',
+				'#value' => $depositor_mobile_no,				  
+	  );
+	  
+	  $form['depositor_email_id'] = array(
+				'#type' => 'hidden',
+				'#value' => $depositor_email_id,				  
+	  );
+	  $form['in_favor_of'] = array(
+				'#type' => 'hidden',
+				'#value' => $in_favor_of,				  
+	  );
+	  $form['rtn_prd_frm'] = array(
+				'#type' => 'hidden',
+				'#value' => date("Y-m-d"),				  
+	  );
+	  $form['rtn_prd_to'] = array(
+				'#type' => 'hidden',
+				'#value' => date("Y-m-d"),				  
+	  );
+	  $form['payment_mode'] = array(
+				'#type' => 'hidden',
+				'#value' => $payment_mode,				  
+	  );
+	  $form['total_amount'] = array(
+				'#type' => 'hidden',
+				'#value' => $total_amt,				  
+	  );
+	  $form['remarks'] = array(
+				'#type' => 'hidden',
+				'#value' => $remarks,				  
+	  );
+	   if($extra_type!='')
+	  {
+		   $form['message_id'] = array(
+				'#type' => 'hidden',
+				'#value' => $message_id,				  
+	  );
+	  }	
+	   
+	/* -------------------------- LIVE XML ------------------------------------*/
+	/*if($extra_type=='')    ------------------------------------------------------------------------Commented out for new grips integration-----------------------------------
+	{
+	if($type==1 || $type==2)
+	{
+	 $payemnt_xml="<Repeated_head row=\"1\">"
+     ."<Head_Of_Account>0230-00-103-002-27</Head_Of_Account>"
+     ."<Amount>".$boiler_ta_fees."</Amount>"
+     ."</Repeated_head>"
+	 ."<Repeated_head row=\"2\">"
+     ."<Head_Of_Account>0230-00-103-001-14</Head_Of_Account>"
+     ."<Amount>".$payableFees."</Amount>"
+     ."</Repeated_head>";
+	}
+	else if($type==3)
+	{
+	 $payemnt_xml="<Repeated_head row=\"1\">"
+     ."<Head_Of_Account>0230-00-103-002-27</Head_Of_Account>"
+     ."<Amount>".$total_amt."</Amount>"
+     ."</Repeated_head>";
+	}
+	}
+	else
+	{
+		if($ta_fees != 0 && $inspection_fees != 0){
+			 $payemnt_xml="<Repeated_head row=\"1\">"
+			 ."<Head_Of_Account>0230-00-103-002-27</Head_Of_Account>"
+			 ."<Amount>".$ta_fees."</Amount>"
+			 ."</Repeated_head>"
+			 ."<Repeated_head row=\"2\">"
+			 ."<Head_Of_Account>0230-00-103-001-14</Head_Of_Account>"
+			 ."<Amount>".$inspection_fees."</Amount>"
+			 ."</Repeated_head>";	
+		}else if($ta_fees == 0 && $inspection_fees > 0){
+			$payemnt_xml="<Repeated_head row=\"1\">"
+			 ."<Head_Of_Account>0230-00-103-001-14</Head_Of_Account>"
+			 ."<Amount>".$inspection_fees."</Amount>"
+			 ."</Repeated_head>";
+		}else if($ta_fees > 0 && $inspection_fees == 0){
+			$payemnt_xml="<Repeated_head row=\"1\">"
+			 ."<Head_Of_Account>0230-00-103-002-27</Head_Of_Account>"
+			 ."<Amount>".$ta_fees."</Amount>"
+			 ."</Repeated_head>";	
+		}
+	}      ------------------------------------------------------------------------Commented out for new grips integration-----------------------------------*/
+	
+	
+	$payemnt_xml="<Repeated_head row=\"1\">"
+			 ."<Head_Of_Account>0230-00-103-001-14</Head_Of_Account>"
+			 ."<Amount>".$total_amt."</Amount>"
+			 ."</Repeated_head>";
+	
+	//$deposited_by='xyz';
+	
+	 $xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>"
+     ."<GRIPS_EPAYMENT>"
+     ."<Dept_Cd>".$dept_cd."</Dept_Cd>"
+     ."<Service_Cd>".$service_cd."</Service_Cd>"
+     ."<Dept_Ref_No>".$dept_ref_no."</Dept_Ref_No>"          
+     ."<Identification_No>".$identification_no."</Identification_No>"
+     ."<Deposited_By>".ucwords($firstname.' '.$middlename.' '.$lastname)."</Deposited_By>"
+     ."<Depositor_Mobile_No>".$depositor_mobile_no."</Depositor_Mobile_No>"
+     ."<Depositor_Email_Id>".$depositor_email_id."</Depositor_Email_Id>"
+     ."<In_Favor_Of>".$in_favor_of."</In_Favor_Of>"
+     ."<Rtn_Prd_Frm>".$rtn_prd_frm."</Rtn_Prd_Frm>"
+     ."<Rtn_Prd_To>".$rtn_prd_to."</Rtn_Prd_To>"
+     ."<Payment_Mode>".$payment_mode."</Payment_Mode>"
+     ."<Total_Amount>".$total_amt."</Total_Amount>"
+     ."<Remarks>".$remarks."</Remarks>"
+     .$payemnt_xml
+     ."</GRIPS_EPAYMENT>";
+	 
+	/* -------------------------- LIVE XML ------------------------------------*/
+	
+	
+	/* -------------------------- TESTING XML ------------------------------------*/
+	//echo $total_amt.'---->'.$boiler_ta_fees.'---->'.$payableFees;
+		/*$payableFees = 5;
+		$boiler_ta_fees = 5;
+		$total_amt =10;*/
+		
+	/* $xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>"
+     ."<GRIPS_EPAYMENT>"
+     ."<Dept_Cd>".$dept_cd."</Dept_Cd>"
+     ."<Service_Cd>".$service_cd."</Service_Cd>"
+     ."<Dept_Ref_No>".$dept_ref_no."</Dept_Ref_No>"          
+     ."<Identification_No>".$identification_no."</Identification_No>"
+     ."<Deposited_By>".$deposited_by."</Deposited_By>"
+     ."<Depositor_Mobile_No>".$depositor_mobile_no."</Depositor_Mobile_No>"
+     ."<Depositor_Email_Id>".$depositor_email_id."</Depositor_Email_Id>"
+     ."<In_Favor_Of>".$in_favor_of."</In_Favor_Of>"
+     ."<Rtn_Prd_Frm>".$rtn_prd_frm."</Rtn_Prd_Frm>"
+     ."<Rtn_Prd_To>".$rtn_prd_to."</Rtn_Prd_To>"
+     ."<Payment_Mode>".$payment_mode."</Payment_Mode>"
+     ."<Total_Amount>".$total_amt."</Total_Amount>"
+     ."<Remarks>".$remarks."</Remarks>"
+     ."<Repeated_head row=\"1\">"
+     ."<Head_Of_Account>0230-00-103-002-27</Head_Of_Account>"
+     ."<Amount>".$boiler_ta_fees."</Amount>"
+     ."</Repeated_head>"
+	 ."<Repeated_head row=\"2\">"
+     ."<Head_Of_Account>0230-00-103-001-14</Head_Of_Account>"
+     ."<Amount>".$payableFees."</Amount>"
+     ."</Repeated_head>"
+     ."</GRIPS_EPAYMENT>";*/ 
+	 
+	 /* -------------------------- TESTING XML ------------------------------------*/   
+	 
+	 
+	 $form['epayments']['begin']	=	array(
+									'#prefix'=> '',
+									'#suffix'=>'<div class="panel panel-primary"><div class="panel-heading">Proceed to Payment</div><div class="panel-body">',
+								);	
+		 
+	$form['epayments']['maker_no'] = array(
+						 '#prefix'=> '<fieldset><div class="row"><div class="col-md-6 col-xs-12"><label class="input">',
+						 '#suffix'=>'</label></div>',
+						 '#title' 		=> t('Maker Number'),
+						 '#type' 		=> 'textfield',
+						 '#value' 		=> $maker_no,	
+						 '#attributes' => array('readonly' => 'readonly','class' => array('form-control', 'reg_field')),	  
+	  );
+	  
+	  $form['epayments']['boiler_enroll_no'] = array(
+				'#type' => 'hidden',
+				'#value' => $boiler_enroll_no,				  
+	  );
+	   $form['epayments']['boiler_req_id'] = array(
+				'#type' => 'hidden',
+				'#value' => $boiler_req_id,				  
+	  );
+	  if($extra_type!='')
+	  {
+	   $form['epayments']['extra_type'] = array(
+				'#type' => 'hidden',
+				'#value' => $extra_type,				  
+	  );
+	  }
+	
+	 $form['epayments']['applicant_name'] = array(
+	 					'#prefix'=> '<div class="col-md-6 col-xs-12"><label class="input">',
+						'#suffix'=>'</label></div>',
+						'#title' 		=> t('Applicant Name'),
+						'#type' 		=> 'textfield',
+						'#value' 		=> ucwords($firstname.' '.$middlename.' '.$lastname),
+						'#attributes' => array('readonly' => 'readonly','class' => array('form-control', 'reg_field')),
+						);
+						
+	$form['epayments']['phone'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12"><label class="input">',
+						'#suffix'=>'</label></div>',
+						'#title' 		=> t('Phone'),
+						'#type' 		=> 'textfield',
+						'#value' 		=> $phone,
+						'#attributes' => array('readonly' => 'readonly','class' => array('form-control', 'reg_field')),
+						'#element_validate'=> array('TEXTBOX_NUMERIC_VALIDATE')
+						);	
+	
+	$form['epayments']['email'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12"><label class="input">',
+						'#suffix'=>'</label></div>',
+						'#title' 		=> t('E mail'),
+						'#type' 		=> 'textfield',
+						'#value' 		=> $mail,
+						'#attributes' => array('readonly' => 'readonly','class' => array('form-control', 'reg_field')),
+						'#element_validate'=> array('TEXTBOX_EMAIL_VALIDATE')
+						);
+	if($extra_type=='')
+	{
+	if($type==1)
+	{
+	
+	$form['epayments']['boiler_reg_fees'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12"><label class="input">',
+						'#suffix'=>'</label></div>',
+						'#title' 		=> t('Registration Fees'),
+						'#type' 		=> 'textfield',
+						'#value' 		=> $boiler_reg_fees,
+						'#attributes' => array('readonly' => 'readonly','class' => array('form-control', 'reg_field')),
+						'#element_validate'=> array('TEXTBOX_NUMERIC_VALIDATE')
+						);
+	}
+	if($type==1 || $type==2)
+	{
+	$form['epayments']['boiler_inspection_fees'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12"><label class="input">',
+						'#suffix'=>'</label></div>',
+						'#title' 		=> t('Inspection Fees'),
+						'#type' 		=> 'textfield',
+						'#value' 		=> $boiler_inspection_fees,
+						'#attributes' => array('readonly' => 'readonly','class' => array('form-control', 'reg_field')),
+						'#element_validate'=> array('TEXTBOX_NUMERIC_VALIDATE')
+						);
+	
+	$form['epayments']['boiler_ta_fees'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12"><label class="input">',
+						'#suffix'=>'</label></div>',
+						'#title' 		=> t('Travelling Allowance Fees'),
+						'#type' 		=> 'textfield',
+						'#value' 		=> $boiler_ta_fees,
+						'#attributes' => array('readonly' => 'readonly','class' => array('form-control', 'reg_field')),
+						'#element_validate'=> array('TEXTBOX_NUMERIC_VALIDATE')
+						);
+	
+	$form['epayments']['holiday_fees'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12"><label class="input">',
+						'#suffix'=>'</label></div>',
+						'#title' 		=> t('Holiday Fees (If Applicable)'),
+						'#type' 		=> 'textfield',
+						'#value' 		=> $holiday_fees,
+						'#attributes' => array('readonly' => 'readonly','class' => array('form-control', 'reg_field')),
+						'#element_validate'=> array('TEXTBOX_NUMERIC_VALIDATE')
+						);
+	}
+	else if($type==3)
+	{
+		$form['epayments']['feed_line_upto_100nb'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12"><label class="input">',
+						'#suffix'=>'</label></div>',
+						'#title' 		=> t('Length of Feed Line in meteres upto 100 NB:'),
+						'#type' 		=> 'textfield',
+						'#value' 		=> $data_fees['feed_line_upto_100nb'],
+						'#attributes' => array('readonly' => 'readonly','class' => array('form-control', 'reg_field')),
+						'#element_validate'=> array('TEXTBOX_NUMERIC_VALIDATE')
+						);
+		$form['epayments']['feed_line_above_100nb'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12"><label class="input">',
+						'#suffix'=>'</label></div>',
+						'#title' 		=> t('Length of Feed Line in meteres above 100 NB:'),
+						'#type' 		=> 'textfield',
+						'#value' 		=> $data_fees['feed_line_above_100nb'],
+						'#attributes' => array('readonly' => 'readonly','class' => array('form-control', 'reg_field')),
+						'#element_validate'=> array('TEXTBOX_NUMERIC_VALIDATE')
+						);
+		$form['epayments']['stream_line_upto_100nb'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12"><label class="input">',
+						'#suffix'=>'</label></div>',
+						'#title' 		=> t('Length of Steam Line in meteres upto 100 NB:'),
+						'#type' 		=> 'textfield',
+						'#value' 		=> $data_fees['stream_line_upto_100nb'],
+						'#attributes' => array('readonly' => 'readonly','class' => array('form-control', 'reg_field')),
+						'#element_validate'=> array('TEXTBOX_NUMERIC_VALIDATE')
+						);
+		$form['epayments']['stream_line_above_100nb'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12"><label class="input">',
+						'#suffix'=>'</label></div>',
+						'#title' 		=> t('Length of Steam Line in meteres above 100 NB:'),
+						'#type' 		=> 'textfield',
+						'#value' 		=> $data_fees['stream_line_above_100nb'],
+						'#attributes' => array('readonly' => 'readonly','class' => array('form-control', 'reg_field')),
+						'#element_validate'=> array('TEXTBOX_NUMERIC_VALIDATE')
+						);
+		$form['epayments']['no_feed_water_heater'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12"><label class="input">',
+						'#suffix'=>'</label></div>',
+						'#title' 		=> t('Number of Feed Water Heater:'),
+						'#type' 		=> 'textfield',
+						'#value' 		=> $data_fees['no_feed_water_heater'],
+						'#attributes' => array('readonly' => 'readonly','class' => array('form-control', 'reg_field')),
+						'#element_validate'=> array('TEXTBOX_NUMERIC_VALIDATE')
+						);
+		$form['epayments']['no_desuper_heater'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12"><label class="input">',
+						'#suffix'=>'</label></div>',
+						'#title' 		=> t('Number of de-superheater,Stream Receivers:'),
+						'#type' 		=> 'textfield',
+						'#value' 		=> $data_fees['no_desuper_heater'],
+						'#attributes' => array('readonly' => 'readonly','class' => array('form-control', 'reg_field')),
+						'#element_validate'=> array('TEXTBOX_NUMERIC_VALIDATE')
+						);
+	}
+	}
+	$form['epayments']['total_fees'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12"><label class="input">',
+						'#suffix'=>'</label></div>',
+						'#title' 		=> t('Total Fees to be Submitted in INR:'),
+						'#type' 		=> 'textfield',
+						'#value' 		=> $total_amt,
+						'#attributes' => array('readonly' => 'readonly','class' => array('form-control', 'reg_field')),
+						'#element_validate'=> array('TEXTBOX_NUMERIC_VALIDATE')
+						);
+						
+						
+	$form['epayments']['payment_options'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12"><label class="input">',
+						'#suffix'=>'</label></div>',
+						'#type' => 'radios',
+						'#title' => t('Payment Mode'),				  
+						'#attributes' => array('readonly'=>true),
+						'#options' => array(8 =>t('SBI Epay'), 2 =>t('Others')),
+						'#default_value' => $_POST['payment_options'],
+					);
+	
+	if(isset($_POST['payment_options']) && $_POST['payment_options']==2)
+	{
+		$form['epayments']['payment_mode'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12"><label class="input">',
+						'#suffix'=>'</label></div>',
+						'#type' => 'radios',
+						'#title' => t('Payment Mode'),				  
+						'#attributes' => array('readonly'=>true),
+						'#options' => array('1'=>t('Online Payment'),'2'=>t('Counter Payment'),'5'=>t('Debit Card Payment')),
+						'#default_value' => $payment_mode,
+					);
+	}
+	else
+	{
+		$form['epayments']['payment_mode'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12"><label class="input">',
+						'#suffix'=>'</label></div>',
+						'#type' => 'hidden',
+						'#title' => t('Payment Mode'),				  
+						'#attributes' => array('readonly'=>true),
+						'#value' => 8,
+					);
+	}
+					
+	
+	$checkSum = md5($xmlString);
+	$xmlString = $xmlString.'|checkSum='.$checkSum;
+	//echo $checkSum.'<br>';
+	$xmlString = encrypt($xmlString);
+	
+	$form['xmlString'] = array(
+					  '#type' => 'hidden',
+					  '#value' => $xmlString,				  
+					);
+	
+	$form['Dept_Cd'] = array(
+					  '#type' => 'hidden',
+					  '#value' => $dept_cd,
+					);
+	
+	if(!empty($xmlString) && !empty($Dept_Cd)) {
+	   	//echo "hii"; exit;
+		$result['dept_cd'] = '086';
+		$result['makers_number'] = $form_state['values']['maker_no'];
+		$result['boiler_enroll_no'] = $form_state['values']['boiler_enroll_no'];
+		$result['boiler_req_id'] = $form_state['values']['boiler_req_id'];
+		$result['service_cd'] = '301';
+		$result['dept_ref_no'] = $form_state['values']['dept_ref_no'];	
+		$result['identification_no'] = $form_state['values']['identification_no'];
+		$result['deposited_by'] = $form_state['values']['deposited_by'];
+		$result['depositor_mobile_no'] = $form_state['values']['depositor_mobile_no'];
+		$result['depositor_email_id'] = $form_state['values']['depositor_email_id'];
+		$result['in_favor_of'] = $form_state['values']['in_favor_of'];
+		$result['rtn_prd_frm'] = $form_state['values']['rtn_prd_frm'];
+		$result['rtn_prd_to'] = $form_state['values']['rtn_prd_to'];
+		$result['payment_mode'] = $form_state['values']['payment_mode'];	
+		$result['total_amount'] = $form_state['values']['total_amount'];
+		$result['remarks'] = $form_state['values']['remarks'];
+		$result['head_of_acc_ins'] = '0230-00-103-001-14';
+		if($extra_type=='')
+		{
+		$result['head_of_acc_ins'] = '0230-00-103-001-14';
+		if($type==1 || $type==2)
+		{
+		$result['head_of_acc_travel'] = '0230-00-103-002-27';
+		$result['pay_travel'] =$boiler_ta_fees;
+		$result['pay_insp'] =$payableFees;
+		}
+		else if($type==3)
+		{
+			
+			$result['pay_insp'] =$total_amt;
+		}
+		}
+		else
+		{
+		$result['head_of_acc_travel'] = '0230-00-103-002-27';
+		$result['pay_travel'] =$total_amt;
+		}
+		$result['type'] =$type;
+		
+		try{
+			//print_r($result); die();
+			$transaction = db_transaction();
+		    db_insert('boiler_epayments_data')->fields($result)->execute();
+			}
+		catch (Exception $e) {
+			$transaction->rollback();
+			watchdog_exception('my_type', $e);
+			drupal_set_message(t("Something went wrong.Please try after some time.",'warning')); 
+			drupal_goto('applicant-details');
+		    }
+		//$form['#action'] = url('https://wbfin.wb.nic.in/GRIPS/epay.do', array('external' => true));
+		//$form['#action'] = url('http://202.61.117.90/GRIPS/epay.do', array('external' => true));
+		$form['#action'] = url('https://wbifms.gov.in/GRIPS/epay.do', array('external' => true));		/* TO BE CHANGED ON OR BEFORE 30.10.2016  */
+		//print_r($form['#action']);		
+	}
+	
+	//$form['#action'] = url('http://10.173.32.37:7005/GRIPS/epay.do');
+	
+	$form['epayments']['submit'] = array (
+					   '#type' => 'submit',
+					   '#prefix'=> '<center>',
+					   '#suffix'=>'</center>',
+					   //'#value' => 'Pay Now',
+					   '#value' => 'Redirecting to Bank Site. Please do not press BACK button in browser or REFRESH the page.',
+					   '#attributes'=> array('id' => 'paymentSubmit','class' => array('btn btn-primary'))
+  					);
+					
+	/*$form['submit'] = array (
+					   '#markup' => '<input type="button" id="paymentSubmit" class="btn btn-primary" value="Pay Now">',
+  					);*/
+	
+	$form['epayments']['end']	=	array(
+								'#prefix'=> '',
+								'#suffix'=>'</div></div>',
+								);	
+								
+	return $form;
+}
+
+function epaments_process_submit($form, &$form_state){	
+	$form_state['rebuild'] = TRUE;
+}
+
+
+/*function encrypt($text)
+    {  
+	//ffa013b0420e6dca 
+		$salt ='ffa013b0420e6dca';
+	    $iv   = 'ffa013b0420e6dca';
+		 
+		$text=str_pad($text, (16*(floor(strlen($text) / 16)+(strlen($text) % 16==0?2:1))), chr(16-(strlen($text) % 16))); 
+        return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $salt, $text, MCRYPT_MODE_CBC, $iv)));
+		
+		 $blocksize = 16;
+		 $pad = $blocksize - (strlen($text) % $blocksize); 
+    	 $ptext  = $text . str_repeat(chr($pad), $pad); 
+		 //echo trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $salt, $ptext, MCRYPT_MODE_CBC, $iv))); die();
+         return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $salt, $ptext, MCRYPT_MODE_CBC, $iv)));
+		
+    }
+
+
+
+	
+	function decrypt($text)
+    {
+		$salt ='ffa013b0420e6dca';
+	    $iv   = 'ffa013b0420e6dca';
+		
+		
+		
+		
+		 $blocksize = 16;
+		 $pad = $blocksize - (strlen($text) % $blocksize); 
+    	 $ptext  = $text . str_repeat(chr($pad), $pad); 
+		 
+		 return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $salt, base64_decode($ptext), MCRYPT_MODE_CBC, $iv));
+		
+    }*/
+
+
+/* function encrypt($text){
+	// echo $text; die();
+		$salt ='1d26c2a3f2517d35'; 			// encryption key		//------------------------------------ to be changed  ---------------------------------//
+	    $iv   = '1d26c2a3f2517d35';         // encryption key		//------------------------------------ to be changed  ---------------------------------//
+		$text=str_pad($text, (16*(floor(strlen($text) / 16)+(strlen($text) % 16==0?2:1))), chr(16-(strlen($text) % 16))); 
+		
+        return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $salt, $text, MCRYPT_MODE_CBC, $iv)));
+		//return trim(base64_encode(openssl_encrypt($text,'aes-128-cbc', $salt, true, $iv)));
+  }
+
+ function decrypt($text){
+		$salt ='1d26c2a3f2517d35';			//------------------------------------ to be changed  ---------------------------------//
+	    $iv   = '1d26c2a3f2517d35';			//------------------------------------ to be changed  ---------------------------------//
+		$text=str_pad($text, (16*(floor(strlen($text) / 16)+(strlen($text) % 16==0?2:1))), chr(16-(strlen($text) % 16))); 
+        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $salt, base64_decode($text), MCRYPT_MODE_CBC, $iv));
+    }*/
+	
+////test block
+
+function encrypt($text){
+		$salt = '1d26c2a3f2517d35'; 		// encryption key
+	    $iv   = '1d26c2a3f2517d35';         // encryption key
+		
+		// $text=str_pad($text, (16*(floor(strlen($text) / 16)+(strlen($text) % 16==0?2:1))), chr(16-(strlen($text) % 16))); 
+       //  return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $salt, $text, MCRYPT_MODE_CBC, $iv)));
+	   
+	   $blocksize = 16;
+	   $pad = $blocksize - (strlen($text) % $blocksize);
+	   $ptext  = $text . str_repeat(chr($pad), $pad); 
+	 
+	   return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $salt, $ptext, MCRYPT_MODE_CBC, $iv)));
+		
+  }
+
+ function decrypt($text){
+		$salt = '1d26c2a3f2517d35';
+	    $iv   = '1d26c2a3f2517d35';
+		
+		
+		/*$text=str_pad($text, (16*(floor(strlen($text) / 16)+(strlen($text) % 16==0?2:1))), chr(16-(strlen($text) % 16))); 
+        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $salt, base64_decode($text), MCRYPT_MODE_CBC, $iv));*/
+		
+		$blocksize = 16;
+		$pad = $blocksize - (strlen($text) % $blocksize); 
+    	$ptext  = $text . str_repeat(chr($pad), $pad); 
+		 
+		return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $salt, base64_decode($ptext), MCRYPT_MODE_CBC, $iv));
+}
+
+////test block end 
+ function repairer_epayments_process_submit($form, &$form_state){	
+	$form_state['rebuild'] = TRUE;
+  }
+  function repairer_extra_epayments_process_submit($form, &$form_state){	
+	$form_state['rebuild'] = TRUE;
+  }
+  
+ function repairer_epayments_process($form, &$form_state){
+	drupal_add_css(drupal_get_path('module', 'grips_epayments').'/css/grips_epayments.css');
+	drupal_add_js(drupal_get_path('module', 'grips_epayments') . '/js/grips_epayments.js');
+	global $user;
+	$xmlString = isset($form_state['values']['xmlString']) && !empty($form_state['values']['xmlString']) ? $form_state['values']['xmlString'] : ''; 
+	$Dept_Cd = isset($form_state['values']['Dept_Cd']) && !empty($form_state['values']['Dept_Cd']) ? $form_state['values']['Dept_Cd'] : ''; 
+	if(isset($_POST['repairer_renewal_request_id']) && $_POST['repairer_renewal_request_id']!='')
+		$repairer_renewal_request_id = $_POST['repairer_renewal_request_id']; 
+	else
+		$repairer_renewal_request_id = isset($form_state['values']['repairer_renewal_request_id']) && !empty($form_state['values']['repairer_renewal_request_id']) ? $form_state['values']['repairer_renewal_request_id'] : '';
+	
+	if(isset($_POST['fees_type']) && $_POST['fees_type']!='')
+		$fees_type = $_POST['fees_type']; 
+	else
+		$fees_type = isset($form_state['values']['fees_type']) && !empty($form_state['values']['fees_type']) ? $form_state['values']['fees_type'] : 0;
+		
+	if(isset($_POST['repairer_enroll_no']) && $_POST['repairer_enroll_no']!='')
+		$repairer_enroll_no = $_POST['repairer_enroll_no'];
+	else
+		$repairer_enroll_no = isset($form_state['values']['repairer_enroll_no']) && !empty($form_state['values']['repairer_enroll_no']) ? $form_state['values']['repairer_enroll_no'] : ''; 
+	if(isset($_POST['payment_mode']) && $_POST['payment_mode']!='')
+		$payment_mode = $_POST['payment_mode'];
+	else
+		$payment_mode = isset($form_state['values']['payment_mode']) && !empty($form_state['values']['payment_mode']) ? $form_state['values']['payment_mode'] : '';
+	$repairer_arr =  db_select('repairer_details','rd')
+					->fields('rd',array('repairer_name','ofc_dist_id','ofc_subdivision_id','ofc_addr','ofc_pin'))
+					
+					->condition('repairer_enroll_no',(int)$repairer_enroll_no)
+					->execute();
+	$repairer_arr_data = $repairer_arr->fetchAssoc();
+	//print_r($repairer_arr_data);
+	$repairer_name = $repairer_arr_data['repairer_name'];
+		
+	$district_id = $repairer_arr_data['ofc_dist_id'];	
+	$query2 = db_select('district_master', 'dist');
+	$query2 = $query2->fields('dist', array('district_name'));
+	$query2 = $query2->condition('district_code', $district_id);
+	$result2 = $query2->execute();
+	$data2 = $result2->fetchObject();
+	
+	$subdivision_id = $repairer_arr_data['ofc_subdivision_id'];			
+	$query3 = db_select('sub_division', 'sub_div');
+	$query3 = $query3->fields('sub_div', array('sub_div_name'));
+	$query3 = $query3->condition('sub_div_code', $subdivision_id);
+	$result3 = $query3->execute();
+	$data3 = $result3->fetchObject();
+	$repairer_arr_data['ofc_addr'].', '.$data3->sub_div_name.', '.$data2->district_name.', '.$repairer_arr_data['ofc_pin'];
+	$factory_addr = $repairer_arr_data['ofc_addr'].', '.$data3->sub_div_name.', '.$data2->district_name.', '.$repairer_arr_data['ofc_pin'];
+	//$factory_addr = 'test factory';
+	if($fees_type==1)
+	{
+	$fees_array =	db_query("select * from repairer_renewal_fees_details where repairer_renewal_request_id= ".$repairer_renewal_request_id." and extra_fees_status = 0 and uid = ".$user->uid);	
+	}
+	else
+	{
+	$fees_array =	db_query("select * from repairer_renewal_fees_details where repairer_renewal_request_id= ".$repairer_renewal_request_id." and paid_status = 0 and uid = ".$user->uid);	 
+	}
+	$data = $fees_array->fetchAssoc();
+	$user_id = $data['uid'];
+	$user_array1 =	db_query("select firstname,middlename,lastname,phone from b_user_additional_reg_details where uid= ".$user_id."");
+	$data1 = $user_array1->fetchAssoc();
+	
+	$user_array2 =	db_query("select mail from users where uid= ".$user_id."");
+	$data2 = $user_array2->fetchAssoc();
+	$firstname = $data1['firstname'];
+	$middlename = $data1['middlename'];
+	$lastname = $data1['lastname'];
+	$phone = $data1['phone'];
+	$mail = $data2['mail'];
+	$dept_cd = '086';
+	$service_cd = '301';
+	$in_favor_of = $repairer_name;
+	if($fees_type==1)
+	{
+	$paid_status = $data['extra_fees_status'];
+	$total_amt = $data['extra_fees_amount'];
+	}
+	else
+	{
+	$paid_status = $data['paid_status'];
+	$total_amt = $data['total_fees'];
+	}
+	$type = $data['class'];
+	$deposited_by = ucwords($firstname.' '.$middlename.' '.$lastname);
+	$depositor_mobile_no = $phone;
+	$depositor_email_id  = $mail;
+	$tmp_arr_idn_no =	db_query("select max(id) as max_id from repairer_epayments_data");
+	$tmp_idn_no_data = $tmp_arr_idn_no->fetchAssoc();
+	$mid = $tmp_idn_no_data['max_id']+1;
+	$uno = str_pad($mid, 9, "0", STR_PAD_LEFT);
+	$dept_ref_no = '086'.date('Y').$uno;
+	if($fees_type==1)
+	{
+		$x = 5;
+	}
+	else
+	{
+		$x = 4;
+	}
+	$remarks = 'Online Fees Payment for Renewal / Recognition of repairer having Name : '.$repairer_name;
+	$identification_no = $dept_ref_no.$x;
+	$rtn_prd_frm = date("dmY");
+	$rtn_prd_to  = date("dmY");
+	$repairer_epayments_data = array(
+	 				'dept_cd' 				=> $dept_cd,								
+       				'service_cd' 			=> $service_cd,
+					'dept_ref_no' 			=> $dept_ref_no,
+					'identification_no' 	=> $identification_no,
+					'deposited_by' 			=> $deposited_by,
+					'depositor_mobile_no' 	=> $depositor_mobile_no,
+					'depositor_email_id'	=> $depositor_email_id,
+					'rtn_prd_frm'			=> date("Y-m-d"),
+					'rtn_prd_to'			=> date("Y-m-d"),
+					'payment_mode'			=> $payment_mode,
+					'total_amount'			=> $total_amt,
+					'remarks'				=> $remarks,
+					'repairer_renewal_request_id'	=> $repairer_renewal_request_id,
+					'fees_type'	=> $fees_type,
+	);
+	  
+	  $form['type'] = array(
+				'#type' => 'hidden',
+				'#value' => $type,				  
+	  );
+	  
+	  $form['dept_ref_no'] = array(
+				'#type' => 'hidden',
+				'#value' => $dept_ref_no,				  
+	  );
+	   $form['fees_type'] = array(
+				'#type' => 'hidden',
+				'#value' => $fees_type,				  
+	  );
+	  
+	  $form['repairer_renewal_request_id'] = array(
+				'#type' => 'hidden',
+				'#value' => $repairer_renewal_request_id,				  
+	  );
+	  
+	  
+	  $form['identification_no'] = array(
+				'#type' => 'hidden',
+				'#value' => $identification_no,				  
+	  );
+	  
+	  $form['deposited_by'] = array(
+				'#type' => 'hidden',
+				'#value' => $deposited_by,				  
+	  );
+	  
+	  $form['depositor_mobile_no'] = array(
+				'#type' => 'hidden',
+				'#value' => $depositor_mobile_no,				  
+	  );
+	  
+	  $form['depositor_email_id'] = array(
+				'#type' => 'hidden',
+				'#value' => $depositor_email_id,				  
+	  );
+	  $form['in_favor_of'] = array(
+				'#type' => 'hidden',
+				'#value' => $in_favor_of,				  
+	  );
+	  $form['rtn_prd_frm'] = array(
+				'#type' => 'hidden',
+				'#value' => date("Y-m-d"),				  
+	  );
+	  $form['rtn_prd_to'] = array(
+				'#type' => 'hidden',
+				'#value' => date("Y-m-d"),				  
+	  );
+	  $form['payment_mode'] = array(
+				'#type' => 'hidden',
+				'#value' => $payment_mode,				  
+	  );
+	  $form['total_amount'] = array(
+				'#type' => 'hidden',
+				'#value' => $total_amt,				  
+	  );
+	  $form['remarks'] = array(
+				'#type' => 'hidden',
+				'#value' => $remarks,				  
+	  );	
+	  
+	/* -------------------------- LIVE XML ------------------------------------*/
+	
+	
+	$xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>"
+     ."<GRIPS_EPAYMENT>"
+     ."<Dept_Cd>".$dept_cd."</Dept_Cd>"
+     ."<Service_Cd>".$service_cd."</Service_Cd>"
+     ."<Dept_Ref_No>".$dept_ref_no."</Dept_Ref_No>"          
+     ."<Identification_No>".$identification_no."</Identification_No>"
+     ."<Deposited_By>".$deposited_by."</Deposited_By>"
+     ."<Depositor_Mobile_No>".$depositor_mobile_no."</Depositor_Mobile_No>"
+     ."<Depositor_Email_Id>".$depositor_email_id."</Depositor_Email_Id>"
+     ."<In_Favor_Of>".$in_favor_of."</In_Favor_Of>"
+     ."<Rtn_Prd_Frm>".$rtn_prd_frm."</Rtn_Prd_Frm>"
+     ."<Rtn_Prd_To>".$rtn_prd_to."</Rtn_Prd_To>"
+     ."<Payment_Mode>".$payment_mode."</Payment_Mode>"
+     ."<Total_Amount>".$total_amt."</Total_Amount>"
+     ."<Remarks>".$remarks."</Remarks>"
+     ."<Repeated_head row=\"1\">"
+     ."<Head_Of_Account>0230-00-103-001-14</Head_Of_Account>"
+     ."<Amount>".$total_amt."</Amount>"
+     ."</Repeated_head>"
+     ."</GRIPS_EPAYMENT>";
+	 $form['epayments']['begin']	=	array(
+									'#prefix'=> '',
+									'#suffix'=>'<h3><strong>Proceed to Payment</strong></h3>',
+								);	
+		 
+	$form['epayments']['repairer_name'] = array(
+						'#prefix'=> '<div class="panel panel-success"><div class="panel-heading">Payment Details</div><div class="panel-body"><div class="col-md-6 col-xs-12">',
+						'#suffix'=>'</div>',
+						 '#title' 		=> t('Repairer Name'),
+						'#type' 		=> 'textfield',
+						 '#value' 		=> $repairer_name,	
+						'#attributes' 	=> array('readonly' => 'readonly','class' => array('form-control', 'reg_field'))  
+	  );
+	  
+	  $form['epayments']['repairer_renewal_request_id'] = array(
+				'#type' => 'hidden',
+				'#value' => $repairer_renewal_request_id,				  
+	  );
+	  
+	  
+	  $form['epayments']['repairer_enroll_no'] = array(
+				'#type' => 'hidden',
+				'#value' => $repairer_enroll_no,				  
+	  );
+	   $form['epayments']['fees_type'] = array(
+				'#type' => 'hidden',
+				'#value' =>$fees_type,				  
+	  );
+	
+	 $form['epayments']['applicant_name'] = array(
+	 					'#prefix'=> '<div class="col-md-6 col-xs-12">',
+						'#suffix'=>'</div>',
+						'#title' 		=> t('Applicant Name'),
+						'#type' 		=> 'textfield',
+						'#value' 		=> ucwords($firstname.' '.$middlename.' '.$lastname),
+						'#attributes' 	=> array('readonly' => 'readonly','class' => array('form-control', 'reg_field'))
+						);
+						
+	$form['epayments']['phone'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12">',
+						'#suffix'=>'</div>',
+						'#title' 		=> t('Phone'),
+						'#type' 		=> 'textfield',
+						'#value' 		=> $phone,
+						'#attributes' 	=> array('readonly' => 'readonly','class' => array('form-control', 'reg_field')),
+						'#element_validate'=> array('TEXTBOX_NUMERIC_VALIDATE')
+						);	
+	
+	$form['epayments']['email'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12">',
+						'#suffix'=>'</div>',
+						'#title' 		=> t('E mail'),
+						'#type' 		=> 'textfield',
+						'#value' 		=> $depositor_email_id,
+						'#attributes' 	=> array('readonly' => 'readonly','class' => array('form-control', 'reg_field')),
+						'#element_validate'=> array('TEXTBOX_EMAIL_VALIDATE')
+						);
+	
+	$form['epayments']['total_fees'] = array(
+						'#prefix'=> '<div class="col-md-6 col-xs-12">',
+						'#suffix'=>'</div>',
+						'#title' 		=> t('Total Fees'),
+						'#type' 		=> 'textfield',
+						'#value' 		=> $total_amt,
+						'#attributes' 	=> array('readonly' => 'readonly','class' => array('form-control', 'reg_field')),
+						'#element_validate'=> array('TEXTBOX_NUMERIC_VALIDATE')
+						);
+	
+	$form['epayments']['payment_mode'] = array(
+					'#prefix'=> '<div class="col-md-6 col-xs-12">',
+					'#suffix'=>'</div>',
+					  '#type' => 'radios',
+					  '#title' => t('Payment Mode'),				  
+					  //'#attributes' => array('readonly'=>true),
+					  '#options' => array('1'=>t('Online Payment'),'2'=>t('Counter Payment'),'5'=>t('Debit Card Payment')),
+					  '#default_value' => $payment_mode,
+					);
+					
+	
+	$checkSum = md5($xmlString);
+	$xmlString = $xmlString.'|checkSum='.$checkSum;
+	
+	$xmlString = encrypt($xmlString);
+	
+	$form['xmlString'] = array(
+					  '#type' => 'hidden',
+					  '#value' => $xmlString,				  
+					);
+	
+	$form['Dept_Cd'] = array(
+					  '#type' => 'hidden',
+					  '#value' => $dept_cd,
+					);
+	if(!empty($xmlString) && !empty($Dept_Cd)) {
+		$result['dept_cd'] = '086';
+		$result['repairer_renewal_request_id'] = $form_state['values']['repairer_renewal_request_id'];
+		$result['repairer_name'] = $form_state['values']['repairer_name'];
+		$result['service_cd'] = '301';
+		$result['dept_ref_no'] = $form_state['values']['dept_ref_no'];	
+		$result['identification_no'] = $form_state['values']['identification_no'];
+		$result['deposited_by'] = ucwords($firstname.' '.$middlename.' '.$lastname);
+		$result['depositor_mobile_no'] = $form_state['values']['depositor_mobile_no'];
+		$result['depositor_email_id'] ='';
+		$result['in_favor_of'] = $form_state['values']['in_favor_of'];
+		$result['rtn_prd_frm'] = $form_state['values']['rtn_prd_frm'];
+		$result['rtn_prd_to'] = $form_state['values']['rtn_prd_to'];
+		$result['payment_mode'] = $form_state['values']['payment_mode'];	
+		$result['total_amount'] = $form_state['values']['total_amount'];
+		$result['remarks'] = $form_state['values']['remarks'];
+		$result['fees_type'] = $form_state['values']['fees_type'];
+		db_insert('repairer_epayments_data')->fields($result)->execute();
+		$form['#action'] = url('https://wbifms.gov.in/GRIPS/epay.do', array('external' => true));		/* TO BE CHANGED ON OR BEFORE 30.10.2016  */		
+	}
+	
+	//$form['#action'] = url('http://10.173.32.37:7005/GRIPS/epay.do');
+	
+	$form['submit'] = array (
+	                    '#prefix'=> '<div class="col-md-12 col-xs-12"><center>',
+						'#suffix'=>'</center></div>',
+					   '#type' => 'submit',
+					   //'#value' => 'Pay Now',
+					   '#value' => 'Redirecting to Bank Site. Please do not press BACK button in browser or REFRESH the page.',
+					   '#attributes'=> array('id' => 'paymentSubmit','class' => array('btn btn-primary'))
+  					);
+					
+	/*$form['submit'] = array (
+					   '#markup' => '<input type="button" id="paymentSubmit" class="btn btn-primary" value="Pay Now">',
+  					);*/          
+	
+	$form['epayments']['end']	=	array(
+								'#prefix'=> '',
+								'#suffix'=>'</div><div></div>',
+								);	
+								
+	return $form;
+	
+ }	
+ 

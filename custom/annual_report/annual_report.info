@@ -1,0 +1,4 @@
+name = Annual Report
+description = Annual Report module .
+package = Annual Report Module Factories
+core = 7.x

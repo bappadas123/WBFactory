@@ -1,0 +1,1704 @@
+  <?php
+  
+   function caf_form_menu() {
+    $items = array();
+	
+	$items['applicant-registration'] = array(
+			'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+			'page callback'		=>	'drupal_get_form',
+			'page arguments'	=>	array('applicant_registration_form'),
+			'file' 				=> 	'includes/registration_form.inc',
+			'access arguments' 	=> 	array('access content'),
+		);
+
+		
+   $items['applicant/decission'] = array(
+			'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+			'page callback'		=>	'drupal_get_form',
+			'page arguments'	=>	array('decission_form'),
+			'file' 				=> 	'includes/decission.inc',
+			'access arguments' 	=> 	array('permission_for_applicant'),
+		);
+	$items['applicant/factory-parta-forongoingservice/%/%/%/%/%']	= array(
+		'title'						=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'				=>	'drupal_get_form',
+		'page arguments'			=>	array('factory_parta_forongoingservice',2,3,4,5,6),
+		'file' 						=> 	'includes/factory_parta_forongoingservice.inc',
+		'access arguments' 			=> 	array('permission_for_applicant'),
+	 );  
+    $items['applicant/apply_registrtion_license_other/registration'] = array(
+			'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+			'page callback'		=>	'drupal_get_form',
+			'page arguments'	=>	array('apply_registrtion_license_other'),
+			'file' 				=> 	'includes/apply_registrtion_license_other.inc',
+			'access arguments' 	=> 	array('permission_for_applicant'),
+		 ); 
+	$items['applicant/apply-for-renewal/renewal'] = array(
+			'title'				=>	'Online Application for Renewal of License of Factories',
+			'page callback'		=>	'drupal_get_form',
+			'page arguments'	=>	array('apply_renewal_licence'),
+			'file' 				=> 	'includes/apply_renewal_licence.inc',
+			'access arguments' 	=> 	array('permission_for_applicant'),
+		 ); 
+		
+	
+	/***** New PLan *****/
+	$items['applicant/caf']	= array(
+			'title'						=>	'Online Application for Registration and grant or Renewal of License of Factories',
+			'page callback'				=>	'drupal_get_form',
+			'page arguments'			=>	array('caf_form_parta'),
+			'file' 						=> 	'includes/caf_form_parta.inc',
+			'access arguments' 			=> 	array('permission_for_applicant'),
+		);
+	$items['applicant/caf/%/%/%/%']	= array(
+	
+			'page callback'				=>	'drupal_get_form',
+			'page arguments'			=>	array('caf_form_parta',3,4,5,6),
+			'file' 						=> 	'includes/caf_form_parta.inc',
+			'access arguments' 			=> 	array('permission_for_applicant'),
+	   );
+				
+	$items['applicant/caf/default'] = array(
+		'title' 			=> 'CAF A',
+		'type' 				=> MENU_DEFAULT_LOCAL_TASK,
+		'weight' 			=> -10,
+ 	);
+	$items['applicant/caf/caf-form-owner/%/%/%/%'] = array(
+		'title'				=>	'OWNER DETAILS',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('caf_form_owner',3,4,5,6),
+		'file' 				=> 	'includes/caf_form_owner.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	2,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	$items['applicant/del-owner-details/%/%/%/%'] = array(
+		'page callback' 	=> 'del_owner_details',
+		'page arguments' 	=> array(2,3,4,5),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 			=> 'includes/caf_form_owner.inc',
+  	);
+  
+
+	$items['applicant/caf/caf-form-occupier/%/%/%/%'] = array(
+		'title'				=>	'OCCUPIER DETAILS',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('caf_form_occupier',3,4,5,6),
+		'file' 				=> 	'includes/caf_form_occupier.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	2,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);  
+	$items['applicant/caf/cafb/%/%/%/%'] = array(
+		'title'				=>	'DOCUMENT DETAILS',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('caf_form_partb',3,4,5,6),
+		'file' 				=> 	'includes/caf_form_partb.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	2,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);  
+
+	$items['applicant/caf/details-worker-hp/%/%/%'] = array(
+		'title'				=>	'WORKER DETAILS',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('details_worker_hp_yearly',3,4,5),
+		'file' 				=> 	'includes/details_worker_hp_yearly.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	3,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	); 
+	$items['applicant/caf/application-preview/%/%/%/%'] = array(
+		//'title'				=>	'Application Preview',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('application_preview',3,4,5,6),
+		'file' 				=> 	'includes/application_preview.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	4,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['applicant/doc_newplan_del/%/%/%/%/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_document_data',
+		'page arguments' 	=> array(2,3,4,5,6,7),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 => 'includes/caf_form_partb.inc',
+		 ) ; 
+
+	$items['section85/view-section85'] = array(
+        'title'     =>    'View Product Section85',
+        'page callback'     =>    'drupal_get_form',
+        'page arguments'    => array('view_plan_section85'),
+        'file'      =>     'includes/section85_view.inc',
+        'access callback' => 'user_access',
+        'access arguments'     =>   array('permission_for_applicant'),
+    );
+    
+     $items['section85/%ctools_js'] = array(
+        'title'     =>    'View Product Section85',
+        'page callback' => 'all_section85', 
+        'page arguments' => array(1,2,3),
+        'file'      =>     'includes/section85_view.inc',
+        'access callback' => 'user_access',
+        'access arguments'     =>   array('permission_for_applicant'),
+     );
+	 
+	 $items['chemical/view-chemical'] = array(
+        'title'     =>    'View Chemical Products',
+        'page callback'     =>    'drupal_get_form',
+        'page arguments'    => array('view_chemical_list'),
+        'file'      =>     'includes/chemical_view.inc',
+        'access callback' => 'user_access',
+        'access arguments'     =>   array('permission_for_applicant'),
+    );
+    
+     $items['chemical/%ctools_js'] = array(
+        'title'     =>    'View Chemical Products',
+        'page callback' => 'all_chemical', 
+        'page arguments' => array(1,2,3),
+        'file'      =>     'includes/chemical_view.inc',
+        'access callback' => 'user_access',
+        'access arguments'     =>   array('permission_for_applicant'),
+     );
+	
+	/*****License and Registrstion*****/
+		
+	$items['applicant/caf-reg/%/%/%/%']	= array(
+		'title'						=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'				=>	'drupal_get_form',
+		'page arguments'			=>	array('caf_form_registrstion_parta',3,4,5,6),
+		'file' 						=> 	'includes/caf_form_registrstion_parta.inc',
+		'access arguments' 			=> 	array('permission_for_applicant'),
+	 ); 
+	 
+	$items['applicant/caf-reg/details-worker-registration/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('caf_form_worker_registration',3,4,5,6),
+		'file' 	 			=> 'includes/caf_form_worker_registration.inc',
+		'access arguments' 	=> array('permission_for_applicant'),
+		'weight' 	 		=> 	3,
+		'type' 	 			=> 	MENU_LOCAL_TASK,
+ 	);
+	
+	$items['applicant/view-owner-applicant'] = array(
+		'title'	 			=>	'Owner Details',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>  array('owner_details_data'),
+		'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		'access arguments' => 	array('permission_for_applicant_admin'),
+	);
+	$items['view-owner-applicant/%ctools_js/%/%/%/%'] = array(
+	'title'	 			=>	'Owner Details',
+	'page callback' 	=> 'owner_details_data', 
+	'page arguments' 	=> array(1,2,3,4,5),
+	'file' 	 			=> 	'includes/worker_detials_preview.inc',
+	'access arguments' 			=> 	array('permission_for_applicant_admin'),
+	);
+	
+	$items['applicant/caf-reg/cafb_registration/%/%/%/%'] = array(
+		'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('caf_form_registration_partb',3,4,5,6),
+		'file' 				=> 	'includes/caf_form_registration_partb.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	8,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	); 
+	
+	
+	$items['applicant/caf-reg/application-preview-registration/%/%/%/%'] = array(
+		'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('application_preview_registration',3,4,5,6),
+		'file' 				=> 	'includes/application_preview_registration.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	4,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['applicant/del-change-period/%/%/%/%/%'] = array(
+		'page callback' 	=> 'delete_change_preriod_data',
+		'page arguments' 	=> array(2,3,4,5,6),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 => 'includes/caf_form_applyingyear_registrstion.inc',
+  	);
+	
+	 $items['applicant/del-dir-registration/%/%'] = array(
+			'page callback' 	=> 'delete_uploaded_director_data',
+			'page arguments' 	=> array(2,3),
+			'access arguments' 	=> array('permission_for_applicant'),
+			'file' 	 => 'includes/details_worker_hp_yearly_registrtatoin.inc',
+  );
+	
+	$items['applicant/del-manager-registration/%/%/%/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_manager_data',
+		'page arguments' 	=> array(2,3,4,5,6),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 => 'includes/details_of_manager.inc',
+  	);
+	
+	/*$items['create-validate-year/%/%/%/%/%/%'] = array(
+		'page callback' 	=> 'create_validate_year1',
+		'page arguments' 	=> array(1,2,3,4,5,6),
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		
+		
+  	);  */
+	 $items['applicant/del-plan-registration/%/%/%/%/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_document_data',
+		'page arguments' 	=> array(2,3,4,5,6,7),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 				=> 'includes/caf_form_registration_partb.inc',
+	  );
+	  
+	   $items['applicant/del-power-registration/%/%/%/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_power_data',
+		'page arguments' 	=> array(2,3,4,5,6),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 				=> 'includes/details_worker_hp_yearly_registrtatoin.inc',
+	  );
+	  $items['applicant/del-worker-registration/%/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_worker_data',
+		'page arguments' 	=> array(2,3,4),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 				=> 'includes/details_worker_hp_yearly_registrtatoin.inc',
+	  );
+	  $items['applicant/del-manufacturing-registration/%/%/%/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_manufacturing_data',
+		'page arguments' 	=> array(2,3,4,5,6),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 				=> 'includes/details_worker_hp_yearly_registrtatoin.inc',
+	  );
+	/*$items['applicant/create-validate-year'] = array(
+		'page callback' 	=> 'create_validate_year1',
+		
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		//'access arguments' 	=> 	array('access content'),
+		'type' 				=> MENU_CALLBACK
+		
+  	);  */
+	/*$items['applicant/fetch'] = array(
+		'page callback' 	=> 'fetching',
+		
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		//'access arguments' 	=> 	array('access content'),
+		'type' 				=> MENU_CALLBACK
+		
+  	); */
+	
+	$items['pinautocomplete'] = array(
+		'page callback' 	=> 'get_pincode_autocomplete',
+		'access arguments' 	=> 	array('permission_for_applicant_admin'),
+		'type' 				=> MENU_CALLBACK,
+  	);  
+	
+	 $items['download-pdf-new-plan/%/%/%/%/%'] = array(
+		'page callback'		=>	'pdf_form_new_plan',
+		'page arguments'	=>	array(1,2,3,4,5),
+		'file' 				=> 	'includes/pdf_form_new_plan.inc',
+		//'access arguments' 	=>  array('permission_for_application_planpdf'),
+		'access arguments' 	=>  array('access content'),
+	  );
+
+	 $items['download-pdf-as-draft/%/%/%/%'] = array(
+		'page callback'		=>	'pdf_form_as_draft',
+		'page arguments'	=>	array(1,2,3,4),
+		'file' 				=> 	'includes/pdf_form_as_draft.inc',
+		//'access arguments' 	=>  array('permission_for_application_planpdf'),
+		'access arguments' 	=>  array('access content'),
+	  );
+	  
+	 $items['download-pdf-owner-as-draft/%/%/%/%'] = array(
+		'page callback'		=>	'pdf_owner_as_draft',
+		'page arguments'	=>	array(1,2,3,4),
+		'file' 				=> 	'includes/pdf_owner_as_draft.inc',
+		//'access arguments' 	=>  array('permission_for_application_planpdf'),
+		'access arguments' 	=>  array('access content'),
+	  );
+
+	 $items['download-pdf-occupier-as-draft/%/%/%/%'] = array(
+		'page callback'		=>	'pdf_occupier_as_draft',
+		'page arguments'	=>	array(1,2,3,4),
+		'file' 				=> 	'includes/pdf_occupier_as_draft.inc',
+		//'access arguments' 	=>  array('permission_for_application_planpdf'),
+		'access arguments' 	=>  array('access content'),
+	  );
+
+	 $items['download-pdf-worker-as-draft/%/%/%/%'] = array(
+		'page callback'		=>	'pdf_worker_as_draft',
+		'page arguments'	=>	array(1,2,3,4),
+		'file' 				=> 	'includes/pdf_worker_as_draft.inc',
+		//'access arguments' 	=>  array('permission_for_application_planpdf'),
+		'access arguments' 	=>  array('access content'),
+	  );
+
+	$items['applicant/application_view/%/%/%/%'] = array(
+		//'title'	 =>	'Application View',
+		'page callback'	 	=>	'application_view',
+		'page arguments'	=>	array(2,3,4,5),
+		'file' 	 			=> 	'includes/application_view.inc',
+		'access arguments' 	=> 	array('permission_for_application_planview'),
+	);
+
+	$items['plansection/application_view/%/%/%/%'] = array(
+		//'title'			=>	'Application View',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('plansection_application_view',2,3,4,5),
+		'file' 				=> 	'includes/plansection_application_view.inc',
+		//'access arguments' 	=> 	array('permission_for_application_planview_plansection'),
+		'access arguments' 	=>  array('access content'),
+		'weight' 			=> 	4,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+
+	$items['inspector/application_view/%/%/%/%'] = array(
+		//'title'			=>	'Application View',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('inspector_application_view',2,3,4,5),
+		'file' 				=> 	'includes/inspector_application_view.inc',
+		//'access arguments' => array('permission_for_application_planview_inspector'),
+		'access arguments' 	=>  array('access content'),
+		'weight' 			=> 	4,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+
+	$items['inspector-chemical/application_view/%/%/%/%'] = array(
+		//'title'			=>	'Application View',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('inspector_chemical_application_view',2,3,4,5),
+		'file' 				=> 	'includes/inspector_chemical_application_view.inc',
+		//'access arguments'=> 	array('permission_for_application_planview_inspector'),
+		'access arguments' 	=>  array('access content'),
+		'weight' 			=> 	4,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+
+	$items['deputychief/application_view/%/%/%/%'] = array(
+		//'title'			=>	'Application View',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('deputychief_application_view',2,3,4,5),
+		'file' 				=> 	'includes/deputychief_application_view.inc',
+		//'access arguments'=> 	array('permission_for_application_planview_deputychief'),
+		'access arguments' 	=>  array('access content'),
+		'weight' 			=> 	4,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+
+	$items['deputychief-chemical/application_view/%/%/%/%'] = array(
+		//'title'			=>	'Application View',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('deputychief_chemical_application_view',2,3,4,5),
+		'file' 				=> 	'includes/deputychief_chemical_application_view.inc',
+		//'access arguments'=> 	array('permission_for_application_planview_deputychief'),
+		'access arguments' 	=>  array('access content'),
+		'weight' 			=> 	4,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	$items['jointchief/application_view/%/%/%/%'] = array(
+		//'title'			=>	'Application View',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('jointchief_application_view',2,3,4,5),
+		'file' 				=> 	'includes/jointchief_application_view.inc',
+		//'access arguments'=> 	array('permission_for_application_planview_jointchief'),
+		'access arguments' 	=>  array('access content'),
+		'weight' 			=> 	4,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+
+	$items['chief/application_view/%/%/%/%'] = array(
+		//'title'			=>	'Application View',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('chief_application_view',2,3,4,5),
+		'file' 				=> 	'includes/chief_application_view.inc',
+		//'access arguments'=> 	array('permission_for_application_planview_chief'),
+		'access arguments' 	=>  array('access content'),
+		'weight' 			=> 	4,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+
+	//*********** New plan approval and registration
+
+	$items['applicant/caf-plan-reg/registrtatoin-license'] = array(
+		'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'type' 				=> 	 MENU_DEFAULT_LOCAL_TASK,
+		'weight' 			=> 	-10,
+	 );
+	$items['applicant/caf-plan-reg/%/%/%/%/%']	= array(
+	    'title'					=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'			=>	'drupal_get_form',
+		'page arguments'		=>	array('caf_form_new_registrstion_parta',3,4,5,6,7),
+		'file' 					=> 	'includes/caf_form_new_registrstion_parta.inc',
+		'access arguments' 		=> 	array('permission_for_applicant'),
+	 ); 
+	 $items['applicant/caf-plan-reg/details-worker-hp-yearly-registrtatoin/%/%/%/%/%'] = array(
+		'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('details_worker_hp_yearly_new_registrtatoin',3,4,5,6,7),
+		'file' 				=> 	'includes/details_worker_hp_yearly_new_registrtatoin.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	3,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['applicant/caf-plan-reg/cafb_registration/%/%/%/%/%'] = array(
+		'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('caf_form_new_registration_partb',3,4,5,6,7),
+		'file' 				=> 	'includes/caf_form_new_registration_partb.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	2,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);  
+	
+	$items['applicant/caf-plan-reg/application-preview-registration/%/%/%/%/%'] = array(
+		'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('application_preview_registration',3,4,5,6,7),
+		'file' 				=> 	'includes/application_preview_registration.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	4,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+
+	$items['applicant/del-dir-registration/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_director_data',
+		'page arguments' 	=> array(2,3),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 => 'includes/details_of_director.inc',
+	);
+	$items['applicant/del-occupier-registration/%/%/%/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_occupier_data',
+		'page arguments' 	=> array(2,3,4,5,6),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 => 'includes/details_of_occupier.inc',
+	 );
+	
+	$items['applicant/del-manager-registration/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_manager_data',
+		'page arguments' 	=> array(2,3),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 => 'includes/details_worker_hp_yearly_registrtatoin.inc',
+  	);
+	 $items['applicant/caf-reg/details-of-manager-registration/%/%/%/%'] = array(
+		'title'	 =>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('details_of_manager',3,4,5,6),
+		'file' 	 => 	'includes/details_of_manager.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+		'weight' 	 => 	3,
+		'type' 	 => 	MENU_LOCAL_TASK,
+	);
+	$items['applicant/caf-reg/details-of-occupier-registration/%/%/%/%'] = array(
+		'title'	 =>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('details_of_occupier',3,4,5,6),
+		'file' 	 => 	'includes/details_of_occupier.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+		'weight' 	 => 	3,
+		'type' 	 => 	MENU_LOCAL_TASK,
+	);
+	$items['applicant/caf-reg/details-of-owner-registration/%/%/%/%'] = array(
+		'title'	 =>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('caf_form_registration_owner',3,4,5,6),
+		'file' 	 => 	'includes/caf_form_registration_owner.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+		'weight' 	 => 	3,
+		'type' 	 => 	MENU_LOCAL_TASK,
+	);
+	$items['applicant/del-owner-details/%/%/%/%/%'] = array(
+		'page callback' 	=> 'del_owner_details',
+		'page arguments' 	=> array(2,3,4,5,6),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 			=> 'includes/caf_form_registration_owner.inc',
+  	);
+	$items['applicant/caf-reg/details-of-director-registration/%/%/%/%/%/%'] = array(
+		'title'	 =>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('details_of_director',3,4,5,6,7,8),
+		'file' 	 => 	'includes/details_of_director.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+		'weight' 	 => 	3,
+		'type' 	 => 	MENU_LOCAL_TASK,
+	);
+	$items['applicant/caf-reg/pollution_registration/%/%/%/%/%'] = array(
+		'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('details_pollution_registration',3,4,5,6,7),
+		'file' 				=> 	'includes/details_pollution_registration.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	7,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);  
+	$items['applicant/caf-reg/pollution_registration/%/%/%/%/%'] = array(
+		'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('details_pollution_registration',3,4,5,6,7),
+		'file' 				=> 	'includes/details_pollution_registration.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	7,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);  
+	 $items['download-pdf-registration/%/%/%/%'] = array(
+		'page callback'		=>	'pdf_form_registration',
+		'page arguments'	=>	array(1,2,3,4),
+		'file' 				=> 	'includes/pdf_form_registration.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	  );
+	   $items['download-pdf-registration-Form2/%/%/%/%/%'] = array(
+		'page callback'		=>	'pdf_form_registration_Form2',
+		'page arguments'	=>	array(1,2,3,4,5),
+		'file' 				=> 	'includes/pdf_form_registration_Form2.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	  );
+	$items['applicant/application_reg_view/%/%/%/%'] = array(
+		'title'	 =>	'Application view',
+		'page callback'	 =>	'application_preview_registration',
+		'page arguments'	=>	array(2,3,4,5),
+		'file' 	 => 	'includes/application_preview_registration.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	);
+
+	
+	$items['applicant/application-display-registration/%/%/%/%'] = array(
+		'title'	 =>	'Application view',
+		'page callback'	 =>	'application_display_registration',
+		'page arguments'	=>	array(2,3,4,5),
+		'file' 	 => 	'includes/application_display_registration.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		
+		);
+		$items['applicant/application-display-log/%/%/%/%'] = array(
+		'title'	 =>	'Application view',
+		'page callback'	 =>	'application_display_log',
+		'page arguments'	=>	array(2,3,4,5),
+		'file' 	 => 	'includes/application_display_log.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		
+		);
+	$items['applicant/display-demo-licence/%/%/%/%'] = array(
+		'title'	 =>	'Licence View',
+		'page callback'	 =>	'licecne_demo_preview',
+		'page arguments'	=> array(2,3,4,5),
+		'file' 	 => 	'includes/licecne_demo_preview_file.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	 //////////////////////////RENEWAL AUTO GENERATE CERTIFICATE//////////////////
+	  
+	
+	
+	$items['applicant/apply-online-renewal-licence-generate/%/%/%/%'] = array(
+		'title'				=>	'Online Application Renewal of License of Factories',
+		'page callback'		=>	'application_licence_autogen',
+		'page arguments'	=>	array(2,3,4,5),
+		'file' 				=> 	'includes/application_licence_autogen.inc',
+		'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	);
+	/////////////////Application View Register section////////////
+	
+	$items['regsection/view-register/%/%/%/%'] = array(
+		//'title'	 =>	'Application View',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('application_view_regsection',2,3,4,5),
+		'file' 	 => 	'includes/application_view_regsection.inc',
+		'access arguments' 	=>  array('permission_for_regsection'),
+	);
+	$items['regsection/download-register-form/%/%'] = array(
+		'page callback'	 =>	'download_regsection_form',
+		'page arguments'	=> array(2,3),
+		'file' 	 => 	'includes/download_regsection_form.inc',
+		'access arguments' 	=>  array('permission_for_regsection'),
+	);
+	$items['regsection/view-register-inspector/%/%/%/%'] = array(
+		
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('application_view_register_inspector',2,3,4,5),
+		'file' 	 => 	'includes/application_view_register_inspector.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+	);
+	$items['regsection/application-view-register-deputychief/%/%/%/%'] = array(
+		
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('application_view_register_deputychief',2,3,4,5),
+		'file' 	 => 	'includes/application_view_register_deputychief.inc',
+		'access arguments' 	=>  array('permission_for_deputychief'),
+	);
+	
+	$items['regsection/application-view-register-jointchief/%/%/%/%'] = array(
+		
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('application_view_register_jointchief',2,3,4,5),
+		'file' 	 => 	'includes/application-view-register-jointchief.inc',
+		'access arguments' 	=>  array('permission_for_jointchief'),
+	);
+	$items['regsection/application-view-register-chief/%/%/%/%'] = array(
+		
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('application_view_register_chief',2,3,4,5),
+		'file' 	 => 	'includes/application-view-register-chief.inc',
+		'access arguments' 	=>  array('permission_for_chief'),
+	);
+	$items['regsection/download-register-inspector-form/%/%'] = array(
+		'page callback'	 =>	'download_reginspector_form',
+		'page arguments'	=> array(2,3),
+		'file' 	 => 	'includes/download_reginspector_form.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+	);
+	///////////////////////////Licence///////////////////////////////
+	$items['regsection/registration-licence-genarate-file/%/%/%/%'] = array(
+		'title'	 =>	'Licence View',
+		'page callback'	 =>	'registration_licence_genarate_file',
+		'page arguments'	=> array(2,3,4,5),
+		'file' 	 => 	'includes/registration_licence_genarate_file.inc',
+		'access arguments' 	=>  array('permission_for_applicant_admin'),
+	);
+	$items['regsection/registration-genarate-file/%/%/%/%'] = array(
+		'title'	 =>	'Licence View',
+		'page callback'	 =>	'registration_genarate_file',
+		'page arguments'	=> array(2,3,4,5),
+		'file' 	 => 	'includes/registration_genarate_file.inc',
+		'access arguments' 	=>  array('permission_for_jointchief'),
+	);
+	
+	$items['plan-approval-certificate/%/%'] = array(
+		'page callback'		=>	'plan_approval_certificate',
+		'page arguments'	=>	array(1,2),
+		'file' 				=> 	'includes/plan_approval_certificate.inc',
+		'access arguments' 	=>  array('permission_for_application_planpdf'),
+	);
+	  
+	 $items['plan-conditional-letter/%/%'] = array(
+		'page callback'		=>	'plan_conditional_letter',
+		'page arguments'	=>	array(1,2),
+		'file' 				=> 	'includes/plan_conditional_letter.inc',
+		'access arguments' 	=>  array('permission_for_application_planpdf'),
+	  );
+	  
+	 $items['plan-acknowledgement-certificate/%/%'] = array(
+		'page callback'		=>	'plan_acknowledgement_certificate',
+		'page arguments'	=>	array(1,2),
+		'file' 				=> 	'includes/plan_acknowledgement_certificate.inc',
+		'access arguments' 	=>  array('permission_for_application_planpdf'),
+	 );
+	 
+	 $items['regsection/view-nic2008-inspector'] = array(
+		'title'	 =>	'NIC-2008 Search',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('nic_2008_search_inspector'),
+		'file' 	 => 	'includes/nic2008.inc',
+		'access callback' => 'user_access',
+	    'access arguments' 	=>  array('permission_for_inspector'),
+	);
+	
+	 $items['view-nic2008-inspector/%ctools_js'] = array(
+		'title'	 =>	'NIC-2008 Search',
+		//'page callback'	 =>	'drupal_get_form',
+		//'page arguments'	=> array('nic_2008_search_inspector'),
+		'page callback' => 'search_nic_code', 
+		'page arguments' => array(1),
+		'file' 	 => 	'includes/nic2008.inc',
+		'access callback' => 'user_access',
+	    'access arguments' 	=>  array('permission_for_inspector'),
+	);
+	
+	$items['applicant/application_upload/%/%/%/%'] = array(
+		'title'	 =>	'Application Upload',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=>	array('application_upload',2,3,4,5),
+		'file' 	 => 	'includes/application_upload.inc',
+		'access arguments' 	=> 	array('permission_for_application_planview'),
+	);
+	
+	$items['plansection/application_verify/%/%/%/%'] = array(
+		//'title'				=>	'Application Verify',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('plansection_application_verify',2,3,4,5),
+		'file' 				=> 	'includes/plansection_application_verify.inc',
+		'access arguments' 	=> 	array('permission_for_plansection'),
+		'weight' 			=> 	4,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	
+	$items['inspector/application-verify/%/%/%/%'] = array(
+		//'title'	 =>	'Application Verify',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('inspector_application_verify',2,3,4,5),
+		'file' 	 => 	'includes/inspector_application_verify.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+	);
+
+	$items['inspector-chemical/application-verify/%/%/%/%'] = array(
+		//'title'	 =>	'Application Verify',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('inspector_chemical_application_verify',2,3,4,5),
+		'file' 	 => 	'includes/inspector_chemical_application_verify.inc',
+		'access arguments' 	=>  array('permission_for_inspector_chemical'),
+	);
+
+	$items['deputychief/application-verify/%/%/%/%'] = array(
+		//'title'	 =>	'Application Verify',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('deputychief_application_verify',2,3,4,5),
+		'file' 	 => 	'includes/deputychief_application_verify.inc',
+		'access arguments' 	=>  array('permission_for_deputychief'),
+	);
+
+	$items['deputychief-chemical/application-verify/%/%/%/%'] = array(
+		//'title'	 =>	'Application Verify',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('deputychief_chemical_application_verify',2,3,4,5),
+		'file' 	 => 	'includes/deputychief_chemical_application_verify.inc',
+		'access arguments' 	=>  array('permission_for_deputychief_chemical'),
+	);
+
+	$items['jointchief/application-verify/%/%/%/%'] = array(
+		//'title'	 =>	'Application Verify',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('jointchief_application_verify',2,3,4,5),
+		'file' 	 => 	'includes/jointchief_application_verify.inc',
+		'access arguments' 	=>  array('permission_for_jointchief'),
+	);
+
+	$items['chief/application-verify/%/%/%/%'] = array(
+		//'title'	 =>	'Application Verify',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('chief_application_verify',2,3,4,5),
+		'file' 	 => 	'includes/chief_application_verify.inc',
+		'access arguments' 	=>  array('permission_for_chief'),
+	);
+
+	$items['inspector/certificate_upload//%/%/%/%'] = array(
+		'title'	 =>	'Certificate Upload',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=>	array('certificate_upload',2,3,4,5),
+		'file' 	 => 	'includes/certificate_upload.inc',
+		'access arguments' 	=> 	array('permission_for_inspector'),
+	);
+	
+	// VIEW NOTESHEET
+	$items['notesheets/view-notesheet'] = array(
+		'title'	 =>	'View Plan Notesheet',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('view_plan_notesheet'),
+		'file' 	 => 	'includes/notesheet_view.inc',
+		'access callback' => 'user_access',
+	    'access arguments' 	=>   array('access content'),
+	);
+	
+	 $items['notesheets/%/%/%ctools_js'] = array(
+		'title'	 =>	'View Plan Notesheet',
+		'page callback' => 'all_notesheet', 
+		'page arguments' => array(1,2,3),
+		'file' 	 => 	'includes/notesheet_view.inc',
+		'access callback' => 'user_access',
+	    'access arguments' 	=>   array('access content'),
+	 );
+	 
+	 // DOWNLOAD NOTESHEET
+	$items['download-notesheet/%/%/%/%'] = array(
+		//'title'	 =>	'Application Verify',
+		'page callback'	 =>	'download_notesheet',
+		'page arguments'	=> array(1,2,3,4),
+		'file' 	 => 	'includes/download_notesheet.inc',
+		//'access arguments' 	=>  array('permission_for_chief'),
+		'access arguments' 	=>  array('permission_for_jointchief'),
+	);
+
+	/*$items['download-notesheet/%/%/%/%'] = array(
+		'title'	 =>	'View Plan Notesheet',
+		//'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('download_notesheet',1,2,3,4),
+		'file' 	 => 	'includes/download_notesheet.inc',
+		'access callback' => 'user_access',
+	    'access arguments' 	=>   array('permission_for_chief'),
+	);*/
+
+	// VIEW CONDITION
+	$items['conditions/view-condition'] = array(
+		'title'	 =>	'View Plan Condition',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('view_plan_condition'),
+		'file' 	 => 	'includes/condition_view.inc',
+		'access callback' => 'user_access',
+	    'access arguments' 	=>   array('access content'),
+	);
+	
+	 $items['conditions/%/%/%ctools_js'] = array(
+		'title'	 =>	'View Plan Condition',
+		'page callback' => 'all_condition', 
+		'page arguments' => array(1,2,3),
+		'file' 	 => 	'includes/condition_view.inc',
+		'access callback' => 'user_access',
+	    'access arguments' 	=>   array('access content'),
+	 );
+
+	// VIEW REMARKS
+	$items['applicant/remarks_view/%/%/%/%'] = array(
+		//'title'	 =>	'Application View',
+		'page callback'	 =>	'application_remarks',
+		'page arguments'	=>	array(2,3,4,5),
+		'file' 	 => 	'includes/application_remarks.inc',
+		'access arguments' 	=> 	array('permission_for_application_planview'),
+	);
+
+	// REGISTRATION MENUS
+	$items['regsection/register-inspector-notesheet/%/%/%/%/%'] = array(
+		'title'	 =>	'Add NoteSheet Details',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('application_register_inspector_notesheet',2,3,4,5,6),
+		'file' 	 => 	'includes/application_register_inspector_notesheet.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+	);
+	$items['regsection/registration-view-notesheet/%/%/%/%'] = array(
+		'title'	 =>	'NoteSheet View',
+		'page callback'	 =>	'registration_notesheet_file',
+		'page arguments'	=> array(2,3,4,5),
+		'file' 	 => 	'includes/registration_notesheet_file.inc',
+		'access arguments' 	=>  array('permission_for_backed_user'),
+	);  
+	$items['regsection/deputy-note-list/'] = array(
+		'title'	 =>	'Notesheet list',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('deputy_note_list'),
+		'file' 	 => 	'includes/deputy_note_list.inc',
+		'access callback' => 'user_access',
+	     'access arguments' 	=>   array('permission_for_backed_user'),
+	);
+	
+	$items['regsection/deputy-note-list/%/%/%ctools_js'] = array(
+		'title'	 =>	'Registration Notesheet List View',
+		'page callback' => 'all_notesheet', 
+		'page arguments' => array(2,3,4),
+		'file' 	 => 	'includes/deputy_note_list.inc',
+		'access callback' => 'user_access',
+	    'access arguments' 	=>   array('permission_for_backed_user'),
+	 );
+	
+	$items['regsection/notesheet-view-register-details/%/%ctools_js'] = array(
+		'title'	 =>	'Inspector Notesheet Details View',
+		'page callback' => 'display_notesheet', 
+		'page arguments' => array(2,3),
+		'file' 	 		=> 	'includes/display_notesheet_details.inc',
+	    'access arguments' 	=>   array('permission_for_backed_user'),
+	 );
+	 $items['regsection/remarks-list/'] = array(
+		'title'	 =>	'Remarks list',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('all_remarks_list'),
+		'file' 	 => 	'includes/all_remarks_list.inc',
+		'access callback' => 'user_access',
+	     'access arguments' 	=>   array('access content'),
+	);
+	
+	$items['regsection/remarks-list/%/%/%ctools_js'] = array(
+		'title'	 =>	'Registration Remarks List View',
+		'page callback' => 'all_remarks', 
+		'page arguments' => array(2,3,4),
+		'file' 	 => 	'includes/all_remarks_list.inc',
+		'access callback' => 'user_access',
+	    'access arguments' 	=>   array('access content'),
+	 );
+	 
+	 $items['regsection/notesheet-view-register-details/%'] = array(
+		'title'	 =>	'Inspector Notesheet Details View',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' => array('inspector_notesheet_details',2),
+		'file' 	 => 	'includes/inspector_notesheet_details.inc',
+		'access callback' => 'user_access',
+	    'access arguments' 	=>   array('permission_for_backed_user'),
+	 );
+	 $items['regsection/registration-licence-journal-genarate-file/%/%/%/%'] = array(
+		//'title'	 			=>	'',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('registration_licence_journal_pdf',2,3,4,5),
+		'file' 	 			=> 	'includes/registration_licence_journal_pdf.inc',
+		'access arguments' 	=>  array('permission_for_backed_user'),
+	);
+	 $items['nicautocomplete'] = array(
+		'page callback' 	=> 'get_nicautocomplete_autocomplete',
+		'access arguments' 	=> 	array('access content'),
+		'type' 				=> MENU_CALLBACK,
+  	); 
+	 $items['applicant/view-worker-applicant'] = array(
+			'title'	 			=>	'Worker Details',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=>  array('worker_detials_preview'),
+			'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		  	'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	);
+	
+	 $items['view-worker-applicant/%ctools_js/%/%/%/%'] = array(
+		'title'	 			=>	'Worker Details',
+		'page callback' 	=> 'worker_detials_data', 
+		'page arguments' 	=> array(1,2,3,4,5),
+		'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		'access arguments' 			=> 	array('permission_for_applicant_admin'),
+	    
+	);
+	 $items['view-occuiper-applicant/%ctools_js/%/%/%/%'] = array(
+		'title'	 			=>	'Occupier Details',
+		'page callback' 	=> 'occuiper_detials_data', 
+		'page arguments' 	=> array(1,2,3,4,5),
+		'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		'access arguments' 			=> 	array('permission_for_applicant_admin'),
+	    
+	);
+	$items['applicant/view-occupier-applicant'] = array(
+			'title'	 			=>	'Occupier Details',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=>  array('occupier_detials_preview'),
+			'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		  	'access arguments' 			=> 	array('permission_for_applicant_admin'),
+	);
+	$items['view-director-applicant/%ctools_js/%/%/%/%'] = array(
+		'title'	 			=>	'Director Details',
+		'page callback' 	=> 'director_detials_data', 
+		'page arguments' 	=> array(1,2,3,4,5),
+		'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		'access arguments' 			=> 	array('permission_for_applicant_admin'),
+	    
+	);
+	$items['applicant/view-director-applicant'] = array(
+			'title'	 			=>	'Director Details',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=>  array('director_detials'),
+			'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		  	'access arguments' 			=> 	array('permission_for_applicant_admin'),
+	);
+	$items['view-manufacturing-applicant/%ctools_js/%/%/%/%'] = array(
+		'title'	 			=>	'Manufacturing Details',
+		'page callback' 	=> 'manufacturing_detials_data', 
+		'page arguments' 	=> array(1,2,3,4,5),
+		'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		'access arguments' 			=> 	array('permission_for_applicant_admin'),
+	    
+	);
+	$items['applicant/view-manufacturing-applicant'] = array(
+			'title'	 			=>	'Manufacturing Details',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=>  array('manufacturing_detials'),
+			'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		  	'access arguments' 			=> 	array('permission_for_applicant_admin'),
+	);
+	$items['view-documents-applicant/%ctools_js/%/%/%/%'] = array(
+		'title'	 			=>	'Documents Details',
+		'page callback' 	=> 'documents_detials_data', 
+		'page arguments' 	=> array(1,2,3,4,5),
+		'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		'access arguments' 			=> 	array('permission_for_applicant_admin'),
+	    
+	);
+	$items['applicant/view-documents-applicant'] = array(
+			'title'	 			=>	'Documents Details',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=>  array('documents_detials'),
+			'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		  	'access arguments' 			=> 	array('permission_for_applicant_admin'),
+	);
+	
+	/*Added by Subhamay*/
+	$items['view-documents-caf/%ctools_js/%/%/%'] = array(
+		'title'	 			=>	'Uploaded CAF  Details',
+		'page callback' 	=> 'documents_detials_caf_data', 
+		'page arguments' 	=> array(1,2,3,4),
+		'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		'access arguments' 			=> 	array('permission_for_applicant_admin'),
+	    
+	);
+	/********ended by subhamay****************/
+	
+	$items['applicant/view-manager-applicant'] = array(
+			'title'	 			=>	'Manager Details',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=>  array('manager_detials'),
+			'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		  	'access arguments' 			=> 	array('permission_for_applicant_admin'),
+	);
+	$items['view-manager-applicant/%ctools_js/%/%/%/%'] = array(
+		'title'	 			=>	'Manager Details',
+		'page callback' 	=> 'managaer_details_data', 
+		'page arguments' 	=> array(1,2,3,4,5),
+		'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		'access arguments' 			=> 	array('permission_for_applicant_admin'),
+	    
+	);
+	$items['applicant/view-power-applicant'] = array(
+			'title'	 			=>	'Power Details',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=>  array('power_detials'),
+			'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		  	'access arguments' 			=> 	array('permission_for_applicant_admin'),
+	);
+	$items['view-power-applicant/%ctools_js/%/%/%/%'] = array(
+		'title'	 			=>	'Power Details',
+		'page callback' 	=> 'power_details_data', 
+		'page arguments' 	=> array(1,2,3,4,5),
+		'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		'access arguments' 			=> 	array('permission_for_applicant_admin'),
+	    
+	);
+
+
+	$items['applicant/view-transfer-applicant'] = array(
+		'title'	 			=>	'Transfer Details',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>  array('transfer_details'),
+		'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		'access arguments' 	=> 	array('permission_for_applicant_admin'),
+);
+$items['view-transfer-applicant/%ctools_js/%/%/%/%'] = array(
+	'title'	 			=>	'Transfer Details',
+	'page callback' 	=> 'transfer_details_data', 
+	'page arguments' 	=> array(1,2,3,4,5),
+	'file' 	 			=> 	'includes/worker_detials_preview.inc',
+	'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	
+);
+
+
+
+
+
+
+
+	$items['applicant/view-prepaymnet-history'] = array(
+			'title'	 			=>	'Previous Payment History',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=>  array('pre_payment_detials'),
+			'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		  	'access arguments' 			=> 	array('permission_for_applicant_admin'),
+	);
+	$items['view-prepaymnet-history/%ctools_js/%/%/%/%'] = array(
+		'title'	 			=>	'Previous Payment History',
+		'page callback' 	=> 'payment_detials_previous_data', 
+		'page arguments' 	=> array(1,2,3,4,5),
+		'file' 	 			=> 	'includes/worker_detials_preview.inc',
+		'access arguments' 			=> 	array('permission_for_applicant_admin'),
+	    
+	);
+	$items['regsection/preview-varse/%/%/%/%'] = array(
+		'title'	 			=>	'Preview varse',
+		'page callback'		=>	'preview_varse',
+		'page arguments'	=> array(2,3,4,5),
+		'file' 	 			=> 	'includes/preview_varse.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	$items['regsection/preview-varse-basic-informaion/%/%/%/%'] = array(
+		'title'	 			=>	'Preview varse basic information',
+		'page callback'		=>	'preview_varse_basic_information',
+		'page arguments'	=> 	array(2,3,4,5),
+		'file' 	 			=> 	'includes/preview_varse_basic_information.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	$items['regsection/preview-varse-occupier-information/%/%/%/%'] = array(
+		'title'	 			=>	'Preview varse Occupier Information',
+		'page callback'		=>	'preview_varse_occupier_information',
+		'page arguments'	=> 	array(2,3,4,5),
+		'file' 	 			=> 	'includes/preview_varse_occupier_information.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	$items['regsection/preview-varse-employee-information/%/%/%/%'] = array(
+		'title'	 			=>	'Preview varse Employee Information',
+		'page callback'		=>	'preview_varse_employee_information',
+		'page arguments'	=> 	array(2,3,4,5),
+		'file' 	 			=> 	'includes/preview_varse_employee_information.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	$items['regsection/preview-varse-all-information/%/%/%/%'] = array(
+		'title'	 			=>	'Preview varse ALL Information',
+		'page callback'		=>	'preview_varse_all_information',
+		'page arguments'	=> 	array(2,3,4,5),
+		'file' 	 			=> 	'includes/preview_varse_all_information.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	$items['section/preview-amendment-informaion/%/%/%/%'] = array(
+		'title'	 			=>	'Preview Amendment information',
+		'page callback'		=>	'preview_amendment_information',
+		'page arguments'	=> 	array(2,3,4,5),
+		'file' 	 			=> 	'includes/preview_amendment_information.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	$items['applicant/fees_registration/%/%/%/%'] = array(
+		'title'	 			=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('details_fees_registation',2,3,4,5),
+		'file' 	 			=> 	'includes/details_fees_registation.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	
+$items['applicant/uplaod-application-from/%/%/%/%'] = array(
+			'title'	 			=>	'Documents Details',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=>  array('uplaod_application_from',2,3,4,5),
+			'file' 	 			=> 	'includes/uplaod_application_from.inc',
+		  	'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	
+	$items['applicant/view-payment-breakup/%/%/%/%'] = array(
+		'title'	 			=>	'View Payment Details',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('view_payment_Details',2,3,4,5),
+		'file' 	 			=> 	'includes/view_payment_Details.inc',
+		'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	);
+	
+	
+	$items['ad_observation/part_1']	= array(
+			'title'						=>	'Details of observation',
+			'page callback'				=>	'drupal_get_form',
+			'page arguments'			=>	array('application_register_inspector_notesheet'),
+			'file' 				=> 	'includes/application_register_inspector_notesheet.inc',
+			'access arguments' 			=> 	array('permission_for_inspector'),
+		);
+	$items['ad_observation/part_1/%/%/%/%/%'] = array(
+			'title'	 			=>	'Details of observation',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=>  array('application_register_inspector_notesheet',3,4,5,6,7),
+			'file' 				=> 	'includes/application_register_inspector_notesheet.inc',
+		  	'access arguments' 	=> 	array('permission_for_inspector'),
+	);
+	$items['ad_observation/part_1/default'] = array(
+		'title' 			=> 'Observation Details',
+		'type' 				=> MENU_DEFAULT_LOCAL_TASK,
+		'weight' 			=> -10,
+ 		);
+			
+ 
+		
+	$items['ad_observation/part_1/register-inspector-checklist/%/%/%/%/%'] = array(
+		'title'				=>	'Details of Checklist',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('application_register_inspector_checklist',3,4,5,6,7),
+		'file' 				=> 	'includes/application_register_inspector_checklist.inc',
+		'access arguments' 	=> 	array('permission_for_inspector'),
+		'weight' 			=> 	3,
+		'type' 				=> 	MENU_LOCAL_TASK,
+		); 
+
+	/* RIMA HOME 25-09-2018 */
+	
+	$items['inspector-medical/application-verify/%/%/%/%'] = array(
+		//'title'	 =>	'Application Verify',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('inspector_medical_application_verify',2,3,4,5),
+		'file' 	 => 	'includes/inspector_medical_application_verify.inc',
+		'access arguments' 	=>  array('permission_for_inspector_medical'),
+	);
+
+	$items['deputychief-medical/application-verify/%/%/%/%'] = array(
+		//'title'	 =>	'Application Verify',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('deputychief_medical_application_verify',2,3,4,5),
+		'file' 	 => 	'includes/deputychief_medical_application_verify.inc',
+		'access arguments' 	=>  array('permission_for_deputychief_medical'),
+	);
+
+	$items['jointchief-chemical/application-verify/%/%/%/%'] = array(
+		//'title'	 =>	'Application Verify',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('jointchief_chemical_application_verify',2,3,4,5),
+		'file' 	 => 	'includes/jointchief_chemical_application_verify.inc',
+		'access arguments' 	=>  array('permission_for_jointchief_chemical'),
+	);
+
+	$items['jointchief-medical/application-verify/%/%/%/%'] = array(
+		//'title'	 =>	'Application Verify',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('jointchief_medical_application_verify',2,3,4,5),
+		'file' 	 => 	'includes/jointchief_medical_application_verify.inc',
+		'access arguments' 	=>  array('permission_for_jointchief_medical'),
+	);
+	
+	$items['plan-applicant-letter/%/%'] = array(
+		'page callback'		=>	'plan_applicant_letter',
+		'page arguments'	=>	array(1,2),
+		'file' 				=> 	'includes/plan_applicant_letter.inc',
+		'access arguments' 	=>  array('permission_for_application_planpdf'),
+	);
+
+    $items['registration-acknowledgement-certificate/%/%/%/%'] = array(
+		'page callback'		=>	'registration_ack',
+		'page arguments'	=>	array(1,2,3,4),
+		'file' 				=> 	'includes/registration_ack.inc',
+		'access arguments' 	=>  array('permission_for_applicant_admin'),
+	 );
+	 
+	$items['applicant/re-payment']	= array(
+			'title'						=>	'Online Application for Registration and grant or Renewal of License of Factories',
+			'page callback'				=>	'drupal_get_form',
+			'page arguments'			=>	array(''),
+			'file' 						=> 	'includes/hp_details_repayment_service.inc',
+			'access arguments' 			=> 	array('permission_for_applicant'),
+		);
+	$items['applicant/re-payment/%/%/%/%']	= array(
+			'page callback'				=>	'drupal_get_form',
+			'page arguments'			=>	array('hp_details_repayment_service',3,4,5,6),
+			'file' 						=> 	'includes/hp_details_repayment_service.inc',
+			'access arguments' 			=> 	array('permission_for_applicant'),
+	   ); 
+	$items['applicant/re-payment/power-details'] = array(
+		'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'type' 				=> MENU_DEFAULT_LOCAL_TASK,
+		'weight' 			=> -10,
+ 	); 
+	
+	$items['applicant/re-payment/repayment-fees-details/%/%/%/%'] = array(
+		'title'	 			=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('repayment_fees_registation',3,4,5,6),
+		'file' 	 			=> 	'includes/repayment_fees_registation.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	/*$items['applicant/re-payment/preview_application/%/%/%/%'] = array(
+		'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('application_preview_repayment_service',3,4,5,6),
+		'file' 				=> 	'includes/application_preview_repayment_service.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	4,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);*/
+	
+	//applicantion_preview
+	$items['apply-eservice-registration/%/%/%/%/%'] = array(
+			'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+			'page callback'		=>	'drupal_get_form',
+			'page arguments'	=>	array('preview_for_apply_eservice',1,2,3,4,5),
+			'file' 				=> 	'includes/preview_for_apply_eservice.inc',
+			'access arguments' 	=> 	array('permission_for_applicant'),
+		);
+
+	$items['apply-eservice-extension/%/%/%/%/%'] = array(
+			'title'				=>	'Online Application for Extension of Plan',
+			'page callback'		=>	'drupal_get_form',
+			'page arguments'	=>	array('preview_for_apply_eservice_extension',1,2,3,4,5),
+			'file' 				=> 	'includes/preview_for_apply_eservice_extension.inc',
+			'access arguments' 	=> 	array('permission_for_applicant'),
+		);
+
+
+			
+		
+	$items['update'] = array(
+			'page callback'	 =>	'drupal_get_form',
+			'page arguments'	=> array('update'),
+			'file' 	 => 	'includes/update.inc',
+			'access callback' => 'user_access',
+			'access arguments' 	=>   array('access content'),
+		);
+		
+	$items['applicant/preview-extention-plan/%/%/%/%'] = array(
+		'title'				=>	'Online Application for Extension for Existing Plan',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('preview_for_extention_plan',2,3,4,5),
+		'file' 				=> 	'includes/preview_for_extention_plan.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	);
+	
+	
+	//////////////////Licence Register////////////////
+	$items['applicant/add-licence-register/%/%/%/%'] = array(
+		'title'	 			=>	'View Payment Details',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('add_licence_register',2,3,4,5),
+		'file' 	 			=> 	'includes/add_licence_register.inc',
+		'access arguments' 	=> 	array('permission_for_licsection'),
+	);
+	$items['applicant/add-licence-register'] = array(
+				'title'				=>	'View Payment Details',
+				'page callback'		=>	'drupal_get_form',
+				'page arguments'	=>	array('add_licence_register'),
+				'file' 				=> 	'includes/add_licence_register.inc',
+				'access arguments' 	=> 	array('permission_for_licsection'),
+			);
+	$items['applicant/add-licence-register-page2/%/'] = array(
+			'title'	 			=>	'View Payment Details',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=> array('add_licence_register_page2',2),
+			'file' 	 			=> 	'includes/add_licence_register_page2.inc',
+			'access arguments' 	=> 	array('permission_for_licsection'),
+		);
+
+	$items['all-licence-register'] = array(
+		'title'				=>	'All Licence Register',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('all_licence_register'),
+		'file' 				=> 	'includes/all_licence_register.inc',
+		'access arguments' 	=> 	array('permission_for_licsection'),
+	);
+	$items['licence-register-view'] = array(
+		'title'				=>	'Licence Register Details',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('licence_register_view'),
+		'file' 				=> 	'includes/licence_register_view.inc',
+		'access arguments' 	=> 	array('permission_for_licsection'),
+	);
+	  
+	$items['add-licence-register'] = array(
+		'title'				=>	'Add Factory Details',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('add_licence_register'),
+		'file' 				=> 	'includes/add_licence_register.inc',
+		'access arguments' 	=> 	array('permission_for_licsection'),
+	);
+	$items['add-licence-register-page2/%'] = array(
+		'title'	 			=>	'Add Other Details',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('add_licence_register_page2',1),
+		'file' 	 			=> 	'includes/add_licence_register_page2.inc',
+		'access arguments' 	=> 	array('permission_for_licsection'),
+	);
+	$items['del-licence-register-amount/%'] = array(
+		'page callback'		=>	'delete_licence_register_data',
+		'page arguments' 	=> array(1),
+		'file' 	 => 'includes/add_licence_register_page2.inc',
+		'access arguments' 	=> array('permission_for_licsection')
+ 	);
+	$items['licence-register-edit-details/%'] = array(
+			'title'	 			=>	'Edit Licence Register Details',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=> array('licence_register_edit_details',1),
+			'file' 	 			=> 	'includes/licence_register_edit_details.inc',
+			'access arguments' 	=> 	array('permission_for_licsection'),
+		);
+	$items['licence-register-edit/%'] = array(
+			'title'	 			=>	'Edit Licence Register',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=> array('licence_register_edit',1),
+			'file' 	 			=> 	'includes/licence_register_edit.inc',
+			'access arguments' 	=> 	array('permission_for_licsection'),
+		);
+	$items['edit-licence-register-page2/%'] = array(
+			'title'	 			=>	'Edit Licence Register Details',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=> array('edit_licence_register_page2',1),
+			'file' 	 			=> 	'includes/edit-licence-register-page2.inc',
+			'access arguments' 	=> 	array('permission_for_licsection'),
+		);
+	$items['del-licence-register-amount/%'] = array(
+		'page callback'		=>	'delete_licence_register_data',
+		'page arguments' 	=> array(1),
+		'file' 	 			=> 'includes/add_licence_register_page2.inc',
+		'access arguments' 	=> array('permission_for_licsection')
+ 	);
+	$items['licence-registration-download-file/%'] = array(
+		'page callback'		=>	'licence_registration_download_file',
+		'page arguments' 	=> array(1),
+		'file' 	 			=> 'includes/licence-registration-download-file.inc',
+		'access arguments' 	=> array('permission_for_licsection')
+ 	);
+	
+	$items['repayment_observation/%/%/%/%'] = array(
+			'title'	 			=>	'Details of Observation',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=>  array('recommanded_input',1,2,3,4),
+			'file' 	 			=> 	'includes/recommanded_power_worker_input.inc',
+		  	'access arguments' 	=> 	array('permission_for_inspector'),
+	);
+	
+
+	//////////////////Renewal of Factory////////////////
+	
+
+	// $items['applicant/change_list/%/%/%/%/%'] = array(
+	// 	'title'				=>	'Online Application Renewal of License of Factories',
+	// 	'page callback'		=>	'drupal_get_form',
+	// 	'page arguments'	=>	array('application_change_list_renewal',2,3,4,5,6),
+	// 	'file' 				=> 	'includes/application_change_list_renewal.inc',
+	// 	'access arguments' 	=> 	array('permission_for_applicant'),
+	// );
+	
+	
+	$items['applicant/del-plan/%/%/%/%/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_document_data',
+		'page arguments' 	=> array(2,3,4,5,6,7),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 				=> 'includes/caf_form_partb.inc',
+	  );
+	$items['applicant/multiple-file-upload/%/%'] = array(
+		'page callback' 	=> 'multiple_file_upload',
+		'page arguments' 	=> array(2,3),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 				=> 'includes/caf_form_partb.inc',
+	  );
+	$items['applicant/preview-plan-all-information/%/%/%/%'] = array(
+		'title'	 			=>	'Preview Plan ALL Information',
+		'page callback'		=>	'preview_plan_all_information',
+		'page arguments'	=> 	array(2,3,4,5),
+		'file' 	 			=> 	'includes/preview_plan_all_information.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	
+	  
+	  
+	///////////////////////ADMIN AREA REWAL///////////////
+	
+	$items['inspector-renewal/display-note-list/'] = array(
+		'title'	 =>	'Notesheet list',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('deputy_note_list'),
+		'file' 	 => 	'includes/all_note_list.inc',
+		'access callback' => 'user_access',
+	     'access arguments' 	=>   array('permission_for_inspector'),
+	);
+	
+	$items['inspector-renewal/display-note-list/%/%/%ctools_js'] = array(
+		'title'	 =>	'Renewal notesheet list view',
+		'page callback' => 'all_notesheet', 
+		'page arguments' => array(2,3,4),
+		'file' 	 => 	'includes/all_note_list.inc',
+		'access callback' => 'user_access',
+	    'access arguments' 	=>   array('permission_for_inspector'),
+	 );
+	 
+	 $items['inspector-renewal/renewal-inspector-notesheet/%/%/%/%/%'] = array(
+		'title'	 			=>	'Add NoteSheet Details',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('register_notesheet_renewal',2,3,4,5,6),
+		'file' 	 			=> 	'includes/register_notesheet_renewal.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+	);
+	
+	
+	$items['deputy-renewal/display-note-list/'] = array(
+		'title'	 =>	'Notesheet list',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('deputy_note_list'),
+		'file' 	 => 	'includes/all_note_list.inc',
+		'access callback' => 'user_access',
+	    'access arguments' 	=>   array('permission_for_deputychief'),
+	);
+	
+	$items['deputy-renewal/display-note-list/%/%/%ctools_js'] = array(
+		'title'	 =>	'Renewal notesheet list view',
+		'page callback' => 'all_notesheet', 
+		'page arguments' => array(2,3,4),
+		'file' 	 => 	'includes/all_note_list.inc',
+		'access callback' => 'user_access',
+	    'access arguments' 	=>   array('permission_for_deputychief'),
+	 );
+	
+	  
+	$items['deputy-renewal/deputy-renewal-view-notesheet/%/%/%/%'] = array(
+		'title'	 =>	'NoteSheet View',
+		'page callback'	 =>	'renewal_notesheet_file',
+		'page arguments'	=> array(2,3,4,5),
+		'file' 	 => 	'includes/renewal_notesheet_file.inc',
+		'access arguments' 	=>  array('permission_for_deputychief'),
+	); 
+	
+		//////////////////////RENEWAL BACKLOG DATA/////////////////////
+	$items['applicant/caf-backlog-renew/%/%/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('caf_form_renewal_backlog_parta',3,4,5,6,7,8),
+		'file' 	 			=> 'includes/caf_form_renewal_backlog_parta.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+ 	);
+	$items['applicant/caf-backlog-renew/backlog-renewal-basic-service/%/%/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('caf_form_renewal_backlog_basic',3,4,5,6,7,8),
+		'file' 	 			=> 'includes/caf_form_renewal_backlog_basic.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+ 	);
+	$items['applicant/caf-backlog-renew/backlog-renewal-amendment-service/%/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('renewal_backlog_amendment_notice',3,4,5,6,7,8),
+		'file' 	 			=> 'includes/renewal_backlog_amendment_notice.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+ 	);
+	$items['applicant/caf-backlog-renew/backlog-renewal-fees-service/%/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('details_backlog_fees_renewal',3,4,5,6,7,8),
+		'file' 	 			=> 'includes/details_backlog_fees_renewal.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+ 	);
+	
+	$items['applicant/caf-backlog-renew/details-of-occupier-renewal-backlog/%/%/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('details_of_occupier_renewal_backlog',3,4,5,6,7,8),
+		'file' 	 			=> 'includes/details_of_occupier_renewal_backlog.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+ 	);
+	$items['applicant/caf-backlog-renew/details-of-manager-renewal-backlog/%/%/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('details_of_manager_renewal_backlog',3,4,5,6,7,8),
+		'file' 				=> 	'includes/details_of_manager_renewal_backlog.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	$items['applicant/del-dir-backlog-renewal/%/%/%/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_director_data',
+		'page arguments' 	=> array(2,3,4,5,6),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 			=> 'includes/details_of_manager_renewal_backlog.inc',
+  	);
+	$items['applicant/del-manag-backlog-renewal/%/%/%/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_manager_data',
+		'page arguments' 	=> array(2,3,4,5,6),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 			=> 'includes/details_of_manager_renewal_backlog.inc',
+  	);
+	$items['applicant/caf-backlog-renew/cafb_renewal-backlog/%/%/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('caf_form_backlog_renewal_partb',3,4,5,6,7,8),
+		'file' 				=> 	'includes/caf_form_backlog_renewal_partb.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	
+	$items['applicant/del-doc-backlog-renew/%/%/%/%/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_document_data',
+		'page arguments' 	=> array(2,3,4,5,6,7),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 				=> 'includes/caf_form_backlog_renewal_partb.inc',
+	  );
+	$items['applicant/caf-backlog-renew/application-renewal-preview-backlog/%/%/%/%/%/%'] = array(
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('application_preview_backlog_renewal',3,4,5,6,7,8),
+		'file' 				=> 	'includes/application_preview_backlog_renewal.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	
+		// RIMA NEW WORK 10-12-2019 //
+   	 $items['applicant/form18'] = array(
+		'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('form18_form'),
+		'file' 				=> 	'includes/form18.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	); 
+	 $items['download-pdf-form-18/%/%/%'] = array(
+		'page callback'		=>	'pdf_form_18',
+		'page arguments'	=>	array(1,2,3),
+		'file' 				=> 	'includes/pdf_form_18.inc',
+		//'access arguments' 	=>  array('permission_for_application_planpdf'),
+		'access arguments' 	=>  array('access content'),
+	  );
+	 
+   	 $items['applicant/form19'] = array(
+		'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('form19_form'),
+		'file' 				=> 	'includes/form19.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	); 
+	 $items['download-pdf-form-19/%/%/%'] = array(
+		'page callback'		=>	'pdf_form_19',
+		'page arguments'	=>	array(1,2,3),
+		'file' 				=> 	'includes/pdf_form_19.inc',
+		//'access arguments' 	=>  array('permission_for_application_planpdf'),
+		'access arguments' 	=>  array('access content'),
+	  );
+	 
+   	 $items['applicant/form20'] = array(
+		'title'				=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('form20_form'),
+		'file' 				=> 	'includes/form20.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	); 
+	 $items['download-pdf-form-20/%/%/%'] = array(
+		'page callback'		=>	'pdf_form_20',
+		'page arguments'	=>	array(1,2,3),
+		'file' 				=> 	'includes/pdf_form_20.inc',
+		//'access arguments' 	=>  array('permission_for_application_planpdf'),
+		'access arguments' 	=>  array('access content'),
+	  );
+	  
+	  $items['applicant/remark-view-application/%/%/%/%'] = array(
+		'title'	 			=>	'View Payment Details',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('application_status_details_view',2,3,4,5),
+		'file' 	 			=> 	'includes/application_status_details_view.inc',
+		'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	);
+	
+	$items['oservation_list_admin/%/%/%/%'] = array(
+		'title'	 			=>	'Observation List',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('observation_list_admin',1,2,3,4),
+		'file' 	 			=> 	'includes/observation_list_admin.inc',
+		'access arguments' 	=> 	array('access content'),
+	);
+
+
+//////////////BLOB LICENCE AND REGISTRATION FILE DOWNLAOD///////////////
+
+	$items['document-list/download-license-file/%/%/%/%/%'] = array(
+		'title'	 			=>	'License File',
+		'page callback'	 	=>	'download_content_file',
+		'page arguments'	=> 	array(2,3,4,5,6),
+		'file' 	 			=> 	'includes/all_file_download.inc',
+		'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	);
+
+	$items['document-list/download-registration-file/%/%/%/%/%'] = array(
+		'title'	 			=>	'Registration File',
+		'page arguments' 	=>	array(2,3,4,5,6),
+		'page callback'		=>  'download_content_file',
+		'file' 	 			=> 	'includes/all_file_download.inc',
+		'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	);
+
+	$items['document-list/view-appliction-form/%/%/%/%/%'] = array(
+		'title'	 			=>	'Common application form',
+		'page arguments' 	=>	array(2,3,4,5,6),
+		'page callback'		=>  'download_content_file',
+		'file' 	 			=> 	'includes/all_file_download.inc',
+		'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	);
+
+	$items['document-list/delete-upload-doc/%/%/%/%/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_document_data',
+		'page arguments' 	=> array(2,3,4,5,6,7),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 				=> 'includes/caf_form_registration_partb.inc',
+	);
+
+	$items['document-list/view-upload-doc/%/%'] = array(
+		'title'	 			=>	'View Document Files',
+		'page arguments' 	=> array(2,3),
+		'page callback' 	=> 'view_caf_doc_file',
+		'file' 				=> 'includes/all_file_download.inc',
+		'access arguments' 	=> array('permission_for_applicant_admin'),
+	);
+
+	$items['document-list/head-appliction-form/%/%/%/%/%/%'] = array(
+		'title'	 			=>	'Common application form',
+		'page arguments' 	=>	array(2,3,4,5,6,7),
+		'page callback'		=>  'head_application_file',
+		'file' 	 			=> 	'includes/all_file_download.inc',
+		'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	);
+
+	$items['document-list/download-plan-approval-certificate/%/%/%/%/%'] = array(
+		'title'	 			=>	'Plan Approval Letter',
+		'page arguments' 	=>	array(2,3,4,5,6),
+		'page callback'		=>  'download_content_file',
+		'file' 	 			=> 	'includes/all_file_download.inc',
+		'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	);
+	$items['document-list/download-site-plan/%/%/%/%/%'] = array(
+		'title'	 			=>	'Factory Site Plan',
+		'page arguments' 	=>	array(2,3,4,5,6),
+		'page callback'		=>  'download_content_file',
+		'file' 	 			=> 	'includes/all_file_download.inc',
+		'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	);
+	$items['certificates-document-list/%/%/%/%'] = array(
+		'title'	 			=>	'Download All Certifies and License',
+		'page arguments' 	=> 	array(1,2,3,4),
+		'page callback' 	=> 'download_all_certificates',
+		'file' 				=> 'includes/download_all_certificates.inc',
+		'access arguments' 	=> array('permission_for_applicant_admin'),
+	);
+	$items['apply-eservice-plan-extension-forall/%/%/%/%/%'] = array(
+			'title'				=>	'Online Application for approval of Plan or Extension of Existing Plan',
+			'page callback'		=>	'drupal_get_form',
+			'page arguments'	=>	array('preview_for_apply_eservice_plan_extension_forall',1,2,3,4,5),
+			'file' 				=> 	'includes/preview_for_apply_eservice_plan_extension_forall.inc',
+			'access arguments' 	=> 	array('permission_for_applicant'),
+		);		
+
+	return $items;
+	
+  }
+  ?>

@@ -1,0 +1,4 @@
+name = Renewal of License
+description = CAF API Testing
+core = 7.x
+package = Common Application Form Modules

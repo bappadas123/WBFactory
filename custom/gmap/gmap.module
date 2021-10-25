@@ -1,0 +1,145 @@
+<?php
+function gmap_menu() {
+  $items = array();
+
+  $items['gmaplocator'] = array(
+  		'title'			 	=> 'Google Map Area Locator',	
+		'page callback' 	=> 'gmap_locator',
+		'access arguments' 	=> array('access content'),
+  );
+  
+  $items['zonelist'] = array(
+  		'title'			 	=> 'Zone List',	
+		'page callback' 	=> 'zone_list',
+		'access arguments' 	=> array('access content'),
+  );
+  
+  $items['zonemap/%ctools_js/%'] = array(
+    	'page callback' => 'zone_map_callback',
+    	'page arguments' => array(1,2),
+    	'access callback' => TRUE,
+    	'type' => MENU_CALLBACK,
+    );
+	
+  $items['checklatlong/%/%'] = array(
+  		'title'			 	=> 'Zone List',	
+		'page callback' 	=> 'zone_checklatlong',
+		'page arguments' 	=> array(1,2),
+		'access arguments' 	=> array('access content'),
+  );	
+
+  return $items;	
+  
+}
+
+function zone_checklatlong($lat,$lng){
+	$query = db_select('fa_zone_details','zd');
+	$query ->leftJoin('fa_zone', 'z', 'zd.zone_id = z.zone_id'); 
+	$query->fields('z',array('zone_name','center_lat','center_long','zoom_level'));
+	$query->fields('zd',array('zone_details_id','zone_id','zone_lat','zone_long'));
+	$query->condition('z.zone_id', $parm, '='); 
+	$query->orderBy('z.zone_name', 'ASC');
+	$result	= $query->execute(); 
+	$resultData = $result->fetchAll();
+	$str="";
+	foreach($resultData as $val){
+		$str.='new google.maps.LatLng($val->zone_lat, $val->zone_long),';
+	}
+	echo $str;					
+}
+
+function zone_list(){
+	ctools_include('modal');
+    ctools_modal_add_js();
+	$output = '';
+  	$header = array(
+				array('data'=> 'SL No'),
+				array('data'=> 'Zone Name'),
+				array('data'=> 'Zone Details'),
+			);
+			
+	$rows = array();
+	
+	$query = db_select('fa_zone','z');
+	$query->fields('z',array('zone_id','zone_name','zone_details'));
+	$query->orderBy('z.zone_name', 'ASC');
+	$result	= $query->execute(); 
+	
+	foreach($result as $val){
+		$Link = l($val->zone_name, 'zonemap/nojs/'.$val->zone_id, array('attributes' => array('class' => array('ctools-use-modal'))));
+		//$Link = l($val->zone_name, 'zonemap/nojs/'.$val->zone_id, array('html' => TRUE,'attributes'=>array('title' => 'Edit', 'class'=>array('ctools-use-modal'))));
+		 $rows [] = array(  
+	  		  array('data' => t($val->zone_id)), 	
+			  array('data' => $Link), 
+			  array('data' => t($val->zone_details)),
+			  ); 
+	}
+	
+	$output = theme_table(
+		array(
+		  'header' => $header,
+		  'rows' => $rows,
+		  'attributes' => array('id'=>'table_div_replace', 'class' => array('table', 'pretty', 'table-bordered table-hover')),
+		  'sticky' => true,
+		  'caption' => '',
+		  'colgroups' => array(),
+		  'empty' => t("No data found!") // The message to be displayed if table is empty
+		)
+	  ).theme('pager');	
+	  
+	  return $output;
+}
+
+function gmap_locator(){	
+	return theme('gmap_locator_template');	
+}
+
+
+
+function zone_map_callback($ajax,$ID){
+	//echo "aaa"; exit;
+  if ($ajax) {
+    //ctools_include('ajax');
+    ctools_include('modal');
+    $form_state = array(
+      'ajax' => TRUE,
+      'title' => t(''),
+	  'zone_id'=>$ID,
+    );
+    $output = ctools_modal_form_wrapper('mymodal_zone_map', $form_state);
+    if (!empty($form_state['ajax_commands'])) {
+      $output = $form_state['ajax_commands'];
+    }
+    print ajax_render($output);
+    drupal_exit();
+  }else {
+    return drupal_get_form('mymodal_zone_map');
+  }
+}
+function mymodal_zone_map($form, $form_state){
+	//return "hi";
+	$form['note_details'] = array(
+	  	'#prefix' => '<div id="table_replace_map">'.getMapByID($form_state['zone_id']),
+		'#suffix' => '</div>'
+    );	
+	return $form;
+	//echo $form_state['zone_id'];
+}
+
+function getMapByID($arg){
+	drupal_add_js(drupal_get_path('module', 'gmap') . '/js/myfunction.js');		
+	return theme('zone_map_template', array('parm'=>$arg));	
+}
+
+function gmap_theme(){
+	return array(
+			'gmap_locator_template' => array(
+			'template' => 'gmap_locator',
+			//'variables' => array('var1' => NULL, 'var2' => NULL),
+        ),
+		'zone_map_template' => array(
+			'template' => 'gmap_zone',
+			'variables' => array('parm' => NULL),
+        ),
+    );
+}

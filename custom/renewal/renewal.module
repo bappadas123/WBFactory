@@ -1,0 +1,427 @@
+  <?php
+  
+   function renewal_menu() {
+    $items = array();
+	//************ No change renewal **********************//
+	$items['apply-eservice-registration-renewal/%/%/%/%'] = array(
+			'title'				=>	'Online Application Renewal of License of Factories',
+			'page callback'		=>	'drupal_get_form',
+			'page arguments'	=>	array('preview_for_apply_eservice_renewal',1,2,3,4),
+			'file' 				=> 	'includes/preview_for_apply_eservice_renewal.inc',
+			'access arguments' 	=> 	array('permission_for_applicant'),
+	);
+		$items['apply-eservice-backlogrenewal/%/%/%/%'] = array(
+			'title'				=>	'Online Application Renewal of License of Factories',
+			'page callback'		=>	'drupal_get_form',
+			'page arguments'	=>	array('preview_for_apply_eservice_backlogrenewal',1,2,3,4),
+			'file' 				=> 	'includes/preview_for_apply_eservice_backlogrenewal.inc',
+			'access arguments' 	=> 	array('permission_for_applicant'),
+	);
+	
+	
+	///Renewal for backlog///////////
+	
+	$items['apply-eservice-renewal'] = array(
+			'title'				=>	'Online Application Renewal of License of Factories',
+			'page callback'		=>	'drupal_get_form',
+			'page arguments'	=>	array('apply_renewal'),
+			'file' 				=> 	'includes/apply_renewal.inc',
+			'access arguments' 	=> 	array('permission_for_applicant'),
+	);
+	 
+	  $items['applicant/caf-online-backrenew/default/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('renewal_backlog_parta',3,4,5,6),
+		'file' 	 			=> 'includes/renewal_backlog_parta.inc',
+		'access arguments' 	=> array('permission_for_applicant'),
+		
+ 	);
+	
+	$items['applicant/caf-online-backrenew/details-worker-renewal/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('renewal_backlog_worker',3,4,5,6),
+		'file' 	 			=> 'includes/renewal_backlog_worker.inc',
+		'access arguments' 	=> array('permission_for_applicant'),
+		
+ 	);
+	
+	$items['applicant/caf-online-backrenew/details-of-occupier-renewal/%/%/%/%'] = array(
+		'title'	 			=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('renewal_backlog_occupier',3,4,5,6),
+		'file' 	 			=> 	'includes/renewal_backlog_occupier.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+		'weight' 	 		=> 	3,
+		
+	);
+	
+	
+	$items['applicant/caf-online-backrenew/details-of-owner-renewal/%/%/%/%'] = array(
+			'title'	 			=>	'Online Application for Registration and grant or Renewal of License of Factories',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=>   array('renewal_backlog_owner',3,4,5,6),
+			'file' 	 			=> 	'includes/renewal_backlog_owner.inc',
+			'access arguments' 	=>  array('permission_for_applicant'),
+			
+		
+	);
+	
+	
+	$items['applicant/caf-online-backrenew/details-of-manager-renewal/%/%/%/%'] = array(
+			'title'	 			=>	'Online Application for Registration and grant or Renewal of License of Factories',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=>   array('renewal_backlog_manager',3,4,5,6),
+			'file' 	 			=> 	'includes/renewal_backlog_manager.inc',
+			'access arguments' 	=>  array('permission_for_applicant'),
+			
+	);
+	
+	
+	
+	$items['applicant/caf-online-backrenew/document-list-renewal/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('details_document_list_renewal',3,4,5,6),
+		'file' 	 			=> 'includes/details_document_list_renewal.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+	 );
+	 
+	 $items['applicant/caf-online-backrenew/application-preview-renewal/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('application_preview_data_renewal',3,4,5,6),
+		'file' 	 			=> 'includes/application_preview_data_renewal.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+ 	);	
+
+
+	 
+	 /////-------------END backlog
+	 
+	
+		
+	/*$items['applicant/caf-online-renew/%/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('caf_form_online_renewal_parta',3,4,5,6),
+		'file' 	 			=> 'includes/caf_form_online_renewal_parta.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+ 	);*/
+	
+	$items['applicant/caf-online-renew/details-worker-renewal/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('caf_form_worker_renewal',3,4,5,6),
+		'file' 	 			=> 'includes/caf_form_worker_renewal.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+ 	);
+	 $items['applicant/caf-online-renew/amend-detials/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('renewal_amendment_notice',3,4,5,6),
+		'file' 	 			=> 'includes/renewal_amendment_notice.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+	 );
+	
+	$items['applicant/caf-online-renew/document-list-renewal/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('details_document_list_renewal',3,4,5,6),
+		'file' 	 			=> 'includes/details_document_list_renewal.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+	 );
+
+	 $items['applicant/del-doc-renewal/%/%/%/%/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_document_data',
+		'page arguments' 	=> array(2,3,4,5,6,7),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 				=> 'includes/details_document_list_renewal.inc',
+	  );		
+	$items['applicant/caf-online-renew/application-preview-renewal/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('application_preview_data_renewal',3,4,5,6),
+		'file' 	 			=> 'includes/application_preview_data_renewal.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+ 	);	
+
+	///////////////////////////CHANGE LIST RENEWAL //////////////////
+	$items['applicant/change-list/%/%/%/%'] = array(
+		'title'				=>	'Online Application Renewal of License of Factories',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('application_change_list_renewal',2,3,4,5),
+		'file' 				=> 	'includes/application_change_list_renewal.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	);
+	
+	$items['applicant/change-renewal/transfer-declaration/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('transfer_delcaration_renewal',3,4,5,6),
+		'file' 	 			=> 'includes/transfer_delcaration_renewal.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+	);	
+	 
+	$items['applicant/transfer-delete-year-renew/%/%/%/%/%'] = array(
+		'page callback'		=>	'delete_transfer_data',
+		'page arguments'	=>	array(2,3,4,5,6),
+		'file' 				=> 	'includes/transfer_delcaration_renewal.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	  );
+	  
+	$items['applicant/change-renewal/details-worker-renewal/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('caf_form_worker_renewal',3,4,5,6),
+		'file' 	 			=> 'includes/caf_form_worker_renewal.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+ 	);	
+	$items['applicant/change-renewal/amend-detials/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('renewal_amendment_notice',3,4,5,6),
+		'file' 	 			=> 'includes/renewal_amendment_notice.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+	 );
+	 $items['applicant/change-renewal/occupier-notice/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('change_occupier_notice',3,4,5,6),
+		'file' 	 			=> 'includes/change_occupier_notice.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+	 );
+
+	 $items['applicant/del-occupier-amended/%/%/%/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_occupier_data',
+		'page arguments' 	=> array(2,3,4,5,6),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 			=> 'includes/change_occupier_notice.inc',
+	 );
+	//  $items['applicant/change-renewal/owner-notice/%/%/%/%'] = array(
+	// 	'page callback'		=>	'drupal_get_form',
+	// 	'page arguments' 	=> array('change_owner_notice',3,4,5,6),
+	// 	'file' 	 			=> 'includes/change_owner_notice.inc',
+	// 	'access arguments' 	=> array('permission_for_applicant')
+	//  ); 
+	 $items['applicant/change-renewal/manager-notice/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('change_manager_notice',3,4,5,6),
+		'file' 	 			=> 'includes/change_manager_notice.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+	 );
+
+	 $items['applicant/del-manager-renewal-change/%/%/%/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_manager_data',
+		'page arguments' 	=> array(2,3,4,5,6),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 			=> 'includes/change_manager_notice.inc',
+	 );
+
+	 $items['applicant/change-renewal/employee-notice/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('change_employee_notice',3,4,5,6),
+		'file' 	 			=> 'includes/change_employee_notice.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+	 );
+	 
+	 $items['applicant/del-dir-renewal-change/%/%/%/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_director_data',
+		'page arguments' 	=> array(2,3,4,5,6),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 			=> 'includes/change_employee_notice.inc',
+	 );
+
+	 
+
+	$items['applicant/change-renewal/document-list-renewal/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('details_document_list_renewal',3,4,5,6),
+		'file' 	 			=> 'includes/details_document_list_renewal.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+	 );
+
+	 $items['applicant/delete-upload-renewal-doc/%/%/%/%/%'] = array(
+		'page callback' 	=> 'delete_uploaded_document_data',
+		'page arguments' 	=> array(2,3,4,5,6),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 			=> 'includes/details_document_list_renewal.inc',
+	 );
+	 
+	$items['applicant/change-renewal/application-preview-renewal/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('application_preview_data_renewal',3,4,5,6),
+		'file' 	 			=> 'includes/application_preview_data_renewal.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+	 );	
+
+
+
+//////////////////////end
+	
+	
+	$items['applicant/apply-online-renewal-registration-generate/%/%/%/%'] = array(
+		'title'				=>	'Online Application Renewal of License of Factories',
+		'page callback'		=>	'application_registration_autogen',
+		'page arguments'	=>	array(2,3,4,5),
+		'file' 				=> 	'includes/application_registration_autogen.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+	);
+	
+	$items['applicant/apply-online-renewal-licence-generate/%/%/%/%'] = array(
+		'title'				=>	'Online Application Renewal of License of Factories',
+		'page callback'		=>	'application_licence_autogen',
+		'page arguments'	=>	array(2,3,4,5),
+		'file' 				=> 	'includes/application_licence_autogen.inc',
+		'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	);
+	
+	$items['applicant/fees-license-renewalnochange/%/%/%/%'] = array(
+		'title'	 			=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('details_fees_renewal_withoutchange',2,3,4,5),
+		'file' 	 			=> 	'includes/details_fees_renewal_withoutchange.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+
+
+
+$items['applicant/fees-renewal/%/%/%/%'] = array(
+		'page callback'		=>	'drupal_get_form',
+		'page arguments' 	=> array('details_fees_renewal',2,3,4,5),
+		'file' 	 			=> 'includes/details_fees_renewal.inc',
+		'access arguments' 	=> array('permission_for_applicant')
+ 	);
+	
+	$items['applicant/upload-changed-application-form/%/%/%/%'] = array(
+		'title'	 			=>	'Renewal Form',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>  array('changed_renewal_application_from',2,3,4,5),
+		'file' 	 			=> 	'includes/changed_renewal_application_from.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	$items['applicant/renewal-acknowledgement-certificate/%/%/%/%'] = array(
+		'title'	 			=>	'Renewal ACK Form',
+		'page callback'	 	=>	'renewal_ack_from',
+		'page arguments'	=>  array(2,3,4,5),
+		'file' 	 			=> 	'includes/renewal_ack_from.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+	
+	///////////////////////////AUTO RENEWAL//////////////////////////////////
+	$items['applicant/upload-application-renewal-form/%/%/%/%'] = array(
+		'title'	 			=>	'Renewal Form',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>  array('upload_application_renewal_form',2,3,4,5),
+		'file' 	 			=> 	'includes/upload_application_renewal_form.inc',
+		  'access arguments' 	=>  array('permission_for_applicant'),
+	);
+
+	$items['applicant/application-license-auto-renewal/%/%/%/%'] = array(
+		'title'	 			=>	'Auto Renewal',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>  array('application_licence_auto_renewal',2,3,4,5),
+		'file' 	 			=> 	'includes/application_licence_auto_renewal.inc',
+		'access arguments' 	=>  array('permission_for_applicant'),
+	);
+
+	///////////////////////ADMIN AREA REWAL///////////////
+	$items['inspector-renewal/view-renewal-details/%/%/%/%'] = array(
+		'title'				=>	'Application Details',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('inspector_renewal_details',2,3,4,5),
+		'file' 				=> 	'includes/inspector_renewal_details.inc',
+		'access arguments' 	=> 	array('permission_for_inspector'),
+  	);
+
+	// $items['view-renewal-prepaymnet-history/%ctools_js/%/%/%/%'] = array(
+	// 	'title'	 			=> 'Document Details',
+	// 	'page callback' 	=> 'applicant_payment_data_preview', 
+	// 	'page arguments' 	=> array(1,2,3,4,5),
+	// 	'file' 	 			=> 'includes/display_applicant_renewal_data.inc',
+	// 	'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	// );	
+	// $items['inspector-renewal/view-renewal-prepaymnet-history'] = array(
+	// 	'title'	 			=>	'Document Details',
+	// 	'page callback'	 	=>	'drupal_get_form',
+	// 	'page arguments'	=>  array('applicant_payment_data_preview'),
+	// 	'file' 	 			=> 	'includes/display_applicant_renewal_data.inc',
+	// 	'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	// );
+	
+	$items['view-payment-breakup/%ctools_js/%/%/%/%'] = array(
+		'title'	 			=>	'View Payment Details',
+		'page callback'	 	=>	'view_renewal_payment_details',
+		'page arguments'	=> array(1,2,3,4,5),
+		'file' 	 			=> 	'includes/view_renewal_payment_details.inc',
+		'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	);	
+	$items['application/view-payment-breakup'] = array(
+		'title'	 			=>	'View Payment Details',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=>  array('view_renewal_payment_details'),
+		'file' 	 			=> 	'includes/view_renewal_payment_details.inc',
+		'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	);  
+	
+	////////////////INSPECTOR RENEWAL/////////////////////////////
+	
+	$items['inspector-renewal/display-note-list/'] = array(
+		'title'	 =>	'Notesheet list',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=> array('deputy_note_list'),
+		'file' 	 => 	'includes/all_note_list.inc',
+		'access callback' => 'user_access',
+	     'access arguments' 	=>   array('permission_for_inspector'),
+	);
+	
+	$items['inspector-renewal/display-note-list/%/%/%ctools_js'] = array(
+		'title'	 =>	'Renewal notesheet list view',
+		'page callback' => 'all_notesheet', 
+		'page arguments' => array(2,3,4),
+		'file' 	 => 	'includes/all_note_list.inc',
+		'access callback' => 'user_access',
+	    'access arguments' 	=>   array('permission_for_inspector'),
+	 );
+	 
+	 $items['inspector-renewal/renewal-inspector-notesheet/%/%/%/%/%'] = array(
+		'title'	 			=>	'Add NoteSheet Details',
+		'page callback'	 	=>	'drupal_get_form',
+		'page arguments'	=> array('register_notesheet_renewal',2,3,4,5,6),
+		'file' 	 			=> 	'includes/register_notesheet_renewal.inc',
+		'access arguments' 	=>  array('permission_for_inspector'),
+	);
+
+	$items['deputy-renewal/view-deputy-renewal-details/%/%/%/%'] = array(
+		'title'				=>	'Deputy Renewal Details',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('deputy_renewal_details',2,3,4,5),
+		'file' 				=> 'includes/deputy_renewal_details.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief'),
+	  );
+
+	 $items['deputy-renewal/renewal-licence-file/%/%/%/%'] = array(
+		'title'				=>	'',
+		'page callback'		=>	'renewal_licence_file',
+		'page arguments'	=>	array(2,3,4,5),
+		'file' 				=> 	'includes/renewal_licence_file.inc',
+		'access arguments' 	=> 	array('permission_for_deputychief'),
+	  );
+
+
+
+
+	
+	
+	 $items['applicant/view-amend_power_worker'] = array(
+			'title'	 			=>	'Amendment Details',
+			'page callback'	 	=>	'drupal_get_form',
+			'page arguments'	=>  array('amend_detials_preview'),
+			'file' 	 			=> 	'includes/amend_detials_preview.inc',
+		  	'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	);
+	
+	 $items['view-amend_power_worker/%ctools_js/%/%/%/%'] = array(
+		'title'	 			=>	'Amendment Details',
+		'page callback' 	=> 'amand_detials_data', 
+		'page arguments' 	=> array(1,2,3,4,5),
+		'file' 	 			=> 	'includes/amend_detials_preview.inc',
+		'access arguments' 	=> 	array('permission_for_applicant_admin'),
+	    
+	);
+	
+  ///////////////*************END****************//
+	return $items;
+	
+  }
+  
+
+  ?>

@@ -1,0 +1,28 @@
+<?php
+
+	function cronjobs_cron() {
+		$lineBreak=" \r\n ";
+    	$contentToWrite = $lineBreak. date('Y-m-d H:i:s') .$lineBreak;
+		
+		/*$files = glob('sites/default/files/upload/download_pdf/*'); // get all file names
+		foreach($files as $file){ // iterate files
+			$del_file_name = basename($file);
+		  	if(is_file($file)) {
+				$contentToWrite .= "Name of the deleted file is " . $del_file_name . $lineBreak;
+				unlink($file); // delete file
+			}
+		}*/
+		
+		$path = "sites/default/files/upload/download_pdf/";
+		foreach(glob($path . "*") as $file) {
+			$del_file_name = basename($file);
+			if(is_file($file)) {
+				$contentToWrite .= "Name of the deleted file is " . $del_file_name . $lineBreak;
+				unlink($file);
+			}
+		}
+		
+		$log_file = drupal_get_path('module', 'cronjobs') . '/temp/cron.log';
+    	file_put_contents($log_file, $contentToWrite, FILE_APPEND | LOCK_EX);
+		
+	}

@@ -1,0 +1,62 @@
+<?php
+function form20_view( $formid ,$referenceid, $factorytypeid, $serviceid){	
+
+	global $base_root,$base_path,$user;
+	
+  	drupal_add_css(drupal_get_path('module', 'caf_form') . '/css/form-design.css');
+	drupal_add_js(drupal_get_path('module', 'caf_form') . '/js/myfunction.js');
+	
+	$form_id 	 		= encryption_decryption_fun('decrypt', $formid);
+	$reference_id 		= encryption_decryption_fun('decrypt', $referenceid);
+	$factory_typeid 	= encryption_decryption_fun('decrypt', $factorytypeid);
+	$service_id 	= encryption_decryption_fun('decrypt', $serviceid); //echo $form_id.'--'.$reference_id.'--'.$factory_typeid.'--'.$service_id;
+
+	$get_all_data 		= get_notice_poisoning_data($form_id,$reference_id,$factory_typeid,$service_id); 
+	$get_patient_data   = get_notice_poisoning_patient_data($form_id);
+
+	$getdata_factory_address =  array('district','subdivision','areatype','block','panchayat','policestation','pincode','state','postoffice');
+	$factory_address         = get_notice_full_address('fa_form20_notice_poisoning','sub-table',$get_all_data[0]->factory_id,$getdata_factory_address);
+
+	$getdata_occpier_address =  array('district_oprmntadr','subdivision_oprmntadr','areatype_oprmntadr','block_oprmntadr','panchayat_oprmntadr','policestation_oprmntadr','pincodeoprmntadr','state_oprmntadr','postoffice_oprmntadr');
+	$occpier_address         = get_notice_full_address('fa_form20_notice_poisoning','sub-table',$get_all_data[0]->factory_id,$getdata_occpier_address);
+
+	$form = array();
+	
+ 	$output .='<div class="row"><div class="box box-info"><div class="box-header with-border">
+              <div class="col-lg-12 col-md-12 col-sm-12"><h3 class="box-title pull-left">Application View</h3>
+              <p class="pull-right" style="text-align:right;">'.$uploaded_pdf_link.'</p>
+              </div></div>
+			  <div class="box-body"><div class="col-lg-12 col-md-12 col-sm-12">
+			  <table class="table table-bordered custom-table-view"> <tr>
+   								<th width="40%">Parameters</th>
+   								<th>Inputs</th>
+								</tr>';
+
+	$output .='<tr><td colspan="2" class="sub-title">A. Factory Information</td></tr>
+				<tr><td>(i) Name of the factory</td><td>'.$get_all_data[0]->factory_name.'</td></tr>
+				<tr><td>(ii) Address of the factory</td><td>'.$factory_address.'<br> '.$get_all_data[0]->addrline.'</td></tr>
+				<tr><td>(iii) Nature of the Industry</td><td>'.$get_all_data[0]->industry_nature.'</td></tr>';
+	
+	$output .='<tr><td colspan="2" class="sub-title">B. Occupier Information</td></tr>
+				<tr><td>(iv) Occupier Name</td><td>'.$get_all_data[0]->name_occupier.'</td></tr>
+				<tr><td>(v) Address of Occupier</td><td>'.$occpier_address.'<br> '.$get_all_data[0]->addrline.'</td></tr>
+				<tr><td colspan="2" class="sub-title">C. Patient Details Information</td></tr>';
+
+			$i = 0;
+			while($i < count($get_patient_data))
+			{ 
+	$output .='
+				<tr><td>(i) Name and Works Number of Patient</td><td>'.$get_patient_data[$i]->patient_name.' ('.$get_patient_data[$i]->patient_works_no.')</td></tr>
+				<tr><td>(ii) Address of Patient</td><td>'.$get_patient_data[$i]->patient_address.'</td></tr>
+				<tr><td>(iii) Sex and Age</td><td>'.$get_patient_data[$i]->patient_gender.' ('.$get_patient_data[$i]->patient_age.' years)</td></tr>
+				<tr><td>(iv) Precise occupation of Patient</td><td>'.$get_patient_data[$i]->patient_occupation.'</td></tr>
+				<tr><td>(v) Nature of Poisoning or Disease</td><td>'.$get_patient_data[$i]->patient_disease.'</td></tr>
+				<tr><td>(vii) Has the case been reported to the Certifying Surgeon</td><td>'.$get_patient_data[$i]->patient_reported.'</td></tr>
+				<tr><td colspan="2" class="sub-title">&nbsp;</td></tr>';
+				
+				$i++;			 
+			}			
+				
+	$output .= '</table></div></div></div></div>';
+	return $output;
+ }

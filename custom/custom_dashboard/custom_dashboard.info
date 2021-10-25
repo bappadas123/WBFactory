@@ -1,0 +1,5 @@
+name = Custom Dashboard
+description = Custom Dashboard
+package = Common Application Form Modules
+core = 7.x
+version = "7.x"

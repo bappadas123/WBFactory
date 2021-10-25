@@ -1,0 +1,4 @@
+name 		= CAF Verification
+description = CAF Verification from Office end
+core 		= 7.x
+package 	= Office end

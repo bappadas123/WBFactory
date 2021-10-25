@@ -1,0 +1,28 @@
+.sky-form .input .form-item input.form-text { padding-left: 38px; }
+.sky-form label.textarea .form-textarea-wrapper textarea.form-textarea { resize: none; text-indent: 40px; }
+.sky-form .resizable-textarea .grippie { background-image: none;height:0; display: none; }
+/*.app-regs-gender label.radios { display: block; }
+.app-regs-gender .form-item-gender { width: 100%; }
+.app-regs-gender .form-item-gender .form-item-gender { float: left; width: 32%; }
+.app-regs-gender .form-item-gender .form-item-gender input.form-radio { float: left; margin-right: 5px; }*/
+
+.app-regs-gender label.radios { width: 100%; }
+.app-regs-gender .form-item-gender .form-item-gender { float: left; width: 30%; }
+.app-regs-gender .form-item-gender .form-item-gender input.form-radio { float: left; margin-right: 5px; }
+
+.sky-form .button input.form-submit { background: #2da5da; border: none; }
+.custom-form-main { box-shadow: none; }
+.about_body_main .custom-form-main { margin-left:-15px; margin-right:-15px; }
+.sky-form.custom-form-main .header-top, .sky-form.custom-form-main .header-bottom { color: #000; font-size: 30px; font-weight: 500; padding: 10px 0px; margin:0; border-bottom: 2px solid #E6E9ED; margin-left: 30px; margin-right: 30px; }
+/*.sky-form.custom-form-main .header-top, .sky-form.custom-form-main .header-bottom { background: #d3edfa; color: #000; font-size: 24px; font-weight: 400; padding: 10px 15px; margin:0; }*/
+#applicant-registration-form.sky-form fieldset { margin: 0; padding: 20px; }
+#basic-information-form.sky-form fieldset { margin: 0; padding: 20px; }
+#basic-information-form.sky-form .icon-prepend{top:25px}
+#applicant-registration-form.sky-form .icon-prepend{top:25px}
+/*#applicant-registration-form #edit-gender input.form-radio { opacity: 0; margin-right: 5px; width:20px;  }
+#applicant-registration-form #edit-gender .form-item.form-type-radio { position: relative; }
+#applicant-registration-form #edit-gender .form-item.form-type-radio .custom_radio { position: absolute; left: 0; top: 0; width: 20px; height: 20px; background: url(../images/green.png) no-repeat -88px 0;cursor: pointer;}
+#applicant-registration-form #edit-gender .form-item.form-type-radio.checked .custom_radio { position: absolute; left: 0; top: 0; width: 20px; height: 20px; background: url(../images/green.png) no-repeat -110px 0;cursor: pointer;}*/
+
+
+.filter-wrapper .ckeditor_links {display:none}

@@ -1,0 +1,5 @@
+
+name = fees_migrate
+description = Fees Migrate module.
+package = Custom Module
+core = 7.x

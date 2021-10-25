@@ -1,0 +1,116 @@
+  <?php
+   function plan_extension_menu() {
+    $items = array();
+
+	$items['applicant/caf_extn/plan_extension/%/%/%/%']	= array(
+		'title'						=>	'Online Application for Registration and grant or Renewal of License of Factories',
+		'page callback'				=>	'drupal_get_form',
+		'page arguments'			=>	array('caf_form_parta_extn',3,4,5,6),
+		'file' 						=> 	'includes/caf_form_parta_extn.inc',
+		'access arguments' 			=> 	array('permission_for_applicant'),
+    );
+	 $items['download-pdf-as-draft-extn/%/%/%/%'] = array(
+		'page callback'		=>	'pdf_form_as_draft_extn',
+		'page arguments'	=>	array(1,2,3,4),
+		'file' 				=> 	'includes/pdf_form_as_draft_extn.inc',
+		//'access arguments' 	=>  array('permission_for_application_planpdf'),
+		'access arguments' 	=>  array('access content'),
+	  );
+
+	$items['applicant/caf_extn/caf-form-owner-extension/%/%/%/%'] = array(
+		'title'				=>	'OWNER DETAILS',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('caf_form_owner_extn',3,4,5,6),
+		'file' 				=> 	'includes/caf_form_owner_extn.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	2,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	$items['applicant/del-owner-details/%/%/%/%'] = array(
+		'page callback' 	=> 'del_owner_details',
+		'page arguments' 	=> array(2,3,4,5),
+		'access arguments' 	=> array('permission_for_applicant'),
+		'file' 	 			=> 'includes/caf_form_owner_extn.inc',
+  	);
+
+	$items['applicant/caf_extn/caf-form-occupier-extension/%/%/%/%'] = array(
+		'title'				=>	'CAF D',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('caf_form_occupier_extn',3,4,5,6),
+		'file' 				=> 	'includes/caf_form_occupier_extn.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	2,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);  
+	 $items['download-pdf-occupier-as-draft-extn/%/%/%/%'] = array(
+		'page callback'		=>	'pdf_occupier_as_draft_extn',
+		'page arguments'	=>	array(1,2,3,4),
+		'file' 				=> 	'includes/pdf_occupier_as_draft_extn.inc',
+		//'access arguments' 	=>  array('permission_for_application_planpdf'),
+		'access arguments' 	=>  array('access content'),
+	  );
+
+	$items['applicant/caf_extn/details-worker-hp-extension/%/%/%/%'] = array(
+		'title'				=>	'CAF C',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('details_worker_hp_yearly_extn',3,4,5,6),
+		'file' 				=> 	'includes/details_worker_hp_yearly_extn.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	3,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	 $items['download-pdf-worker-as-draft-extn/%/%/%/%'] = array(
+		'page callback'		=>	'pdf_worker_as_draft_extn',
+		'page arguments'	=>	array(1,2,3,4),
+		'file' 				=> 	'includes/pdf_worker_as_draft_extn.inc',
+		//'access arguments' 	=>  array('permission_for_application_planpdf'),
+		'access arguments' 	=>  array('access content'),
+	  );
+
+	$items['applicant/caf_extn/cafb-extension/%/%/%/%'] = array(
+		'title'				=>	'CAF B',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('caf_form_partb_extn',3,4,5,6),
+		'file' 				=> 	'includes/caf_form_partb_extn.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	2,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);  
+
+	$items['applicant/caf_extn/application-preview-extension/%/%/%'] = array(
+		//'title'				=>	'Application Preview',
+		'page callback'		=>	'drupal_get_form',
+		'page arguments'	=>	array('application_preview_extn',3,4,5),
+		'file' 				=> 	'includes/application_preview_extn.inc',
+		'access arguments' 	=> 	array('permission_for_applicant'),
+		'weight' 			=> 	4,
+		'type' 				=> 	MENU_LOCAL_TASK,
+	);
+	 $items['download-pdf-new-plan-extn/%/%/%/%/%'] = array(
+		'page callback'		=>	'pdf_form_new_plan_extn',
+		'page arguments'	=>	array(1,2,3,4,5),
+		'file' 				=> 	'includes/pdf_form_new_plan_extn.inc',
+		//'access arguments' 	=>  array('permission_for_application_planpdf'),
+		'access arguments' 	=>  array('access content'),
+	  );
+	
+	$items['applicant/application_upload_extension/%/%/%/%'] = array(
+		'title'	 =>	'Application Upload Extension',
+		'page callback'	 =>	'drupal_get_form',
+		'page arguments'	=>	array('application_upload_extn',2,3,4,5),
+		'file' 	 => 	'includes/application_upload_extn.inc',
+		'access arguments' 	=> 	array('permission_for_application_planview'),
+	);
+
+	$items['applicant/application_view_extension/%/%/%/%'] = array(
+		//'title'	 =>	'Application View',
+		'page callback'	 	=>	'application_view_extn',
+		'page arguments'	=>	array(2,3,4,5),
+		'file' 	 			=> 	'includes/application_view_extn.inc',
+		'access arguments' 	=> 	array('permission_for_application_planview'),
+	);
+
+	return $items;
+	
+  }
+  ?>

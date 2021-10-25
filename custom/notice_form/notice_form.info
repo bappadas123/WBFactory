@@ -1,0 +1,4 @@
+name = Notice Form
+description = Notice API Testing
+core = 7.x
+package = Notice Form Modules

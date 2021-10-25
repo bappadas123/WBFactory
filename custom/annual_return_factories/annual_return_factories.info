@@ -1,0 +1,7 @@
+name = Annual Return Factory
+description = Annual Return Form module under various Factory Laws.
+package = Annual Return Module Factory
+core = 7.x
+
+scripts[] = js/annual_return_factories.js
+scripts[] = js/validation_factories.js
