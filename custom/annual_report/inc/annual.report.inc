@@ -885,10 +885,10 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
 	        $result=$maxresult->fetchAssoc();
 	        $max_sl_number = trim($result['maxsl']); 
             if($max_sl_number==0){$querystring=1;	}else{ $querystring=$max_sl_number+1; }
-		      $rowid_t4a=$querystring;
+		      $rowid_t2b=$querystring;
            
 
-                $fieldsE = array('row_id' => $rowid_t4a, 'annual_inspection_id' => $autoGENNO,'accident_type' =>'Serious' ,'acc_det_name_of_factory' =>trim($squan->acc_det_name_of_factory),'acc_det_address_of_factory' =>trim($squan->acc_det_address_of_factory), 'acc_det_name_of_deceased_injured' => trim($squan->acc_det_name_of_deceased_injured), 'acc_det_date_of_accident' => $squan->acc_det_date_of_accident,   'classification_code' => $squan->classification_code );
+                $fieldsE = array('row_id' => $rowid_t2b, 'annual_inspection_id' => $autoGENNO,'accident_type' =>'Serious' ,'acc_det_name_of_factory' =>trim($squan->acc_det_name_of_factory),'acc_det_address_of_factory' =>trim($squan->acc_det_address_of_factory), 'acc_det_name_of_deceased_injured' => trim($squan->acc_det_name_of_deceased_injured), 'acc_det_date_of_accident' => $squan->acc_det_date_of_accident,   'classification_code' => $squan->classification_code );
 		  
 		   
            db_insert('labour_factory_statcell_annual_report_t2_b')->fields($fieldsE)->execute();	
@@ -900,6 +900,60 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
                
 
                     /* end details of fatal & serious accident*/
+
+
+
+
+                    /*  start orders issued under various act & rules */
+
+                      
+                          $mr_order_issue_act_rule_select_query = db_select('labour_factory_statcell_form_5_t7', 'a');
+       
+                         $mr_order_issue_act_rule_select_query->InnerJoin('labour_factory_statcell_form_5', 'b', 'a.monthly_form_id=b.monthly_form_id');
+                         $mr_order_issue_act_rule_select_query->condition('b.inspector_id',trim($uid),'=');
+                         $mr_order_issue_act_rule_select_query->condition('b.report_from_date',trim($from),'>=');
+                         $mr_order_issue_act_rule_select_query->condition('b.report_to_date',trim($to),'<=');
+
+                          $mr_order_issue_act_rule_select_query->fields('a',array('factory_name','factory_address',
+        'acts_issued','time_allowed','result_description'));
+
+                         $mr_order_issue_act_rule_select_query_result = $mr_order_issue_act_rule_select_query->execute();
+
+                     
+                       if($mr_order_issue_act_rule_select_query_result->rowCount() > 0) 
+                       { 
+
+                      foreach($mr_order_issue_act_rule_select_query_result as $squan) {
+
+                         
+
+                       
+
+                           $maxresult_t4=db_query('select  max(row_id) maxsl from labour_factory_statcell_annual_report_t4');	
+	                       $result_t4=$maxresult_t4->fetchAssoc();
+	                       $max_sl_number_t4 = trim($result_t4['maxsl']); 
+                         if($max_sl_number_t4==0){$querystring_t4=1;	}else{ $querystring_t4=$max_sl_number_t4+1; }
+		                  $rowid_t4=$querystring_t4;
+
+
+		
+	      
+		   
+		    $fieldsE = array('row_id' => $rowid_t4, 'annual_inspection_id' => $autoGENNO,'factory_name' =>trim($squan->factory_name) ,'factory_address' =>trim($squan->factory_address),'section_rule_issued' =>trim($squan->acts_issued), 'time_allowed' => trim($squan->time_allowed), 'brief_description' => trim($squan->result_description));
+		  
+		   
+           db_insert('labour_factory_statcell_annual_report_t4')->fields($fieldsE)->execute();
+
+
+
+
+                      }
+                  }
+
+
+
+
+                    /*  end  orders issued under various act & rules */
 
 	 
 	
