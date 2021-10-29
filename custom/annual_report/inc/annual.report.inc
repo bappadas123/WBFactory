@@ -955,6 +955,105 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
 
                     /*  end  orders issued under various act & rules */
 
+
+
+                    /* start complaints */
+
+                   $mr_complaints_select_query = db_select('labour_factory_statcell_form_5_t8', 'a');
+
+                   $mr_complaints_select_query->InnerJoin('labour_factory_statcell_form_5', 'b', 'a.monthly_form_id=b.monthly_form_id');
+                   $mr_complaints_select_query->condition('b.inspector_id',trim($uid),'=');
+                   $mr_complaints_select_query->condition('b.report_from_date',trim($from),'>=');
+                   $mr_complaints_select_query->condition('b.report_to_date',trim($to),'<=');
+       
+                  $mr_complaints_select_query->addExpression('sum(compl_reg_no_rec_fa)', 'compl_reg_no_rec_fa');
+                  $mr_complaints_select_query->addExpression('sum(compl_reg_no_rec_pwa)', 'compl_reg_no_rec_pwa');
+                  $mr_complaints_select_query->addExpression('sum(compl_reg_no_rec_mba)', 'compl_reg_no_rec_mba');
+                  $mr_complaints_select_query->addExpression('sum(compl_reg_no_rec_msihcr)', 'compl_reg_no_rec_msihcr');
+                  $mr_complaints_select_query->addExpression('sum(compl_reg_no_rec_car)', 'compl_reg_no_rec_car');
+                  $mr_complaints_select_query->addExpression('sum(compl_reg_no_rec_clpra)', 'compl_reg_no_rec_clpra');
+
+                  $mr_complaints_select_query->addExpression('sum(compl_unreg_no_rec_fa)', 'compl_unreg_no_rec_fa');
+                  $mr_complaints_select_query->addExpression('sum(compl_unreg_no_rec_pwa)', 'compl_unreg_no_rec_pwa');
+                  $mr_complaints_select_query->addExpression('sum(compl_unreg_no_rec_mba)', 'compl_unreg_no_rec_mba');
+                  $mr_complaints_select_query->addExpression('sum(compl_unreg_no_rec_msihcr)', 'compl_unreg_no_rec_msihcr');
+                  $mr_complaints_select_query->addExpression('sum(compl_unreg_no_rec_car)', 'compl_unreg_no_rec_car');
+                  $mr_complaints_select_query->addExpression('sum(compl_unreg_no_rec_clpra)', 'compl_unreg_no_rec_clpra');
+
+
+                  $mr_complaints_select_query->addExpression('sum(compl_reg_no_inv_fa)', 'compl_reg_no_inv_fa');
+                  $mr_complaints_select_query->addExpression('sum(compl_reg_no_inv_pwa)', 'compl_reg_no_inv_pwa');
+                  $mr_complaints_select_query->addExpression('sum(compl_reg_no_inv_mba)', 'compl_reg_no_inv_mba');
+                  $mr_complaints_select_query->addExpression('sum(compl_reg_no_inv_msihcr)', 'compl_reg_no_inv_msihcr');
+                  $mr_complaints_select_query->addExpression('sum(compl_reg_no_inv_car)', 'compl_reg_no_inv_car');
+                  $mr_complaints_select_query->addExpression('sum(compl_reg_no_inv_clpra)', 'compl_reg_no_inv_clpra');
+
+                  $mr_complaints_select_query->addExpression('sum(compl_unreg_no_inv_fa)', 'compl_unreg_no_inv_fa');
+                  $mr_complaints_select_query->addExpression('sum(compl_unreg_no_inv_pwa)', 'compl_unreg_no_inv_pwa');
+                  $mr_complaints_select_query->addExpression('sum(compl_unreg_no_inv_mba)', 'compl_unreg_no_inv_mba');
+                  $mr_complaints_select_query->addExpression('sum(compl_unreg_no_inv_msihcr)', 'compl_unreg_no_inv_msihcr');
+                  $mr_complaints_select_query->addExpression('sum(compl_unreg_no_inv_car)', 'compl_unreg_no_inv_car');
+                  $mr_complaints_select_query->addExpression('sum(compl_unreg_no_inv_clpra)', 'compl_unreg_no_inv_clpra');
+
+
+                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_violation_fa, ";")', 'compl_reg_violation_fa');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_violation_pwa, ";")', 'compl_reg_violation_pwa');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_violation_mba, ";")', 'compl_reg_violation_mba');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_violation_msihcr, ";")', 'compl_reg_violation_msihcr');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_violation_car, ";")', 'compl_reg_violation_car');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_violation_clpra, ";")', 'compl_reg_violation_clpra');
+
+                  $mr_complaints_select_query->addExpression('string_agg(compl_unreg_violation_fa, ";")', 'compl_unreg_violation_fa');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_unreg_violation_pwa, ";")', 'compl_unreg_violation_pwa');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_unreg_violation_mba, ";")', 'compl_unreg_violation_mba');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_unreg_violation_msihcr, ";")', 'compl_unreg_violation_msihcr');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_unreg_violation_car, ";")', 'compl_unreg_violation_car');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_unreg_violation_clpra, ";")', 'compl_unreg_violation_clpra');
+
+
+                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_remarks_fa, ";")', 'compl_reg_remarks_fa');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_remarks_pwa, ";")', 'compl_reg_remarks_pwa');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_remarks_mba, ";")', 'compl_reg_remarks_mba');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_remarks_msihcr, ";")', 'compl_reg_remarks_msihcr');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_remarks_car, ";")', 'compl_reg_remarks_car');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_remarks_clpra, ";")', 'compl_reg_remarks_clpra');
+
+                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_remarks_fa, ";")', 'compl_reg_remarks_fa');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_remarks_pwa, ";")', 'compl_reg_remarks_pwa');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_remarks_mba, ";")', 'compl_reg_remarks_mba');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_remarks_msihcr, ";")', 'compl_reg_remarks_msihcr');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_remarks_car, ";")', 'compl_reg_remarks_car');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_remarks_clpra, ";")', 'compl_reg_remarks_clpra');
+        
+
+
+
+               
+                $mr_complaints_select_query_result = $mr_complaints_select_query->execute(); 
+    
+                $result_complaints=$mr_complaints_select_query_result->fetchAssoc();
+
+
+
+               $reg_complaints_total_no = $result_complaints['compl_reg_no_rec_fa'] + $result_complaints['compl_reg_no_rec_pwa'] + $result_complaints['compl_reg_no_rec_mba'] + $result_complaints['compl_reg_no_rec_msihcr'] + $result_complaints['compl_reg_no_rec_car'] + $result_complaints['compl_reg_no_rec_clpra'];
+
+               $unreg_complaints_total_no = $result_complaints['compl_unreg_no_rec_fa'] + $result_complaints['compl_unreg_no_rec_pwa'] + $result_complaints['compl_unreg_no_rec_mba'] + $result_complaints['compl_unreg_no_rec_msihcr'] + $result_complaints['compl_unreg_no_rec_car'] + $result_complaints['compl_unreg_no_rec_clpra'];
+
+               $reg_complaints_total_inv = $result_complaints['compl_reg_no_inv_fa'] + $result_complaints['compl_reg_no_inv_pwa'] + $result_complaints['compl_reg_no_inv_mba'] + $result_complaints['compl_reg_no_inv_msihcr'] + $result_complaints['compl_reg_no_inv_car'] + $result_complaints['compl_reg_no_inv_clpra'];
+
+               $unreg_complaints_total_inv = $result_complaints['compl_unreg_no_inv_fa'] + $result_complaints['compl_unreg_no_inv_pwa'] + $result_complaints['compl_unreg_no_inv_mba'] + $result_complaints['compl_unreg_no_inv_msihcr'] + $result_complaints['compl_unreg_no_inv_car'] + $result_complaints['compl_unreg_no_inv_clpra'];
+
+               $reg_complaints_total_vio = $result_complaints['compl_reg_violation_fa'] + $result_complaints['compl_reg_violation_pwa'] + $result_complaints['compl_reg_violation_mba'] +
+               $result_complaints['compl_reg_violation_msihcr'] + $result_complaints['compl_reg_violation_car'] + $result_complaints['compl_reg_violation_clpra'];
+
+               $reg_complaints_total_remarks = $result_complaints['visit_car'] + $result_complaints['visit_msihcr'] + $result_complaints['visit_msihcr'] +
+                 + $result_complaints['visit_msihcr'] + $result_complaints['visit_msihcr'] + $result_complaints['visit_msihcr'];
+
+              
+
+
+                    /*  end complaints */
+
 	 
 	
 	                  
