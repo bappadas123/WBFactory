@@ -1298,7 +1298,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
 
                
 
-                      // begin tab 14 BOCW Act
+                      // begin tab 12 BOCW Act
 
            $tab_14_bocw = db_select('labour_factory_statcell_form_5_t14_6_t6_7_t8', 'a');
        
@@ -1386,8 +1386,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
 		    $construction_row_id_12_a=$querystring_12_a;
 
             $visit_paid= $no_of_visit_paid_general + $no_of_visit_paid_complaint +  $no_of_visit_paid_accident;
-            $no_prosecution= $no_of_prosecution_general_visit +
-                $no_of_prosecution_complaint + $no_of_prosecution_accident ;
+            $no_prosecution= $no_of_prosecution_general_visit + $no_of_prosecution_complaint + $no_of_prosecution_accident ;
 
 
                
@@ -1399,16 +1398,83 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
 		   
                       db_insert('labour_factory_statcell_annual_report_attach_construct_t1')->fields($fieldsE_t12_a)->execute();
 
+                   
 
 
-                     // end tab 14 BOCW act
+                 //Construction Works Case Details
+
+
+           $cons_worker_case = db_select('labour_factory_statcell_form_5_t14_9', 'a');
+           $cons_worker_case->InnerJoin('labour_factory_statcell_form_5', 'b', 'a.monthly_form_id=b.monthly_form_id');
+           $cons_worker_case->condition('b.inspector_id',trim($uid),'=');
+           $cons_worker_case->condition('b.report_from_date',trim($from),'>=');
+           $cons_worker_case->condition('b.report_to_date',trim($to),'<=');
+
+            $cons_worker_case->fields('a',array('details_of_prosecution_violation','details_of_prosecution_court_name',
+        'details_of_prosecution_case_no','details_of_prosecution_result'));
+
+            $cons_worker_case_result = $cons_worker_case->execute();
+
+                     
+            if( $cons_worker_case_result->rowCount() > 0 ) 
+                       { 
+
+                      foreach($cons_worker_case_result as $squan) {
+
+            $maxresult_cw_case=db_query('select  max(row_id) maxsl from labour_factory_statcell_annual_report_attach_construct_t2');	
+	        $result_cw_case=$maxresult_cw_case->fetchAssoc();
+	        $max_sl_number_cw_case = trim($result_cw_case['maxsl']); 
+            if($max_sl_number_cw_case==0){$querystring_cw_case=1;	}else{ $querystring_t10=$max_sl_number_cw_case+1; }
+		    $row_id_cw_case=$querystring_cw_case;
+    
+
+
+  $fields_cw_case = array('row_id' => $row_id_cw_case, 'annual_inspection_id' =>$autoGENNO,'case_no' =>trim($squan->details_of_prosecution_case_no), 'violation' => trim($squan->details_of_prosecution_violation), 'court' => trim($squan->details_of_prosecution_court_name), 'remarks' => trim($squan->details_of_prosecution_result));
+		  
+		   
+                      db_insert('labour_factory_statcell_annual_report_attach_construct_t2')->fields($fields_cw_case)->execute();
+
+             }
+
+         }
+
+                   // end coonstractor case details   
 
 
 
+
+                     // end tab 12 BOCW act
+
+
+                       // begin tab 12 maternity benefit
+
+
+
+           
+           
+
+            $maternity_benefit = db_select('labour_factory_statcell_annual_report_attach_maternity_t1', 'a'); 
+            $maternity_benefit->InnerJoin('labour_factory_statcell_annual_report', 'b', 'a.annual_inspection_id=b.annual_inspection_id');
+            $maternity_benefit->condition('b.inspector_id',trim($uid),'=');
+            $maternity_benefit->condition('b.report_year',trim($thisYear),'=');
+           
+
+            $maternity_benefit->fields('a',array('case_pending_at_end_4_c'));
+
+            $maternity_benefit_result = $maternity_benefit->execute();
+            $result_maternity_benefit=$maternity_benefit_result->fetchAssoc();
+
+		    $case_pending_at_end_4_c=$result_maternity_benefit['case_pending_at_end_4_c'];
 
 
                  
+                       // end tab 12 maternity benefit
 
+
+                         // begin tab 12 Payment of wages
+
+
+                            // end tab 12 payment of wage
 
 
 
