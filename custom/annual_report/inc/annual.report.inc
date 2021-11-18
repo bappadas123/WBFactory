@@ -1467,11 +1467,64 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
 		    $case_pending_at_end_4_c=$result_maternity_benefit['case_pending_at_end_4_c'];
 
 
+		    $maxresult_mtb=db_query('select  max(maternity_row_id) maxsl from labour_factory_statcell_annual_report_attach_maternity_t1');	
+	        $result_mtb=$maxresult_mtb->fetchAssoc();
+	        $max_sl_number_mtb = trim($result_mtb['maxsl']); 
+            if($max_sl_number_mtb==0){$querystring_mtb=1;	}else{ $querystring_mtb=$max_sl_number_mtb+1; }
+		    $maternity_row_id=$querystring_mtb;
+
+ $fieldsE_mtb = array('maternity_row_id' => $maternity_row_id, 'annual_inspection_id' =>$autoGENNO ,'case_pending_at_beginning_4_a' => $case_pending_at_end_4_c);
+		  
+		   
+                      db_insert('labour_factory_statcell_annual_report_attach_maternity_t1')->fields($fieldsE_mtb)->execute();
+
+
+
                  
                        // end tab 12 maternity benefit
 
 
                          // begin tab 12 Payment of wages
+
+
+
+            $maternity_benefit = db_select('labour_factory_statcell_annual_report_attach_wages_t1', 'a'); 
+            $maternity_benefit->InnerJoin('labour_factory_statcell_annual_report', 'b', 'a.annual_inspection_id=b.annual_inspection_id');
+            $maternity_benefit->condition('b.inspector_id',trim($uid),'=');
+            $maternity_benefit->condition('b.report_year',trim($thisYear),'=');
+           
+
+            $maternity_benefit->fields('a',array('case_pending_at_end_3_c'));
+
+            $maternity_benefit_result = $maternity_benefit->execute();
+            $result_maternity_benefit=$maternity_benefit_result->fetchAssoc();
+
+		    $case_pending_at_end_3_c=$result_maternity_benefit['case_pending_at_end_3_c'];
+
+
+
+
+		    
+
+
+
+
+
+
+
+		    $maxresult_pw=db_query('select  max(maternity_row_id) maxsl from labour_factory_statcell_annual_report_attach_wages_t1');	
+	        $result_pw=$maxresult_pw->fetchAssoc();
+	        $max_sl_number_pw = trim($result_pw['maxsl']); 
+            if($max_sl_number_pw==0){$querystring_pw=1;	}else{ $querystring_pw=$max_sl_number_pw+1; }
+		    $pw_row_id=$querystring_pw;
+
+ $fieldsE_mtb = array('wages_row_id' => $pw_row_id, 'annual_inspection_id' =>$autoGENNO ,'case_pending_at_beginning_3_a' => $case_pending_at_end_3_c,
+
+
+'factories_name_4_a' => $colS1, 'application_filed_4_b' => $colS2, 'person_involved_4_c' => $colS3, 'wages_claimed_4_d' => $colS4, 'deduction_claimed_4_e' => $colS5, 'app_pending_at_beginning_4_f' => $colS6, 'app_disposed_4_g' => $colS7, 'app_pending_at_end_4_h' => $colS8);
+		  
+		   
+                      db_insert('labour_factory_statcell_annual_report_attach_wages_t1')->fields($fieldsE_mtb)->execute();
 
 
                             // end tab 12 payment of wage
