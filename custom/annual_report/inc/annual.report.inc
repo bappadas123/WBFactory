@@ -1264,7 +1264,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
                       foreach($seminar_traning_result as $squan) {
                       	$s++;
 
-                      	$str_seminar.= $s .') Name of the Factory and Address : '.trim($squan->seminar_name_of_factory).' ,'.trim($squan->seminar_address_of_factory) .', Type of program:'.trim($squan->seminar_type_of_program) .', Date of program: '.trim($squan->seminar_date_of_program).', No of participants'.trim($squan->seminar_no_of_participants);
+                      	$str_seminar.= $s .') Name of the Factory and Address : '.trim($squan->seminar_name_of_factory).' ,'.trim($squan->seminar_address_of_factory) .', Type of program:'.trim($squan->seminar_type_of_program) .', Date of program: '.trim($squan->seminar_date_of_program).', No of participants'.trim($squan->seminar_no_of_participants).';'." ";
            
 
                    }
@@ -1494,18 +1494,19 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
             $maternity_benefit->condition('b.report_year',trim($thisYear),'=');
            
 
-            $maternity_benefit->fields('a',array('case_pending_at_end_3_c'));
+            $maternity_benefit->fields('a',array('case_pending_at_end_3_c','app_pending_at_end_4_h'));
 
             $maternity_benefit_result = $maternity_benefit->execute();
             $result_maternity_benefit=$maternity_benefit_result->fetchAssoc();
 
 		    $case_pending_at_end_3_c=$result_maternity_benefit['case_pending_at_end_3_c'];
+		    $app_pending_at_end_4_h=$result_maternity_benefit['app_pending_at_end_4_h'];
 
 
 
 
 		    
-
+       
 
 
 
@@ -1521,7 +1522,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
  $fieldsE_mtb = array('wages_row_id' => $pw_row_id, 'annual_inspection_id' =>$autoGENNO ,'case_pending_at_beginning_3_a' => $case_pending_at_end_3_c,
 
 
-'factories_name_4_a' => $colS1, 'application_filed_4_b' => $colS2, 'person_involved_4_c' => $colS3, 'wages_claimed_4_d' => $colS4, 'deduction_claimed_4_e' => $colS5, 'app_pending_at_beginning_4_f' => $colS6, 'app_disposed_4_g' => $colS7, 'app_pending_at_end_4_h' => $colS8);
+'factories_name_4_a' => $colS1, 'application_filed_4_b' => $colS2, 'person_involved_4_c' => $colS3, 'wages_claimed_4_d' => $colS4, 'deduction_claimed_4_e' => $colS5, 'app_pending_at_beginning_4_f' => $colS6, 'app_disposed_4_g' => $colS7, 'app_pending_at_beginning_4_f' => $app_pending_at_end_4_h);
 		  
 		   
                       db_insert('labour_factory_statcell_annual_report_attach_wages_t1')->fields($fieldsE_mtb)->execute();
