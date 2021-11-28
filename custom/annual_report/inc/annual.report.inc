@@ -400,9 +400,9 @@ $val=$form_state['values'];
 	$uid=trim($val['uid']);
 	//$from=trim($val['from']);
 	//$to=trim($val['to']);
-	$from=date('Y-m-d', strtotime(trim($val['from'])));
-    $to=date('Y-m-d', strtotime(trim($val['to'])));
-	$thisYear = date("Y")-1;
+	$from="2021-01-01";//date('Y-m-d', strtotime(trim($val['from'])));
+    $to="2021-12-31";//date('Y-m-d', strtotime(trim($val['to'])));
+	$thisYear = "2022";//date("Y")-1;
 
 	$previous_year=$thisYear - 1;
 
@@ -415,7 +415,9 @@ $val=$form_state['values'];
 	    $previous_to_year_dt=date("Y")."-03-31";
 	}
 
-
+   
+   //print $thisYear."==".$from."==".$to."==".$thisYear;
+   //exit;
 
 
 	
@@ -587,14 +589,16 @@ $val=$form_state['values'];
 		
        
 
-         //print $step1_mr_select_query;
-        // exit;
+         
 
         $step1_mr_select_query_result = $step1_mr_select_query->execute(); 
 
 
 		
 		$result_step1_A=$step1_mr_select_query_result->fetchAssoc();
+
+		//print_r($result_step1_A);
+         //exit;
 
 		$g_nouv_regfac_2m_i=$result_step1_A['g_nouv_regfac_2m_i'];
 
@@ -679,6 +683,11 @@ $val=$form_state['values'];
             if($max_sl_number==0){$querystring=1;	}else{ $querystring=$max_sl_number+1; }
 		    $rowid=$querystring;
 
+		   // print $rowid."--".$autoGENNO;
+		  //  exit;
+
+
+
  $fieldsA = array('row_id' => $rowid ,'annual_inspection_id' => $autoGENNO, 'g_nouv_regfac_2m_i' =>$g_nouv_regfac_2m_i,'g_nouv_regfac_2m_ii' =>$g_nouv_regfac_2m_ii, 'g_nouv_regfac_85' => $g_nouv_regfac_85, 'g_nouv_unregfac_2m_i' => $g_nouv_unregfac_2m_i, 'g_nouv_unregfac_2m_ii' => $g_nouv_unregfac_2m_ii, 'g_nouv_unregfac_85' => $g_nouv_unregfac_85, 'g_nouv_non_amendable' => $g_nouv_non_amendable, 'g_nouv_total' => $g_nouv_total,
 
 
@@ -718,10 +727,10 @@ $val=$form_state['values'];
 
     );
 		  
-db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->execute();	
+//db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->execute();	
 
 
-
+//exit;
 
                         
 
@@ -798,7 +807,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
 
          );
 		  
-      db_insert('labour_factory_statcell_annual_report_t1_d')->fields($fieldsspecialVisit)->execute(); 
+    //  db_insert('labour_factory_statcell_annual_report_t1_d')->fields($fieldsspecialVisit)->execute(); 
 
 
 
@@ -865,7 +874,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
                   $fieldsAdoMr = array('row_id' => $rowid, 'annual_inspection_id' =>$autoGENNO,'ado_no_of_accidents_fatal' =>$ado_no_of_accidents_fatal, 'ado_no_of_accidents_serious' => $ado_no_of_accidents_serious, 'ado_no_danger_occur_explosion' => $ado_no_danger_occur_explosion, 'ado_no_danger_occur_fire' => $ado_no_danger_occur_fire, 'ado_no_danger_occur_gassing' => $ado_no_danger_occur_gassing, 'ado_no_danger_occur_toxic_release' => $ado_no_danger_occur_toxic_release, 'ado_no_danger_occur_collapse' => $ado_no_danger_occur_collapse, 'ado_no_danger_occur_others' => $ado_no_danger_occur_others, 'ado_no_visit_paid_fatal_accidents' => $ado_no_visit_paid_fatal_accidents, 'ado_no_visit_paid_serious_accidents' => $ado_no_visit_paid_serious_accidents, 'ado_no_visit_paid_explosion' => $ado_no_visit_paid_explosion, 'ado_no_visit_paid_fire' => $ado_no_visit_paid_fire, 'ado_no_visit_paid_gassing' => $ado_no_visit_paid_gassing,'ado_no_visit_paid_toxic_release' => $ado_no_visit_paid_toxic_release,'ado_no_visit_paid_collapse' => $ado_no_visit_paid_collapse,'ado_no_visit_paid_others' => $ado_no_visit_paid_others);
 		  
 		   
-                      db_insert('labour_factory_statcell_annual_report_t2_a')->fields($fieldsAdoMr)->execute();
+                   //   db_insert('labour_factory_statcell_annual_report_t2_a')->fields($fieldsAdoMr)->execute();
 
                   
                     /* end accident and dangerous    */
@@ -905,7 +914,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
                 $fieldsE_t2_b = array('row_id' => $rowid_t2b, 'annual_inspection_id' => $autoGENNO,'accident_type' =>'Serious' ,'acc_det_name_of_factory' =>trim($squan->acc_det_name_of_factory),'acc_det_address_of_factory' =>trim($squan->acc_det_address_of_factory), 'acc_det_name_of_deceased_injured' => trim($squan->acc_det_name_of_deceased_injured), 'acc_det_date_of_accident' => $squan->acc_det_date_of_accident,   'classification_code' => $squan->classification_code );
 		  
 		   
-           db_insert('labour_factory_statcell_annual_report_t2_b')->fields($fieldsE_t2_b)->execute();	
+         //  db_insert('labour_factory_statcell_annual_report_t2_b')->fields($fieldsE_t2_b)->execute();	
 		   
           
 
@@ -956,7 +965,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
 		    $fieldsE_t4 = array('row_id' => $rowid_t4, 'annual_inspection_id' => $autoGENNO,'factory_name' =>trim($squan->factory_name) ,'factory_address' =>trim($squan->factory_address),'section_rule_issued' =>trim($squan->acts_issued), 'time_allowed' => trim($squan->time_allowed), 'brief_description' => trim($squan->result_description));
 		  
 		   
-           db_insert('labour_factory_statcell_annual_report_t4')->fields($fieldsE_t4)->execute();
+         //  db_insert('labour_factory_statcell_annual_report_t4')->fields($fieldsE_t4)->execute();
 
 
 
@@ -1010,8 +1019,8 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
                   $mr_complaints_select_query->addExpression('sum(compl_unreg_no_inv_clpra)', 'compl_unreg_no_inv_clpra');
 
 
-                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_violation_fa, ";")', 'compl_reg_violation_fa');
-                  $mr_complaints_select_query->addExpression('string_agg(compl_reg_violation_pwa, ";")', 'compl_reg_violation_pwa');
+                  $mr_complaints_select_query->addExpression("string_agg(compl_reg_violation_fa, ';')", "compl_reg_violation_fa");
+                 /* $mr_complaints_select_query->addExpression('string_agg(compl_reg_violation_pwa, ";")', 'compl_reg_violation_pwa');
                   $mr_complaints_select_query->addExpression('string_agg(compl_reg_violation_mba, ";")', 'compl_reg_violation_mba');
                   $mr_complaints_select_query->addExpression('string_agg(compl_reg_violation_msihcr, ";")', 'compl_reg_violation_msihcr');
                   $mr_complaints_select_query->addExpression('string_agg(compl_reg_violation_car, ";")', 'compl_reg_violation_car');
@@ -1037,7 +1046,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
                   $mr_complaints_select_query->addExpression('string_agg(compl_unreg_remarks_mba, ";")', 'compl_unreg_remarks_mba');
                   $mr_complaints_select_query->addExpression('string_agg(compl_unreg_remarks_msihcr, ";")', 'compl_unreg_remarks_msihcr');
                   $mr_complaints_select_query->addExpression('string_agg(compl_unreg_remarks_car, ";")', 'compl_unreg_remarks_car');
-                  $mr_complaints_select_query->addExpression('string_agg(compl_unreg_remarks_clpra, ";")', 'compl_unreg_remarks_clpra');
+                  $mr_complaints_select_query->addExpression('string_agg(compl_unreg_remarks_clpra, ";")', 'compl_unreg_remarks_clpra');*/
         
 
 
@@ -1060,7 +1069,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
                $reg_complaints_total_vio = $result_complaints['compl_reg_violation_fa'] + $result_complaints['compl_reg_violation_pwa'] + $result_complaints['compl_reg_violation_mba'] +
                $result_complaints['compl_reg_violation_msihcr'] + $result_complaints['compl_reg_violation_car'] + $result_complaints['compl_reg_violation_clpra'];
 
-               $unreg_complaints_total_vio = $result_complaints['compl_unreg_violation_fa'] + $result_complaints['compl_unreg_violation_pwa'] + $result_complaints['compl_unreg_violation_mba'] +
+               /*$unreg_complaints_total_vio = $result_complaints['compl_unreg_violation_fa'] + $result_complaints['compl_unreg_violation_pwa'] + $result_complaints['compl_unreg_violation_mba'] +
                  + $result_complaints['compl_unreg_violation_msihcr'] + $result_complaints['compl_unreg_violation_car'] + $result_complaints['compl_unreg_violation_clpra'];
 
 
@@ -1083,7 +1092,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
   $fieldsE_t8 = array('row_id' => $row_id_t8, 'annual_inspection_id' =>$autoGENNO,'reg_recv_no' =>$reg_complaints_total_no, 'reg_investigated' => $reg_complaints_total_inv, 'reg_violation' => $reg_complaints_total_vio, 'reg_action' => NULL, 'reg_remarks' => $reg_complaints_total_remarks, 'unreg_recv_no' => $unreg_complaints_total_inv, 'unreg_investigated' => $unreg_complaints_total_inv, 'unreg_violation' => $unreg_complaints_total_vio, 'unreg_action' => NULL, 'unreg_remarks' => $unreg_complaints_total_remarks);
 		  
 		   
-                      db_insert('labour_factory_statcell_annual_report_t8')->fields($fieldsE_t8)->execute();
+                      db_insert('labour_factory_statcell_annual_report_t8')->fields($fieldsE_t8)->execute();*/
 
 
           /*  end complaints */
@@ -1117,10 +1126,10 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
             
 
   $fields_t9 = array('row_id' => $row_id_t9, 'annual_inspection_id' =>$autoGENNO,'factory_name' =>trim($squan->pros_instituted_name_of_factory), 'factory_address' => trim($squan->pros_instituted_address_of_factory), 'reg_unreg' => trim($squan->pros_instituted_reg_unreg), 'person_prosecuted' => trim($squan->pros_instituted_person_prosecuted), 'case_number' => trim($squan->pros_instituted_case_no), 'court_name' => trim($squan->pros_instituted_name_of_court), 'violation_description' => trim($squan->pros_instituted_violation)
-                         , 'results' =>  'PENDING', 'total_fine' => NULL, 'is_pending' => 0);
+                         , 'results' =>  'PENDING', 'total_fine' => 0, 'is_pending' => 0);
 		  
 		   
-                      db_insert('labour_factory_statcell_annual_report_t9_10')->fields($fields_t9)->execute();
+                     // db_insert('labour_factory_statcell_annual_report_t9_10')->fields($fields_t9)->execute();
 
                           
                       }
@@ -1163,7 +1172,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
                          , 'results' => trim($squan->results), 'total_fine' => trim($squan->total_fine));
 		  
 		   
-                      db_insert('labour_factory_statcell_annual_report_t9_10')->fields($fields_t10)->execute();
+                    //  db_insert('labour_factory_statcell_annual_report_t9_10')->fields($fields_t10)->execute();
 
 
 
@@ -1290,7 +1299,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
  $fields_t11 = array('row_id' => $row_id_t11, 'annual_inspection_id' =>$autoGENNO,'case_pending_at_beginning' =>$case_pending_at_end, 'case_disposed_of_during' => $no_disposed_case, 'case_pending_at_end' => $no_of_case_pending_beganing_year,  'seminar_training_courses' => $str_seminar);
 		  
 		   
-                      db_insert('labour_factory_statcell_annual_report_t11')->fields($fields_t11)->execute();
+                     // db_insert('labour_factory_statcell_annual_report_t11')->fields($fields_t11)->execute();
 
 
 
@@ -1304,8 +1313,8 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
        
            $tab_14_bocw->InnerJoin('labour_factory_statcell_form_5', 'b', 'a.monthly_form_id=b.monthly_form_id');
            $tab_14_bocw->condition('b.inspector_id',trim($uid),'=');
-           $tab_14_bocw->condition('a.report_from_date',trim($from),'>=');
-           $tab_14_bocw->condition('a.report_to_date',trim($to),'<=');
+           $tab_14_bocw->condition('b.report_from_date',trim($from),'>=');
+           $tab_14_bocw->condition('b.report_to_date',trim($to),'<=');
 
            $tab_14_bocw->fields('a',array('no_of_units_visit',
     'no_of_visit_paid_general' ,
@@ -1396,7 +1405,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
  $fieldsE_t12_a = array('construction_row_id' => $construction_row_id_12_a, 'annual_inspection_id' =>$autoGENNO,'unit_visited' =>$no_of_units_visit, 'visit_paid' => $visit_paid,   'accident' => $no_of_accidents_reported, 'connection_accident' => $no_of_visit_paid_accident, 'complaints' => $no_of_complaints_received, 'connection_complaints' => $no_of_visit_paid_complaint, 'prosecution' => $no_prosecution);
 		  
 		   
-                      db_insert('labour_factory_statcell_annual_report_attach_construct_t1')->fields($fieldsE_t12_a)->execute();
+                     // db_insert('labour_factory_statcell_annual_report_attach_construct_t1')->fields($fieldsE_t12_a)->execute();
 
                    
 
@@ -1432,7 +1441,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
   $fields_cw_case = array('row_id' => $row_id_cw_case, 'annual_inspection_id' =>$autoGENNO,'case_no' =>trim($squan->details_of_prosecution_case_no), 'violation' => trim($squan->details_of_prosecution_violation), 'court' => trim($squan->details_of_prosecution_court_name), 'remarks' => trim($squan->details_of_prosecution_result));
 		  
 		   
-                      db_insert('labour_factory_statcell_annual_report_attach_construct_t2')->fields($fields_cw_case)->execute();
+                     // db_insert('labour_factory_statcell_annual_report_attach_construct_t2')->fields($fields_cw_case)->execute();
 
              }
 
@@ -1476,7 +1485,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
  $fieldsE_mtb = array('maternity_row_id' => $maternity_row_id, 'annual_inspection_id' =>$autoGENNO ,'case_pending_at_beginning_4_a' => $case_pending_at_end_4_c);
 		  
 		   
-                      db_insert('labour_factory_statcell_annual_report_attach_maternity_t1')->fields($fieldsE_mtb)->execute();
+                     // db_insert('labour_factory_statcell_annual_report_attach_maternity_t1')->fields($fieldsE_mtb)->execute();
 
 
 
@@ -1499,13 +1508,42 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
             $maternity_benefit_result = $maternity_benefit->execute();
             $result_maternity_benefit=$maternity_benefit_result->fetchAssoc();
 
-		    $case_pending_at_end_3_c=$result_maternity_benefit['case_pending_at_end_3_c'];
-		    $app_pending_at_end_4_h=$result_maternity_benefit['app_pending_at_end_4_h'];
+		    $case_pending_at_end_3_c=!empty($result_maternity_benefit['case_pending_at_end_3_c']) ? trim($result_maternity_benefit['case_pending_at_end_3_c']) : 0;
+		    $app_pending_at_end_4_h=!empty($result_maternity_benefit['app_pending_at_end_4_h']) ?  trim($result_maternity_benefit['app_pending_at_end_4_h']) : 0 ;
 
 
 
 
-		    
+		      
+               
+                   $mr_before_pw_act = db_select('labour_factory_statcell_form_5_t13', 'a');
+
+                   $mr_before_pw_act->InnerJoin('labour_factory_statcell_form_5', 'b', 'a.monthly_form_id=b.monthly_form_id');
+                   $mr_before_pw_act->condition('b.inspector_id',trim($uid),'=');
+                   $mr_before_pw_act->condition('b.report_from_date',trim($from),'>=');
+                   $mr_before_pw_act->condition('b.report_to_date',trim($to),'<=');
+                   $mr_before_pw_act->addExpression('COALESCE(count(pw_act_name_of_factory),0)', 'no_of_app');
+                  $mr_before_pw_act->addExpression('COALESCE(sum(pw_act_persons_involved), 0)', 'pw_act_persons_involved');
+                  $mr_before_pw_act->addExpression('COALESCE(sum(pw_act_amount_unpaid_wages),0)', 'pw_act_amount_unpaid_wages');
+                  $mr_before_pw_act->addExpression('COALESCE(sum(pw_act_amount_unauthorized_deduction),0)',
+                  'pw_act_amount_unauthorized_deduction');
+
+                  $mr_before_pw_act->addExpression("string_agg(pw_act_name_of_factory, ';')", "pw_act_name_of_factory");
+                 
+
+                  $mr_before_pw_act_result = $mr_before_pw_act->execute(); 
+    
+                  $result_before_pw_act=$mr_before_pw_act_result->fetchAssoc();
+
+                  $pw_act_name_of_factory=$result_before_pw_act['pw_act_name_of_factory'];
+                  $pw_act_persons_involved=$result_before_pw_act['pw_act_persons_involved'] ;
+                  $pw_act_amount_unpaid_wages= $result_before_pw_act['pw_act_amount_unpaid_wages'] ;
+                  $pw_act_amount_unauthorized_deduction=$result_before_pw_act['pw_act_amount_unauthorized_deduction'] ;
+
+                  $no_of_app=$result_before_pw_act['no_of_app'] ; 
+              
+
+		       
        
 
 
@@ -1513,7 +1551,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
 
 
 
-		    $maxresult_pw=db_query('select  max(maternity_row_id) maxsl from labour_factory_statcell_annual_report_attach_wages_t1');	
+		    $maxresult_pw=db_query('select  max(wages_row_id) maxsl from labour_factory_statcell_annual_report_attach_wages_t1');	
 	        $result_pw=$maxresult_pw->fetchAssoc();
 	        $max_sl_number_pw = trim($result_pw['maxsl']); 
             if($max_sl_number_pw==0){$querystring_pw=1;	}else{ $querystring_pw=$max_sl_number_pw+1; }
@@ -1522,10 +1560,10 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
  $fieldsE_mtb = array('wages_row_id' => $pw_row_id, 'annual_inspection_id' =>$autoGENNO ,'case_pending_at_beginning_3_a' => $case_pending_at_end_3_c,
 
 
-'factories_name_4_a' => $colS1, 'application_filed_4_b' => $colS2, 'person_involved_4_c' => $colS3, 'wages_claimed_4_d' => $colS4, 'deduction_claimed_4_e' => $colS5, 'app_pending_at_beginning_4_f' => $colS6, 'app_disposed_4_g' => $colS7, 'app_pending_at_beginning_4_f' => $app_pending_at_end_4_h);
+'factories_name_4_a' => $pw_act_name_of_factory, 'application_filed_4_b' => $no_of_app, 'person_involved_4_c' => $pw_act_persons_involved, 'wages_claimed_4_d' => $pw_act_amount_unpaid_wages, 'deduction_claimed_4_e' => $pw_act_amount_unauthorized_deduction, 'app_pending_at_beginning_4_f' => $app_pending_at_end_4_h);
 		  
 		   
-                      db_insert('labour_factory_statcell_annual_report_attach_wages_t1')->fields($fieldsE_mtb)->execute();
+     db_insert('labour_factory_statcell_annual_report_attach_wages_t1')->fields($fieldsE_mtb)->execute();
 
 
                             // end tab 12 payment of wage
