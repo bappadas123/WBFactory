@@ -252,7 +252,7 @@ $form['step9field']['col5val'] = array
                $form['case_status_option'] = array(
 	     '#type' => 'value',
          //'#value' => array('0'=>t('select'),'1'=>t('Male(M)'),'2'=>t('Female(F)'),'3'=>t('Transgender'))
-		   '#value' => array(''=>t('select  '),'PENDING'=>t('Pending'),'AQUITED'=>t('Aquited'),'CONVICTED'=>t('Convicted'),'WITHDRAWN'=>t('Withdrawn'))
+		   '#value' => array(''=>t('select  '),'PENDING'=>t('Pending'),'AQUITED'=>t('Aquited'),'CONVICTED'=>t('Convicted'),'WITHDRAWN'=>t('Withdrawn'),'DISPOSED'=>t('Disposed'))
 		
          );
  $form['step9field']['col8val'] = array

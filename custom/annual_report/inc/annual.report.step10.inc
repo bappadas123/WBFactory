@@ -18,7 +18,7 @@ function annual_report_step10( $form, &$form_state, $filenumber= NULL   ){
         $mr_istquery->condition('a.annual_inspection_id',trim($filenumber),'=');
       
     
-        $mr_istquery->fields('a',array('area','inspector_id', 'report_from_date','report_to_date'));
+        $mr_istquery->fields('a',array('area','inspector_id', 'report_from_date','report_to_date','report_year','annual_form_type'));
         $mr_istquery_result = $mr_istquery->execute(); 
     
        $result_mrist=$mr_istquery_result->fetchAssoc();
@@ -26,8 +26,25 @@ function annual_report_step10( $form, &$form_state, $filenumber= NULL   ){
        $inspector_id=$result_mrist['inspector_id'];
        $inspector_name=get_name($inspector_id);
 		
-		 $report_from_date=date('d-m-Y', strtotime($result_mrist['report_from_date']));
+	  $report_from_date=date('d-m-Y', strtotime($result_mrist['report_from_date']));
       $report_to_date=date('d-m-Y', strtotime($result_mrist['report_to_date']));
+
+      $thisYear=$result_mrist['report_year'];
+      $annual_report=$result_mrist['annual_form_type'];
+
+     $previous_year=$thisYear - 2;
+        
+        //print "ssss".$previous_year;
+       // exit;
+   
+      if($annual_report=='CALENDAR'){
+		$previous_from_year_dt='1900-01-01';
+	    $previous_to_year_dt=$previous_year.'-12-31';
+	}
+	elseif($annual_report=='FINANCIAL'){
+		$previous_from_year_dt='1900-01-01';
+	    $previous_to_year_dt=date("Y")."-03-31";
+	}
 	
 
 		
@@ -257,7 +274,7 @@ $form['step10field']['col5val'] = array
                $form['case_status_option'] = array(
 	     '#type' => 'value',
          //'#value' => array('0'=>t('select'),'1'=>t('Male(M)'),'2'=>t('Female(F)'),'3'=>t('Transgender'))
-		   '#value' => array(''=>t('select  '),'PENDING'=>t('Pending'),'AQUITED'=>t('Aquited'),'CONVICTED'=>t('Convicted'),'WITHDRAWN'=>t('Withdrawn'))
+		   '#value' => array(''=>t('select  '),'PENDING'=>t('Pending'),'AQUITED'=>t('Aquited'),'CONVICTED'=>t('Convicted'),'WITHDRAWN'=>t('Withdrawn'),'DISPOSED'=>t('Disposed'))
 		
          );
  $form['step10field']['col8val'] = array
@@ -296,9 +313,33 @@ $form['step10field']['col5val'] = array
 	
 	 	
 		$output1='';
+
+  //  print $previous_from_year_dt."sss".$previous_to_year_dt;
+    //exit;
+
       if(trim($filenumber)){
-      $query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :anid and is_pending  = :ispen', array(':anid' => trim($filenumber) , ':ispen' => 1 ));
-      if($query_tab_1_c->rowCount() > 0) 
+      //$query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :anid ', array(':anid' => trim($filenumber)  ));
+
+            $mr_pending_case_select_query = db_select('labour_factory_statcell_annual_report_t9_10', 'a');
+       
+           $mr_pending_case_select_query->InnerJoin('labour_factory_statcell_annual_report', 'b', 'a.annual_inspection_id=b.annual_inspection_id');
+           $mr_pending_case_select_query->condition('b.inspector_id',trim($inspector_id),'=');
+           $mr_pending_case_select_query->condition('b.report_from_date',trim($previous_from_year_dt),'>=');
+           $mr_pending_case_select_query->condition('b.report_to_date',trim($previous_to_year_dt),'<=');
+           $mr_pending_case_select_query->condition('a.results','PENDING','=');
+           $mr_pending_case_select_query->condition('a.is_disabled', 0 ,'=');
+
+            $mr_pending_case_select_query->fields('a',array('row_id','factory_name','factory_address',
+        'reg_unreg','person_prosecuted','case_number','court_name','violation_description','results','total_fine'));
+
+             $mr_pending_case_select_query->fields('b',array('annual_inspection_id'));
+
+            $mr_pending_case_select_query_result = $mr_pending_case_select_query->execute();
+
+
+
+
+      if($mr_pending_case_select_query_result->rowCount() > 0) 
               { 
       $output1 = "<div class='table-responsive'>
 			   <table class='table table-striped table-bordered table-responsive add-employee-table-view'><thead>
@@ -320,7 +361,7 @@ $form['step10field']['col5val'] = array
 		 <th >DELETE</th>
 		</tr></thead>";  
 			  $i=0;
-		foreach($query_tab_1_c as $squan) {
+		foreach($mr_pending_case_select_query_result as $squan) {
 			$i++;
 		      $row_id = $squan->row_id; 
 		      $annual_inspection_id = $squan->annual_inspection_id; 
@@ -412,10 +453,24 @@ function step10_row_del(  $filenumber = NULL , $rowid = NULL){
 	$txn = db_transaction();
 	  try {
 		  
-    db_delete('labour_factory_statcell_annual_report_t9_10')
-    ->condition('annual_inspection_id',trim($filenumber))
-	->condition('row_id',trim($rowid))
-    ->execute();
+   
+
+     $query_update_A = db_update('labour_factory_statcell_annual_report_t9_10');
+      $query_update_A->fields(array(
+       'is_disabled' => 1));
+                    
+                    
+                    
+       $query_update_A->condition('annual_inspection_id',trim($filenumber));
+       $query_update_A->condition('row_id',trim($rowid));
+       $query_update_A->execute();
+
+
+
+
+
+
+
 	
 	
 	$message = '   delete is successfull ';
