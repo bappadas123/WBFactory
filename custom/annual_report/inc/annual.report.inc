@@ -526,63 +526,63 @@ $val=$form_state['values'];
           $step1_mr_select_query->condition('b.report_from_date',trim($from),'>=');
           $step1_mr_select_query->condition('b.report_to_date',trim($to),'<=');
 
-          $step1_mr_select_query->addExpression('sum(g_nouv_regfac_2m_i)', 'g_nouv_regfac_2m_i');
-          $step1_mr_select_query->addExpression('sum(g_nouv_regfac_2m_ii)', 'g_nouv_regfac_2m_ii');
-          $step1_mr_select_query->addExpression('sum(g_nouv_regfac_85)', 'g_nouv_regfac_85');
-          $step1_mr_select_query->addExpression('sum(g_nouv_unregfac_2m_i)', 'g_nouv_unregfac_2m_i');
-          $step1_mr_select_query->addExpression('sum(g_nouv_unregfac_2m_ii)', 'g_nouv_unregfac_2m_ii');
-          $step1_mr_select_query->addExpression('sum(g_nouv_unregfac_85)', 'g_nouv_unregfac_85');
-          $step1_mr_select_query->addExpression('sum(g_nouv_non_amendable)', 'g_nouv_non_amendable');
-          $step1_mr_select_query->addExpression('sum(g_nouv_total)', 'g_nouv_total');
+          $step1_mr_select_query->addExpression('COALESCE(sum(g_nouv_regfac_2m_i),0)', 'g_nouv_regfac_2m_i');
+          $step1_mr_select_query->addExpression('COALESCE(sum(g_nouv_regfac_2m_ii),0)', 'g_nouv_regfac_2m_ii');
+          $step1_mr_select_query->addExpression('COALESCE(sum(g_nouv_regfac_85),0)', 'g_nouv_regfac_85');
+          $step1_mr_select_query->addExpression('COALESCE(sum(g_nouv_unregfac_2m_i),0)', 'g_nouv_unregfac_2m_i');
+          $step1_mr_select_query->addExpression('COALESCE(sum(g_nouv_unregfac_2m_ii),0)', 'g_nouv_unregfac_2m_ii');
+          $step1_mr_select_query->addExpression('COALESCE(sum(g_nouv_unregfac_85),0)', 'g_nouv_unregfac_85');
+          $step1_mr_select_query->addExpression('COALESCE(sum(g_nouv_non_amendable),0)', 'g_nouv_non_amendable');
+          $step1_mr_select_query->addExpression('COALESCE(sum(g_nouv_total),0)', 'g_nouv_total');
 
 
-          $step1_mr_select_query->addExpression('sum(g_novp_regfac_2m_i)', 'g_novp_regfac_2m_i');
-          $step1_mr_select_query->addExpression('sum(g_novp_regfac_2m_ii)', 'g_novp_regfac_2m_ii');
-          $step1_mr_select_query->addExpression('sum(g_novp_regfac_85)', 'g_novp_regfac_85');
-          $step1_mr_select_query->addExpression('sum(g_novp_unregfac_2m_i)', 'g_novp_unregfac_2m_i');
-          $step1_mr_select_query->addExpression('sum(g_novp_unregfac_2m_ii)', 'g_novp_unregfac_2m_ii');
-          $step1_mr_select_query->addExpression('sum(g_novp_unregfac_85)', 'g_novp_unregfac_85');
-          $step1_mr_select_query->addExpression('sum(g_novp_non_amendable)', 'g_novp_non_amendable');
-          $step1_mr_select_query->addExpression('sum(g_novp_total)', 'g_novp_total');
+          $step1_mr_select_query->addExpression('COALESCE(sum(g_novp_regfac_2m_i),0)', 'g_novp_regfac_2m_i');
+          $step1_mr_select_query->addExpression('COALESCE(sum(g_novp_regfac_2m_ii),0)', 'g_novp_regfac_2m_ii');
+          $step1_mr_select_query->addExpression('COALESCE(sum(g_novp_regfac_85),0)', 'g_novp_regfac_85');
+          $step1_mr_select_query->addExpression('COALESCE(sum(g_novp_unregfac_2m_i),0)', 'g_novp_unregfac_2m_i');
+          $step1_mr_select_query->addExpression('COALESCE(sum(g_novp_unregfac_2m_ii),0)', 'g_novp_unregfac_2m_ii');
+          $step1_mr_select_query->addExpression('COALESCE(sum(g_novp_unregfac_85),0)', 'g_novp_unregfac_85');
+          $step1_mr_select_query->addExpression('COALESCE(sum(g_novp_non_amendable),0)', 'g_novp_non_amendable');
+          $step1_mr_select_query->addExpression('COALESCE(sum(g_novp_total),0)', 'g_novp_total');
 
 
-          $step1_mr_select_query->addExpression('sum(h_nouv_regfac_2m_i)', 'h_nouv_regfac_2m_i');
-          $step1_mr_select_query->addExpression('sum(h_nouv_regfac_2m_ii)', 'h_nouv_regfac_2m_ii');
-          $step1_mr_select_query->addExpression('sum(h_nouv_regfac_85)', 'h_nouv_regfac_85');
-          $step1_mr_select_query->addExpression('sum(h_nouv_unregfac_2m_i)', 'h_nouv_unregfac_2m_i');
-          $step1_mr_select_query->addExpression('sum(h_nouv_unregfac_2m_ii)', 'h_nouv_unregfac_2m_ii');
-          $step1_mr_select_query->addExpression('sum(h_nouv_unregfac_85)', 'h_nouv_unregfac_85');
-          $step1_mr_select_query->addExpression('sum(h_nouv_non_amendable)', 'h_nouv_non_amendable');
-          $step1_mr_select_query->addExpression('sum(h_nouv_total)', 'h_nouv_total');
+          $step1_mr_select_query->addExpression('COALESCE(sum(h_nouv_regfac_2m_i),0)', 'h_nouv_regfac_2m_i');
+          $step1_mr_select_query->addExpression('COALESCE(sum(h_nouv_regfac_2m_ii),0)', 'h_nouv_regfac_2m_ii');
+          $step1_mr_select_query->addExpression('COALESCE(sum(h_nouv_regfac_85),0)', 'h_nouv_regfac_85');
+          $step1_mr_select_query->addExpression('COALESCE(sum(h_nouv_unregfac_2m_i),0)', 'h_nouv_unregfac_2m_i');
+          $step1_mr_select_query->addExpression('COALESCE(sum(h_nouv_unregfac_2m_ii),0)', 'h_nouv_unregfac_2m_ii');
+          $step1_mr_select_query->addExpression('COALESCE(sum(h_nouv_unregfac_85),0)', 'h_nouv_unregfac_85');
+          $step1_mr_select_query->addExpression('COALESCE(sum(h_nouv_non_amendable),0)', 'h_nouv_non_amendable');
+          $step1_mr_select_query->addExpression('COALESCE(sum(h_nouv_total),0)', 'h_nouv_total');
 
-          $step1_mr_select_query->addExpression('sum(h_novp_regfac_2m_i)', 'h_novp_regfac_2m_i');
-          $step1_mr_select_query->addExpression('sum(h_novp_regfac_2m_ii)', 'h_novp_regfac_2m_ii');
-          $step1_mr_select_query->addExpression('sum(h_novp_regfac_85)', 'h_novp_regfac_85');
-          $step1_mr_select_query->addExpression('sum(h_novp_unregfac_2m_i)', 'h_novp_unregfac_2m_i');
-          $step1_mr_select_query->addExpression('sum(h_novp_unregfac_2m_ii)', 'h_novp_unregfac_2m_ii');
-          $step1_mr_select_query->addExpression('sum(h_novp_unregfac_85)', 'h_novp_unregfac_85');
-          $step1_mr_select_query->addExpression('sum(h_novp_non_amendable)', 'h_novp_non_amendable');
-          $step1_mr_select_query->addExpression('sum(h_novp_total)', 'h_novp_total');
-
-
-          $step1_mr_select_query->addExpression('sum(mah_nouv_regfac_2m_i)', 'mah_nouv_regfac_2m_i');
-          $step1_mr_select_query->addExpression('sum(mah_nouv_regfac_2m_ii)', 'mah_nouv_regfac_2m_ii');
-          $step1_mr_select_query->addExpression('sum(mah_nouv_regfac_85)', 'mah_nouv_regfac_85');
-          $step1_mr_select_query->addExpression('sum(mah_nouv_unregfac_2m_i)', 'mah_nouv_unregfac_2m_i');
-          $step1_mr_select_query->addExpression('sum(mah_nouv_unregfac_2m_ii)', 'mah_nouv_unregfac_2m_ii');
-          $step1_mr_select_query->addExpression('sum(mah_nouv_unregfac_85)', 'mah_nouv_unregfac_85');
-          $step1_mr_select_query->addExpression('sum(mah_nouv_non_amendable)', 'mah_nouv_non_amendable');
-          $step1_mr_select_query->addExpression('sum(mah_nouv_total)', 'mah_nouv_total');
+          $step1_mr_select_query->addExpression('COALESCE(sum(h_novp_regfac_2m_i),0)', 'h_novp_regfac_2m_i');
+          $step1_mr_select_query->addExpression('COALESCE(sum(h_novp_regfac_2m_ii),0)', 'h_novp_regfac_2m_ii');
+          $step1_mr_select_query->addExpression('COALESCE(sum(h_novp_regfac_85),0)', 'h_novp_regfac_85');
+          $step1_mr_select_query->addExpression('COALESCE(sum(h_novp_unregfac_2m_i),0)', 'h_novp_unregfac_2m_i');
+          $step1_mr_select_query->addExpression('COALESCE(sum(h_novp_unregfac_2m_ii),0)', 'h_novp_unregfac_2m_ii');
+          $step1_mr_select_query->addExpression('COALESCE(sum(h_novp_unregfac_85),0)', 'h_novp_unregfac_85');
+          $step1_mr_select_query->addExpression('COALESCE(sum(h_novp_non_amendable),0)', 'h_novp_non_amendable');
+          $step1_mr_select_query->addExpression('COALESCE(sum(h_novp_total),0)', 'h_novp_total');
 
 
-          $step1_mr_select_query->addExpression('sum(mah_novp_regfac_2m_i)', 'mah_novp_regfac_2m_i');
-          $step1_mr_select_query->addExpression('sum(mah_novp_regfac_2m_ii)', 'mah_novp_regfac_2m_ii');
-          $step1_mr_select_query->addExpression('sum(mah_novp_regfac_85)', 'mah_novp_regfac_85');
-          $step1_mr_select_query->addExpression('sum(mah_novp_unregfac_2m_i)', 'mah_novp_unregfac_2m_i');
-          $step1_mr_select_query->addExpression('sum(mah_novp_unregfac_2m_ii)', 'mah_novp_unregfac_2m_ii');
-          $step1_mr_select_query->addExpression('sum(mah_novp_unregfac_85)', 'mah_novp_unregfac_85');
-          $step1_mr_select_query->addExpression('sum(mah_novp_non_amendable)', 'mah_novp_non_amendable');
-          $step1_mr_select_query->addExpression('sum(mah_novp_total)', 'mah_novp_total');
+          $step1_mr_select_query->addExpression('COALESCE(sum(mah_nouv_regfac_2m_i),0)', 'mah_nouv_regfac_2m_i');
+          $step1_mr_select_query->addExpression('COALESCE(sum(mah_nouv_regfac_2m_ii),0)', 'mah_nouv_regfac_2m_ii');
+          $step1_mr_select_query->addExpression('COALESCE(sum(mah_nouv_regfac_85),0)', 'mah_nouv_regfac_85');
+          $step1_mr_select_query->addExpression('COALESCE(sum(mah_nouv_unregfac_2m_i),0)', 'mah_nouv_unregfac_2m_i');
+          $step1_mr_select_query->addExpression('COALESCE(sum(mah_nouv_unregfac_2m_ii),0)', 'mah_nouv_unregfac_2m_ii');
+          $step1_mr_select_query->addExpression('COALESCE(sum(mah_nouv_unregfac_85),0)', 'mah_nouv_unregfac_85');
+          $step1_mr_select_query->addExpression('COALESCE(sum(mah_nouv_non_amendable),0)', 'mah_nouv_non_amendable');
+          $step1_mr_select_query->addExpression('COALESCE(sum(mah_nouv_total),0)', 'mah_nouv_total');
+
+
+          $step1_mr_select_query->addExpression('COALESCE(sum(mah_novp_regfac_2m_i),0)', 'mah_novp_regfac_2m_i');
+          $step1_mr_select_query->addExpression('COALESCE(sum(mah_novp_regfac_2m_ii),0)', 'mah_novp_regfac_2m_ii');
+          $step1_mr_select_query->addExpression('COALESCE(sum(mah_novp_regfac_85),0)', 'mah_novp_regfac_85');
+          $step1_mr_select_query->addExpression('COALESCE(sum(mah_novp_unregfac_2m_i),0)', 'mah_novp_unregfac_2m_i');
+          $step1_mr_select_query->addExpression('COALESCE(sum(mah_novp_unregfac_2m_ii),0)', 'mah_novp_unregfac_2m_ii');
+          $step1_mr_select_query->addExpression('COALESCE(sum(mah_novp_unregfac_85),0)', 'mah_novp_unregfac_85');
+          $step1_mr_select_query->addExpression('COALESCE(sum(mah_novp_non_amendable),0)', 'mah_novp_non_amendable');
+          $step1_mr_select_query->addExpression('COALESCE(sum(mah_novp_total),0)', 'mah_novp_total');
 
 
 
@@ -677,18 +677,18 @@ $val=$form_state['values'];
       
 
 
-            $maxresult=db_query('select  max(row_id) maxsl from labour_factory_statcell_annual_report_t1_a_b');	
-	        $result=$maxresult->fetchAssoc();
-	        $max_sl_number = trim($result['maxsl']); 
-            if($max_sl_number==0){$querystring=1;	}else{ $querystring=$max_sl_number+1; }
-		    $rowid=$querystring;
+            $maxresult_t1ab=db_query('select  max(row_id) maxsl from labour_factory_statcell_annual_report_t1_a_b');	
+	        $result_t1ab=$maxresult_t1ab->fetchAssoc();
+	        $max_sl_number_t1ab = trim($result_t1ab['maxsl']); 
+            if($max_sl_number_t1ab==0){$querystring_t1ab=1;	}else{ $querystring_t1ab=$max_sl_number_t1ab+1; }
+		    $rowid_t1ab=$querystring_t1ab;
 
 		   // print $rowid."--".$autoGENNO;
 		  //  exit;
 
 
 
- $fieldsA = array('row_id' => $rowid ,'annual_inspection_id' => $autoGENNO, 'g_nouv_regfac_2m_i' =>$g_nouv_regfac_2m_i,'g_nouv_regfac_2m_ii' =>$g_nouv_regfac_2m_ii, 'g_nouv_regfac_85' => $g_nouv_regfac_85, 'g_nouv_unregfac_2m_i' => $g_nouv_unregfac_2m_i, 'g_nouv_unregfac_2m_ii' => $g_nouv_unregfac_2m_ii, 'g_nouv_unregfac_85' => $g_nouv_unregfac_85, 'g_nouv_non_amendable' => $g_nouv_non_amendable, 'g_nouv_total' => $g_nouv_total,
+ $fieldsA = array('row_id' => $rowid_t1ab ,'annual_inspection_id' => $autoGENNO, 'g_nouv_regfac_2m_i' =>$g_nouv_regfac_2m_i,'g_nouv_regfac_2m_ii' =>$g_nouv_regfac_2m_ii, 'g_nouv_regfac_85' => $g_nouv_regfac_85, 'g_nouv_unregfac_2m_i' => $g_nouv_unregfac_2m_i, 'g_nouv_unregfac_2m_ii' => $g_nouv_unregfac_2m_ii, 'g_nouv_unregfac_85' => $g_nouv_unregfac_85, 'g_nouv_non_amendable' => $g_nouv_non_amendable, 'g_nouv_total' => $g_nouv_total,
 
 
     'g_novp_regfac_2m_i' => $g_novp_regfac_2m_i, 'g_novp_regfac_2m_ii' => $g_novp_regfac_2m_ii , 'g_novp_regfac_85' => $g_novp_regfac_85
@@ -727,7 +727,7 @@ $val=$form_state['values'];
 
     );
 		  
-//db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->execute();	
+db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->execute();	
 
 
 //exit;
@@ -749,24 +749,24 @@ $val=$form_state['values'];
                      $mr_specialVisit_select_query->condition('b.report_from_date',trim($from),'>=');
                      $mr_specialVisit_select_query->condition('b.report_to_date',trim($to),'<=');
        
-                  $mr_specialVisit_select_query->addExpression('sum(visit_pwa)', 'visit_pwa');
-                  $mr_specialVisit_select_query->addExpression('sum(visit_mba)', 'visit_mba');
-                  $mr_specialVisit_select_query->addExpression('sum(visit_msihcr)', 'visit_msihcr');
-                  $mr_specialVisit_select_query->addExpression('sum(visit_car)', 'visit_car');
-                  $mr_specialVisit_select_query->addExpression('sum(visit_clpra)', 'visit_clpra');
-                  $mr_specialVisit_select_query->addExpression('sum(visit_rest_interval)', 'visit_rest_interval');
-                  $mr_specialVisit_select_query->addExpression('sum(visit_bef_after_legal_hours)', 'visit_bef_after_legal_hours');
-                  $mr_specialVisit_select_query->addExpression('sum(visit_sunday_holiday)', 'visit_sunday_holiday');
+                  $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_pwa),0)', 'visit_pwa');
+                  $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_mba),0)', 'visit_mba');
+                  $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_msihcr),0)', 'visit_msihcr');
+                  $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_car),0)', 'visit_car');
+                  $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_clpra),0)', 'visit_clpra');
+                  $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_rest_interval),0)', 'visit_rest_interval');
+                  $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_bef_after_legal_hours),0)', 'visit_bef_after_legal_hours');
+                  $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_sunday_holiday),0)', 'visit_sunday_holiday');
 
-                  $mr_specialVisit_select_query->addExpression('sum(visit_approval_of_plan)', 'visit_approval_of_plan');
-                  $mr_specialVisit_select_query->addExpression('sum(visit_reg_licence)', 'visit_reg_licence');
-                  $mr_specialVisit_select_query->addExpression('sum(visit_collection_statistics)', 'visit_collection_statistics');
-                  $mr_specialVisit_select_query->addExpression('sum(visit_enq_complaints)', 'visit_enq_complaints');
-                  $mr_specialVisit_select_query->addExpression('sum(visit_court_attendance)', 'visit_court_attendance');
-                  $mr_specialVisit_select_query->addExpression('sum(visit_attn_seminar_meeting)', 'visit_attn_seminar_meeting');
-                  $mr_specialVisit_select_query->addExpression('sum(visit_to_closed_factory)', 'visit_to_closed_factory');
-                  $mr_specialVisit_select_query->addExpression('sum(visit_others)', 'visit_others');
-                  $mr_specialVisit_select_query->addExpression('sum(visit_total)', 'visit_total');
+                  $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_approval_of_plan),0)', 'visit_approval_of_plan');
+                  $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_reg_licence),0)', 'visit_reg_licence');
+                  $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_collection_statistics),0)', 'visit_collection_statistics');
+                 $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_enq_complaints),0)', 'visit_enq_complaints');
+                 $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_court_attendance),0)', 'visit_court_attendance');
+                  $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_attn_seminar_meeting),0)', 'visit_attn_seminar_meeting');
+                  $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_to_closed_factory),0)', 'visit_to_closed_factory');
+                  $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_others),0)', 'visit_others');
+                  $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_total),0)', 'visit_total');
 
 
                
@@ -795,8 +795,16 @@ $val=$form_state['values'];
                $visit_others=$result_specialVisit['visit_others'];
                $visit_total=$result_specialVisit['visit_total'];
 
+
+
+                $maxresult_t1d=db_query('select  max(row_id) maxsl from labour_factory_statcell_annual_report_t1_d');	
+	        $result_t1d=$maxresult_t1d->fetchAssoc();
+	        $max_sl_number_t1d = trim($result_t1d['maxsl']); 
+            if($max_sl_number_t1d==0){$querystring_t1d=1;	}else{ $querystring_t1d=$max_sl_number_t1d+1; }
+		    $rowid_t1d=$querystring_t1d;
+
                   
-                  $fieldsspecialVisit = array('row_id' => $rowid ,'annual_inspection_id' => $autoGENNO, 'visit_msihcr' =>$visit_msihcr,'visit_pwa' =>$visit_pwa, 'visit_mba' => $visit_mba, 'visit_car' => $visit_car, 'visit_clpra' => $visit_clpra, 'visit_rest_interval' => $visit_rest_interval, 'visit_bef_after_legal_hours' => $visit_bef_after_legal_hours, 'visit_sunday_holiday' => $visit_sunday_holiday,
+                  $fieldsspecialVisit = array('row_id' => $rowid_t1d ,'annual_inspection_id' => $autoGENNO, 'visit_msihcr' =>$visit_msihcr,'visit_pwa' =>$visit_pwa, 'visit_mba' => $visit_mba, 'visit_car' => $visit_car, 'visit_clpra' => $visit_clpra, 'visit_rest_interval' => $visit_rest_interval, 'visit_bef_after_legal_hours' => $visit_bef_after_legal_hours, 'visit_sunday_holiday' => $visit_sunday_holiday,
 
 
     'visit_approval_of_plan' => $visit_approval_of_plan, 'visit_renew_licence' => $visit_renew_licence , 'visit_collection_statistics' => $visit_collection_statistics
@@ -807,7 +815,7 @@ $val=$form_state['values'];
 
          );
 		  
-    //  db_insert('labour_factory_statcell_annual_report_t1_d')->fields($fieldsspecialVisit)->execute(); 
+      db_insert('labour_factory_statcell_annual_report_t1_d')->fields($fieldsspecialVisit)->execute(); 
 
 
 
@@ -870,8 +878,15 @@ $val=$form_state['values'];
 	   $ado_no_visit_paid_others=$result_mrado['visit_others'];
 
 
+	        $maxresult_t2a=db_query('select  max(row_id) maxsl from labour_factory_statcell_annual_report_t2_a');	
+	        $result_t2a=$maxresult_t2a->fetchAssoc();
+	        $max_sl_number_t2a = trim($result_t2a['maxsl']); 
+            if($max_sl_number_t2a==0){$querystring_t2a=1;	}else{ $querystring_t2a=$max_sl_number_t2a+1; }
+		    $rowid_t2a=$querystring_t2a;
 
-                  $fieldsAdoMr = array('row_id' => $rowid, 'annual_inspection_id' =>$autoGENNO,'ado_no_of_accidents_fatal' =>$ado_no_of_accidents_fatal, 'ado_no_of_accidents_serious' => $ado_no_of_accidents_serious, 'ado_no_danger_occur_explosion' => $ado_no_danger_occur_explosion, 'ado_no_danger_occur_fire' => $ado_no_danger_occur_fire, 'ado_no_danger_occur_gassing' => $ado_no_danger_occur_gassing, 'ado_no_danger_occur_toxic_release' => $ado_no_danger_occur_toxic_release, 'ado_no_danger_occur_collapse' => $ado_no_danger_occur_collapse, 'ado_no_danger_occur_others' => $ado_no_danger_occur_others, 'ado_no_visit_paid_fatal_accidents' => $ado_no_visit_paid_fatal_accidents, 'ado_no_visit_paid_serious_accidents' => $ado_no_visit_paid_serious_accidents, 'ado_no_visit_paid_explosion' => $ado_no_visit_paid_explosion, 'ado_no_visit_paid_fire' => $ado_no_visit_paid_fire, 'ado_no_visit_paid_gassing' => $ado_no_visit_paid_gassing,'ado_no_visit_paid_toxic_release' => $ado_no_visit_paid_toxic_release,'ado_no_visit_paid_collapse' => $ado_no_visit_paid_collapse,'ado_no_visit_paid_others' => $ado_no_visit_paid_others);
+
+
+                  $fieldsAdoMr = array('row_id' => $rowid_t2a, 'annual_inspection_id' =>$autoGENNO,'ado_no_of_accidents_fatal' =>$ado_no_of_accidents_fatal, 'ado_no_of_accidents_serious' => $ado_no_of_accidents_serious, 'ado_no_danger_occur_explosion' => $ado_no_danger_occur_explosion, 'ado_no_danger_occur_fire' => $ado_no_danger_occur_fire, 'ado_no_danger_occur_gassing' => $ado_no_danger_occur_gassing, 'ado_no_danger_occur_toxic_release' => $ado_no_danger_occur_toxic_release, 'ado_no_danger_occur_collapse' => $ado_no_danger_occur_collapse, 'ado_no_danger_occur_others' => $ado_no_danger_occur_others, 'ado_no_visit_paid_fatal_accidents' => $ado_no_visit_paid_fatal_accidents, 'ado_no_visit_paid_serious_accidents' => $ado_no_visit_paid_serious_accidents, 'ado_no_visit_paid_explosion' => $ado_no_visit_paid_explosion, 'ado_no_visit_paid_fire' => $ado_no_visit_paid_fire, 'ado_no_visit_paid_gassing' => $ado_no_visit_paid_gassing,'ado_no_visit_paid_toxic_release' => $ado_no_visit_paid_toxic_release,'ado_no_visit_paid_collapse' => $ado_no_visit_paid_collapse,'ado_no_visit_paid_others' => $ado_no_visit_paid_others);
 		  
 		   
                      db_insert('labour_factory_statcell_annual_report_t2_a')->fields($fieldsAdoMr)->execute();
@@ -904,11 +919,11 @@ $val=$form_state['values'];
                 
 
 
-              $maxresult=db_query('select  max(row_id) maxsl from labour_factory_statcell_annual_report_t2_b');	
-	        $result=$maxresult->fetchAssoc();
-	        $max_sl_number = trim($result['maxsl']); 
-            if($max_sl_number==0){$querystring=1;	}else{ $querystring=$max_sl_number+1; }
-		      $rowid_t2b=$querystring;
+              $maxresult_t2b=db_query('select  max(row_id) maxsl from labour_factory_statcell_annual_report_t2_b');	
+	        $result_t2b=$maxresult_t2b->fetchAssoc();
+	        $max_sl_number_t2b = trim($result_t2b['maxsl']); 
+            if($max_sl_number_t2b==0){$querystring_t2b=1;	}else{ $querystring_t2b=$max_sl_number_t2b+1; }
+		      $rowid_t2b=$querystring_t2b;
            
 
                 $fieldsE_t2_b = array('row_id' => $rowid_t2b, 'annual_inspection_id' => $autoGENNO,'accident_type' =>'Serious' ,'acc_det_name_of_factory' =>trim($squan->acc_det_name_of_factory),'acc_det_address_of_factory' =>trim($squan->acc_det_address_of_factory), 'acc_det_name_of_deceased_injured' => trim($squan->acc_det_name_of_deceased_injured), 'acc_det_date_of_accident' => $squan->acc_det_date_of_accident,   'classification_code' => $squan->classification_code );
