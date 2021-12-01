@@ -786,14 +786,20 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
 
                $visit_approval_of_plan=$result_specialVisit['visit_approval_of_plan'];
                $visit_reg_licence=$result_specialVisit['visit_reg_licence'];
+
+
                $visit_collection_statistics=$result_specialVisit['visit_collection_statistics'];
                $visit_enq_complaints=$result_specialVisit['visit_enq_complaints'];
 
                $visit_court_attendance=$result_specialVisit['visit_court_attendance'];
-               $visit_attn_seminar_meeting=$result_specialVisit['visit_attn_seminar_meeting'];
+               $visit_attn_seminar_meeting=$result_specialVisit['visit_attn_seminar_meeting']; // not add annual report
                $visit_to_closed_factory=$result_specialVisit['visit_to_closed_factory'];
                $visit_others=$result_specialVisit['visit_others'];
                $visit_total=$result_specialVisit['visit_total'];
+
+
+
+
 
 
 
@@ -807,10 +813,10 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
                   $fieldsspecialVisit = array('row_id' => $rowid_t1d ,'annual_inspection_id' => $autoGENNO, 'visit_msihcr' =>$visit_msihcr,'visit_pwa' =>$visit_pwa, 'visit_mba' => $visit_mba, 'visit_car' => $visit_car, 'visit_clpra' => $visit_clpra, 'visit_rest_interval' => $visit_rest_interval, 'visit_bef_after_legal_hours' => $visit_bef_after_legal_hours, 'visit_sunday_holiday' => $visit_sunday_holiday,
 
 
-    'visit_approval_of_plan' => $visit_approval_of_plan, 'visit_renew_licence' => $visit_renew_licence , 'visit_collection_statistics' => $visit_collection_statistics
- 	, 'visit_enq_complaints' => $visit_enq_complaints , 'visit_court_prosecution' => $visit_court_prosecution , 'visit_to_closed_factory' => $visit_to_closed_factory ,
+    'visit_approval_of_plan' => $visit_approval_of_plan, 'visit_renew_licence' => $visit_reg_licence , 'visit_collection_statistics' => $visit_collection_statistics
+ 	, 'visit_enq_complaints' => $visit_enq_complaints , 'visit_court_prosecution' => $visit_court_attendance , 'visit_to_closed_factory' => $visit_to_closed_factory ,
 
- 	'visit_others' => $visit_others , 'visit_total' => $visit_total,
+ 	'visit_others' => $visit_others , 'visit_total' => ($visit_total - $visit_attn_seminar_meeting),
 
 
          );
@@ -858,8 +864,8 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
 		$result_mrado=$mr_ado_select_query_result->fetchAssoc();
 		$ado_no_of_accidents_fatal=$result_mrado['no_fatal'];
         $ado_no_of_accidents_serious=$result_mrado['no_serious'];
-        $ado_no_danger_occur_fire=$result_mrado['no_fire'];
-        $ado_no_danger_occur_explosion=$result_mrado['no_explosion'];
+        $no_fire=$result_mrado['no_fire'];
+        $no_explosion=$result_mrado['no_explosion'];
         $ado_no_danger_occur_gassing=$result_mrado['no_gassing'];
 		
 		$ado_no_danger_occur_toxic_release=$result_mrado['no_toxic_release'];
@@ -870,8 +876,8 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
 
 	   $ado_no_visit_paid_fatal_accidents=$result_mrado['visit_fatal'];
        $visit_serious=$result_mrado['visit_serious'];
-	   $ado_no_visit_paid_explosion=$result_mrado['visit_explosion'];
-	   $ado_no_visit_paid_fire=$result_mrado['visit_fire'];
+	   $visit_explosion=$result_mrado['visit_explosion'];
+	   $visit_fire=$result_mrado['visit_fire'];
 	   $ado_no_visit_paid_gassing=$result_mrado['visit_gassing'];
 	   $ado_no_visit_paid_toxic_release=$result_mrado['visit_toxic_release'];
 	   $ado_no_visit_paid_collapse=$result_mrado['visit_collapse'];
@@ -886,7 +892,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
 
 
 
-                  $fieldsAdoMr = array('row_id' => $rowid_t2a, 'annual_inspection_id' =>$autoGENNO,'ado_no_of_accidents_fatal' =>$ado_no_of_accidents_fatal, 'ado_no_of_accidents_serious' => $ado_no_of_accidents_serious, 'ado_no_danger_occur_explosion' => $ado_no_danger_occur_explosion, 'ado_no_danger_occur_fire' => $ado_no_danger_occur_fire, 'ado_no_danger_occur_gassing' => $ado_no_danger_occur_gassing, 'ado_no_danger_occur_toxic_release' => $ado_no_danger_occur_toxic_release, 'ado_no_danger_occur_collapse' => $ado_no_danger_occur_collapse, 'ado_no_danger_occur_others' => $ado_no_danger_occur_others, 'ado_no_visit_paid_fatal_accidents' => $ado_no_visit_paid_fatal_accidents, 'ado_no_visit_paid_serious_accidents' => $ado_no_visit_paid_serious_accidents, 'ado_no_visit_paid_explosion' => $ado_no_visit_paid_explosion, 'ado_no_visit_paid_fire' => $ado_no_visit_paid_fire, 'ado_no_visit_paid_gassing' => $ado_no_visit_paid_gassing,'ado_no_visit_paid_toxic_release' => $ado_no_visit_paid_toxic_release,'ado_no_visit_paid_collapse' => $ado_no_visit_paid_collapse,'ado_no_visit_paid_others' => $ado_no_visit_paid_others);
+                  $fieldsAdoMr = array('row_id' => $rowid_t2a, 'annual_inspection_id' =>$autoGENNO,'ado_no_of_accidents_fatal' =>$ado_no_of_accidents_fatal, 'ado_no_of_accidents_serious' => $ado_no_of_accidents_serious, 'ado_no_danger_occur_explosion' => $no_explosion, 'ado_no_danger_occur_fire' => $no_fire, 'ado_no_danger_occur_gassing' => $ado_no_danger_occur_gassing, 'ado_no_danger_occur_toxic_release' => $ado_no_danger_occur_toxic_release, 'ado_no_danger_occur_collapse' => $ado_no_danger_occur_collapse, 'ado_no_danger_occur_others' => $ado_no_danger_occur_others, 'ado_no_visit_paid_fatal_accidents' => $ado_no_visit_paid_fatal_accidents, 'ado_no_visit_paid_serious_accidents' => $visit_serious, 'ado_no_visit_paid_explosion' => $visit_explosion, 'ado_no_visit_paid_fire' => $visit_fire, 'ado_no_visit_paid_gassing' => $ado_no_visit_paid_gassing,'ado_no_visit_paid_toxic_release' => $ado_no_visit_paid_toxic_release,'ado_no_visit_paid_collapse' => $ado_no_visit_paid_collapse,'ado_no_visit_paid_others' => $ado_no_visit_paid_others);
 		  
 		   
                      db_insert('labour_factory_statcell_annual_report_t2_a')->fields($fieldsAdoMr)->execute();

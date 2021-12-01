@@ -1,11 +1,12 @@
 <?php
 
-function annual_report_step9( $form, &$form_state, $filenumber= NULL   ){
+function annual_report_step9( $form, &$form_state, $filenumber= NULL , $row_id= NULL  ){
 	
 	
 	 global $base_root, $base_path , $user;
 	 
 	    	 $filenumber=encryption_decryption_fun('decrypt',$filenumber);
+	    	 $row_id=encryption_decryption_fun('decrypt',$row_id);
 	 
 	
 	 
@@ -49,6 +50,56 @@ function annual_report_step9( $form, &$form_state, $filenumber= NULL   ){
 	    '#value' => $filenumber,
 	   
 	   );
+
+                          $factory_name=NULL;
+                         $factory_address=NULL;;
+                         $reg_unreg=NULL;;
+                         $person_prosecuted=NULL;;
+                         $case_number=NULL;;
+                         $court_name=NULL;;
+                         $violation_description=NULL;
+                         $results=NULL;
+                         $total_fine=0;
+                    
+                        
+                         if( $filenumber &&   $row_id) 
+                         { 
+
+                         $t9_row_query = db_select('labour_factory_statcell_annual_report_t9_10', 'a');
+                         $t9_row_query->condition('a.annual_inspection_id',trim($filenumber),'=');
+                         $t9_row_query->condition('a.row_id',trim($row_id),'=');
+                         $t9_row_query->condition('a.is_pending',0,'=');
+                       
+
+                          $t9_row_query->fields('a',array('factory_name','factory_address',
+        'reg_unreg','person_prosecuted','case_number','court_name','violation_description','results','total_fine','is_pending','is_disabled'));
+
+                   $t9_row_query_result = $t9_row_query->execute();
+
+                     
+                       if( $t9_row_query_result->rowCount() > 0 ) 
+                       { 
+
+                      
+                         $anr_t9_fetch=$t9_row_query_result->fetchAssoc();
+
+                         $factory_name=$anr_t9_fetch['factory_name'];
+                         $factory_address=$anr_t9_fetch['factory_address'];
+                         $reg_unreg=$anr_t9_fetch['reg_unreg'];
+                         $person_prosecuted=$anr_t9_fetch['person_prosecuted'];
+                         $case_number=$anr_t9_fetch['case_number'];
+                         $court_name=$anr_t9_fetch['court_name'];
+                         $violation_description=$anr_t9_fetch['violation_description'];
+                         $results=$anr_t9_fetch['results'];
+                         $total_fine=$anr_t9_fetch['total_fine'];
+                     
+
+                       }
+                   }
+
+               
+
+
      	
 $form['step9field']['col1'] = array
               (
@@ -163,6 +214,7 @@ $form['step9field']['col1'] = array
                  '#cols' => 5,
 		          '#suffix'=>'</td>',
 	       	'#required' => TRUE,
+	       	 '#default_value' =>  $factory_name ,
 	   
            );
             
@@ -176,6 +228,7 @@ $form['step9field']['col1'] = array
                  '#cols' => 5,
 		          '#suffix'=>'</td>',
 	   	       '#required' => TRUE,
+	   	        '#default_value' =>  $factory_address ,
 	   
            );
   $form['register_option'] = array(
@@ -192,6 +245,7 @@ $form['step9field']['col1'] = array
                '#options' => $form['register_option']['#value'],
 		          '#suffix'=>'</td>',
 		          	'#required' => TRUE,
+		          	   '#default_value' =>  $reg_unreg ,
 	   
 	   
            );
@@ -210,6 +264,7 @@ $form['step9field']['col1'] = array
                '#options' => $form['occupier_option']['#value'],
 		          '#suffix'=>'</td>',
 		          	'#required' => TRUE,
+		          	'#default_value' =>  $person_prosecuted ,
 	   
 	   
            );
@@ -222,6 +277,7 @@ $form['step9field']['col5val'] = array
                 '#size' => 5,
 
 		        '#suffix'=>'</td>',
+		        '#default_value' =>  $case_number ,
 	   
 	   
            ); 
@@ -234,6 +290,7 @@ $form['step9field']['col5val'] = array
                 '#rows' => 10,
                  '#cols' => 30,
 		          '#suffix'=>'</td>',
+		      '#default_value' =>  $court_name ,
 	   
 	   
            );
@@ -245,6 +302,8 @@ $form['step9field']['col5val'] = array
                 '#rows' => 10,
                  '#cols' => 30,
 		          '#suffix'=>'</td>',
+
+		           '#default_value' =>  $violation_description ,
 	   
 	   
            );
@@ -263,6 +322,8 @@ $form['step9field']['col5val'] = array
                '#options' => $form['case_status_option']['#value'],
 		          '#suffix'=>'</td>',
 		          	'#required' => TRUE,
+
+		          	  '#default_value' =>  $results ,
 	   
 	   
            );
@@ -274,7 +335,7 @@ $form['step9field']['col5val'] = array
 
 		        '#suffix'=>'</td></tr></table></thead>',
 	   
-	   
+	     '#default_value' =>  $total_fine ,
            ); 
 
 
@@ -283,7 +344,7 @@ $form['step9field']['col5val'] = array
                                                                '#prefix' => '<div style="text-align:center;" >',
                                                                  '#suffix'=>'</div>', 
 																'#type'					=>'submit',
-																'#value'				=>t(' Save ')
+																'#value'				=> !empty(trim($row_id)) ?  t(' Update ') : t(' Save ') 
 																);
 		 
 		 
@@ -309,7 +370,7 @@ $form['step9field']['col5val'] = array
        
 		 <th >Case Number	</th>
 		  <th >Name of Court	</th>
-		  <th >Sections/Rules <br> violated with a <br>short description	</th>
+		  <th >Sections/Rules <br> violated with a <br> short description	</th>
 		   <th >Result	</th>
 		  <th >Amount of fines	</th>
 		 
@@ -339,11 +400,22 @@ $form['step9field']['col5val'] = array
 			   $bb=$base_root.$base_path.'admin/annual-report-tab9-del/'.encryption_decryption_fun('encrypt',$annual_inspection_id).'/'.encryption_decryption_fun('encrypt',$row_id);
       
 		
-		      $img=  '<img  src="'.$base_root.$base_path.'/sites/all/themes/jackson/images/icon_delete.png" alt="Delete" title="Delete">';
+		      //$img=  '<img  src="'.$base_root.$base_path.'/sites/all/themes/jackson/images/icon_delete.png" alt="Delete" title="Delete">';
 		
 		
 		
 		      $del_preper=l(t('Delete'),$bb ,array('html'=>TRUE)) ;
+
+
+
+		      $cc=$base_root.$base_path.'admin/annual-report/step9/'.encryption_decryption_fun('encrypt',$annual_inspection_id).'/'.encryption_decryption_fun('encrypt',$row_id);
+      
+		
+		    
+		
+		
+		
+		      $edit_link=l(t('Edit'),$cc ,array('html'=>TRUE)) ;
 			  
 			  
 			  
@@ -364,7 +436,7 @@ $form['step9field']['col5val'] = array
                 $output1.= "<td>".$violation_description."</td>";
                 $output1.= "<td>".$results."</td>";
                 $output1.= "<td>".$total_fine."</td>";
-                $output1.= "<td >".$del_preper."</td>";
+                $output1.= "<td >".$edit_link.'|'.$del_preper."</td>";
 			
 				
 			
