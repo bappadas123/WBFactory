@@ -1459,7 +1459,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
             $maxresult_cw_case=db_query('select  max(row_id) maxsl from labour_factory_statcell_annual_report_attach_construct_t2');	
 	        $result_cw_case=$maxresult_cw_case->fetchAssoc();
 	        $max_sl_number_cw_case = trim($result_cw_case['maxsl']); 
-            if($max_sl_number_cw_case==0){$querystring_cw_case=1;	}else{ $querystring_t10=$max_sl_number_cw_case+1; }
+            if($max_sl_number_cw_case==0){$querystring_cw_case=1;	}else{ $querystring_cw_case=$max_sl_number_cw_case+1; }
 		    $row_id_cw_case=$querystring_cw_case;
     
 

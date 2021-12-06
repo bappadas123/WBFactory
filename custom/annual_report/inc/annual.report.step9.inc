@@ -50,6 +50,11 @@ function annual_report_step9( $form, &$form_state, $filenumber= NULL , $row_id= 
 	    '#value' => $filenumber,
 	   
 	   );
+	     $form['step9field']['rowid'] = 
+	    array('#type' => 'hidden',  
+	    '#value' => $row_id,
+	   
+	   );
 
                           $factory_name=NULL;
                          $factory_address=NULL;;
@@ -234,7 +239,7 @@ $form['step9field']['col1'] = array
   $form['register_option'] = array(
 	     '#type' => 'value',
          //'#value' => array('0'=>t('select'),'1'=>t('Male(M)'),'2'=>t('Female(F)'),'3'=>t('Transgender'))
-		   '#value' => array(''=>t('select  '),'Registered'=>t('Registered'),'2'=>t('UnRegistered'))
+		   '#value' => array(''=>t('select  '),'Registered'=>t('Registered'),'UnRegistered'=>t('UnRegistered'))
 		
          );
  $form['step9field']['col3val'] = array
@@ -358,7 +363,7 @@ $form['step9field']['col5val'] = array
       if($query_tab_1_c->rowCount() > 0) 
               { 
       $output1 = "<div class='table-responsive'>
-			   <table class='table table-striped table-bordered table-responsive add-employee-table-view'><thead>
+			   <table class='table table-striped table-bordered table-responsive add-employee-table-view' ><thead>
 	    <tr > <th >SL.NO</th>
       
        <th > Name of the Factory </th>
@@ -517,6 +522,7 @@ $val=$form_state['values'];
 
 
     $inspectionid=trim($val['inspectionid']);
+    $rowid=trim($val['rowid']);
     //part A
 	$col1val=trim($val['col1val']); 
 	$col2val=trim($val['col2val']); 
@@ -536,6 +542,38 @@ $val=$form_state['values'];
 	  try {
    
 
+
+
+        $query_update_a_yes=db_query('select  * from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :filenumber and row_id = :rid', array(':filenumber' => $inspectionid, ':rid' => $rowid));
+
+             
+
+             
+		
+	     if($query_update_a_yes->rowCount() > 0 ) {
+       
+         $query_update_B = db_update('labour_factory_statcell_annual_report_t9_10');
+      $query_update_B->fields(array(
+		   'factory_name' =>$col1val, 'factory_address' => $col2val, 'reg_unreg' => $col3val, 'person_prosecuted' => $col4val, 'case_number' => $col5val, 'court_name' => $col6val, 'violation_description' => $col7val
+                         , 'results' => $col8val, 'total_fine' => $col9val ));
+										
+										
+										
+       $query_update_B->condition('annual_inspection_id',$inspectionid);
+       $query_update_B->condition('row_id',$rowid);
+       $query_update_B->execute(); 
+        
+
+        $message = 'DATA  UPDATE  SUCCESSFULLY  . ';
+
+	      }
+	      else
+	      {
+
+
+
+
+
     $maxresult=db_query('select  max(row_id) maxsl from labour_factory_statcell_annual_report_t9_10');	
 	        $result=$maxresult->fetchAssoc();
 	        $max_sl_number = trim($result['maxsl']); 
@@ -550,15 +588,15 @@ $val=$form_state['values'];
 		   
                       db_insert('labour_factory_statcell_annual_report_t9_10')->fields($fieldsE)->execute();
 
-                       $full_base=$base_root.$base_path.'admin/annual-report/step9/'.encryption_decryption_fun('encrypt',$inspectionid);
+                       
 
                          $message = 'DATA  SAVED  SUCCESSFULLY  . ';
                       
-				 
+				 }
 	           
 	              drupal_set_message(t($message));
-				       //$full_base=$base_root.$base_path.'admin/annual-report/'.encryption_decryption_fun('encrypt',$autoGENNO);
-				 
+				       
+				 $full_base=$base_root.$base_path.'admin/annual-report/step9/'.encryption_decryption_fun('encrypt',$inspectionid);
 	           
 	             drupal_goto($full_base);
 

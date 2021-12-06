@@ -832,11 +832,12 @@ $form['step2Afield']['submit_button_one']					= array(
               //$acc_det_date_of_accident=$val['acc_det_date_of_accident']['year'].'-'.$val['acc_det_date_of_accident']['month'].'-'.$val['acc_det_date_of_accident']['day'];
 
             //$acc_det_expiry=$val['acc_det_expiry']['year'].'-'.$val['acc_det_expiry']['month'].'-'.$val['acc_det_expiry']['day'];
-             $acc_det_section_violation=$squan->acc_det_section_violation;
+             $acc_det_section_violation=trim($squan->acc_det_section_violation);
               $classification_code=$squan->classification_code;
               $acc_det_action_case_no=$squan->acc_det_action_case_no;
               $remarks=$squan->remarks;
               
+              $acc_det_expiry = !empty(trim($squan->acc_det_expiry)) ? date('d-m-Y', strtotime($squan->acc_det_expiry)) : '';
               
 			
 
@@ -864,7 +865,7 @@ $form['step2Afield']['submit_button_one']					= array(
                 $output1.= "<td>".$acc_det_address_of_factory."</td>";
                 $output1.= "<td>".$acc_det_name_of_deceased_injured."</td>";
                 $output1.= "<td>".date('d-m-Y', strtotime($squan->acc_det_date_of_accident))."</td>";
-                $output1.= "<td>".date('d-m-Y', strtotime($squan->acc_det_expiry))."</td>";
+                $output1.= "<td>".$acc_det_expiry."</td>";
              
                 $output1.= "<td>".$acc_det_section_violation."</td>";
                 $output1.= "<td>".$squan->classification_details."</td>";
@@ -2340,9 +2341,16 @@ function add_step2_partb_data($form , $form_state) {
            db_insert('labour_factory_statcell_annual_report_t2_b')->fields($fieldsE)->execute();	
 	 
 	 
-	$query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t2_b where  annual_inspection_id = :anid', array(':anid' => trim($inspectionid) ));
+	//$query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t2_b where  annual_inspection_id = :anid', array(':anid' => trim($inspectionid) ));
+
+$query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t2_b a, labour_factory_accident_classification_mst b where  CAST (a.classification_code AS INTEGER)=b.accident_classification_id and annual_inspection_id = :anid', array(':anid' => trim($inspectionid) ));
+
+
+
     
-      $output1 = "<table cellpadding='0' cellspacing='0' border='0' class='add-employee-table-view' width='100%'>
+      $output1 = "
+     <div class='table-responsive'>
+      <table cellpadding='0' cellspacing='0' border='0' class='add-employee-table-view' width='100%'>
 	    <tr > <th >Fatal / Serious</th>
       
        <th > Name Of Factory(R/UR)</th>
@@ -2377,6 +2385,8 @@ function add_step2_partb_data($form , $form_state) {
               $classification_code=$squan->classification_code;
               $acc_det_action_case_no=$squan->acc_det_action_case_no;
               $remarks=$squan->remarks;
+
+             $acc_det_expiry= !empty(trim($squan->acc_det_expiry)) ? date('d-m-Y', strtotime($squan->acc_det_expiry)) : ' ';
               
               
 			
@@ -2405,10 +2415,10 @@ function add_step2_partb_data($form , $form_state) {
                 $output1.= "<td>".$acc_det_address_of_factory."</td>";
                 $output1.= "<td>".$acc_det_name_of_deceased_injured."</td>";
                 $output1.= "<td>".date('d-m-Y', strtotime($squan->acc_det_date_of_accident))."</td>";
-                $output1.= "<td>".date('d-m-Y', strtotime($squan->acc_det_expiry))."</td>";
+                $output1.= "<td>".$acc_det_expiry."</td>";
              
                 $output1.= "<td>".$acc_det_section_violation."</td>";
-                $output1.= "<td>".$classification_code."</td>";
+                $output1.= "<td>".$squan->classification_details."</td>";
                 $output1.= "<td >".$acc_det_action_case_no."</td>";
 				
 				$output1.= "<td >".$remarks."</td>";
@@ -2417,7 +2427,7 @@ function add_step2_partb_data($form , $form_state) {
               
 			   $output1 .= "</tr>";
 	          }
-              $output1 .= "</table>";
+              $output1 .= "</table></div>";
 			  
 			
 

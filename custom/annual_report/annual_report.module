@@ -357,6 +357,19 @@ $items['admin/annual-report/step5/%'] = array(
   //'type' => MENU_LOCAL_TASK,
  );
 
+   $items['admin/annual-report/step10/%/%'] = array(
+   'title' => 'Annual report:Step 10',
+//'description' => 'Menu system example using a render array.',
+//'title' => 'STEP2',
+   'page callback' => 'drupal_get_form', //'page callback' => 'fun4_page',
+   'page arguments' => array('annual_report_step10',3,4),
+  'file' => 'inc/annual.report.step10.inc',
+  'access callback' => 'user_access',
+  'access arguments' => array('annual_report_per'),
+  'weight' => 10,
+  //'type' => MENU_LOCAL_TASK,
+ );
+
  	$items['admin/annual-report/step11'] = array(
    'title' => 'Annual report:Step 11',
 //'description' => 'Menu system example using a render array.',
