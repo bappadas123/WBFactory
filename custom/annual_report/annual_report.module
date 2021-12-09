@@ -141,6 +141,23 @@ $items['admin/annual-report/step1/%'] = array(
   //'type' => MENU_LOCAL_TASK,
  );
 
+
+    $items['admin/annual-report/step2-edit/%ctools_js/%/%'] = array(
+  // 'title' => 'Annual report:Step 2',
+//'description' => 'Menu system example using a render array.',
+//'title' => 'STEP2',
+   'page callback' => 'anr_step2_part2_edit', //'page callback' => 'fun4_page',
+   'page arguments' => array(3,4,5),
+  'file' => 'inc/annual.report.step2edit.inc',
+  'access callback' => 'user_access',
+  'access arguments' => array('annual_report_per'),
+  //'weight' => 10,
+  'type' => MENU_CALLBACK,
+ );
+
+
+
+
 	$items['admin/annual-report/step3'] = array(
    'title' => 'Annual report:Step 3',
 //'description' => 'Menu system example using a render array.',
@@ -369,6 +386,8 @@ $items['admin/annual-report/step5/%'] = array(
   'weight' => 10,
   //'type' => MENU_LOCAL_TASK,
  );
+
+
 
  	$items['admin/annual-report/step11'] = array(
    'title' => 'Annual report:Step 11',

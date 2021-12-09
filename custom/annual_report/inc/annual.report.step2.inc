@@ -729,7 +729,7 @@ $form['step2Afield']['submit_button_one']					= array(
 
            
 
-             $default_vilg='0';
+        $default_vilg='0';
 	    $options_classification = array(0 => " Select  ") + an_classification_option();
 
           $form['step2Bfield']['colB8val'] = array(
@@ -817,6 +817,7 @@ $form['step2Afield']['submit_button_one']					= array(
 		 <th >Classification</th>
 		  <th >Legal Action Taken(Case No.)</th>
 		   <th >Remarks</th>
+		   <th >EDIT</th>
 		 <th >DELETE</th>
 		</tr></thead>";  
 			  $i=0;
@@ -843,12 +844,30 @@ $form['step2Afield']['submit_button_one']					= array(
 
 			   $bb=$base_root.$base_path.'admin/annual-report-tab2-partb-del/'.encryption_decryption_fun('encrypt',$annual_inspection_id).'/'.encryption_decryption_fun('encrypt',$row_id);
       
+		    // $img=  '<img  src="'.$base_root.$base_path.'/sites/all/themes/jackson/images/icon_delete.png" alt="Delete" title="Delete">';
+		       $del_preper=l(t('Delete'),$bb ,array('html'=>TRUE)) ;
+
+
+                ctools_include('ajax');
+                ctools_include('modal');
+	            ctools_modal_add_js();	
+
+		        $ed=$base_root.$base_path.'admin/annual-report/step2-edit/nojs/'.encryption_decryption_fun('encrypt',$annual_inspection_id).'/'.encryption_decryption_fun('encrypt',$row_id);
+      
+		    // $img=  '<img  src="'.$base_root.$base_path.'/sites/all/themes/jackson/images/icon_delete.png" alt="Delete" title="Delete">';
+		       //$ed_partb_link=l(t('Edit'),$ed ,array('html'=>TRUE)) ;
+
+
+               	
+			$ed_partb_link=ctools_modal_text_button(t('Edit'), $ed ,t('Edit')) ;	
+
+
+
+
+
 		
-		      $img=  '<img  src="'.$base_root.$base_path.'/sites/all/themes/jackson/images/icon_delete.png" alt="Delete" title="Delete">';
 		
-		
-		
-		      $del_preper=l(t('Delete'),$bb ,array('html'=>TRUE)) ;
+		     
 			  
 			  
 			  
@@ -872,6 +891,7 @@ $form['step2Afield']['submit_button_one']					= array(
                 $output1.= "<td >".$acc_det_action_case_no."</td>";
 				
 				$output1.= "<td >".$remarks."</td>";
+				$output1.= "<td >".$ed_partb_link."</td>";
 				$output1.= "<td >".$del_preper."</td>";
 			
               
