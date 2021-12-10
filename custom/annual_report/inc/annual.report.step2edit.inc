@@ -120,7 +120,7 @@ function anr_step2_part2_edit($ajax, $filenumber = NULL , $rowid = NULL){
                          $classification_code=$anr_t9_fetch['classification_code'];
                          $remarks=$anr_t9_fetch['remarks'];
                          $acc_det_date_of_accident=date('d-m-Y', strtotime($anr_t9_fetch['acc_det_date_of_accident']));
-                        $acc_det_expiry=$anr_t9_fetch['acc_det_expiry'];
+                        $acc_det_expiry= !empty(trim($anr_t9_fetch['acc_det_expiry'])) ? date('d-m-Y', strtotime($anr_t9_fetch['acc_det_expiry'])) : NULL ;
                      
 
                        }
@@ -320,39 +320,114 @@ function anr_step2_part2_edit($ajax, $filenumber = NULL , $rowid = NULL){
      
            ); 
 
-        $form['submit']  = array(
+$form['part2partbedit']['prpersonlista'] = array(
+    '#prefix' => '<div class="col-sm-10" style="text-align:center;"  id="partb_edit_div">',
+    '#suffix' => '</div><br/><br/>',
+       
+  );
+           
+                $form['part2partbedit']['submit_button']         = array(
                                  
-                                '#prefix' => '<div style="text-align:center;" class="col-sm-12" >',
-                                '#suffix'=>'</div><div> &nbsp; </div> </div>', 
-                                '#type'         =>'submit',
-                                  '#value'        =>t(' Update  '),
+                                                                '#prefix' => '<div style="text-align:center;"  class="col-sm-8" >',
+                                                                '#suffix'=>'</div>', 
+                                                                '#type' => 'button',
+                                                                 '#event' => 'click',
 
-                                
-                                //'#element_validate' => array('annual_report_validate'),
-                                );      
-   
+                                                             '#default_value' => 'Update  ',
+                                                              '#ajax' => array(
+                                                              'callback' => 'edit_step2_partb',
+                                                              'wrapper' => 'partb_edit_div',
+                                                                'method' => 'html',
+                                                                'effect' => 'fade'
+                                                               )
+                                );   
+
+
+    
 
     return $form;
 
 } 
 
-function annual_report_step9_submit($form , $form_state) {  
+function edit_step2_partb($form , $form_state) {  
+       global $base_root, $base_path;
+       $val=$form_state['values'];
 
-                global $base_root, $base_path,$full_base;
 
+    
  
+     // $inspectionid=trim($val['inspectionid']);
+
+      $inspectionid=trim($val['inspectionid']);
+      $rowid=trim($val['rowid']);
+      $colB1val=trim($val['colB1val']); 
+      $colB2val=trim($val['colB2val']);   
+      $colB3val=trim($val['colB3val']);  
+      $colB4val=trim($val['colB4val']);  
+      $colB5val=trim($val['colB5val']);   
+      $colB6val=trim($val['colB6val']);  
+      $colB7val=trim($val['colB7val']);  
+      $colB8val=trim($val['colB8val']);   
+      $colB9val=trim($val['colB9val']); 
+      $colB10val=trim($val['colB10val']); 
+
+   if(!$colB1val)
+   {
+    drupal_get_messages(error);
+    return "<font color='#FF3333'><b>please select accident type <b>    </font>";
+    exit;
+   }
+
+  
 
 
-$val=$form_state['values'];
- $inspectionid=trim($val['inspectionid']);
- $rowid=trim($val['rowid']);
 
- $full_base=$base_root.$base_path.'admin/annual-report/step2/'.encryption_decryption_fun('encrypt',$inspectionid);
+       $txn = db_transaction();
+    try { 
 
-             $message = 'DATA  NOT SAVED  . ';
-                      
-       
-                      drupal_set_message(t($message));
-             
-               drupal_goto($full_base);
-               }
+       $query_update_B = db_update('labour_factory_statcell_annual_report_t2_b');
+       $query_update_B->fields(array(
+       'accident_type' =>$colB1val ,'acc_det_name_of_factory' =>$colB2val,'acc_det_address_of_factory' =>$colB3val, 'acc_det_name_of_deceased_injured' => $colB4val, 'acc_det_date_of_accident' => $colB5val, 'acc_det_expiry' => $colB6val, 'acc_det_section_violation' => $colB7val , 'classification_code' => $colB8val , 'acc_det_action_case_no' => $colB9val , 'remarks' => $colB10val ));
+                    
+                    
+                    
+       $query_update_B->condition('annual_inspection_id',$inspectionid);
+       $query_update_B->condition('row_id',$rowid);
+       $query_update_B->execute(); 
+    $message = ' Data is  update';
+     drupal_set_message(t($message));
+   // $url = 'http://www.drupal.org';
+    $aa=$base_root.$base_path.'admin/annual-report/step2/'.encryption_decryption_fun('encrypt',$inspectionid);
+  ctools_include('ajax');
+  ctools_add_js('ajax-responder');
+  $commands[] =  ctools_ajax_command_redirect($aa);
+
+
+  return array('#type' => 'ajax',  '#commands' => $commands);
+
+      }
+  catch (Exception $e) {
+    
+    $txn->rollback();
+  
+    watchdog_exception('type', $e);
+
+   // $output1 = ' Data is not update ';
+
+     $aa=$base_root.$base_path.'admin/annual-report/step2/'.encryption_decryption_fun('encrypt',$inspectionid);
+  ctools_include('ajax');
+  ctools_add_js('ajax-responder');
+  $commands[] =  ctools_ajax_command_redirect($aa);
+   $message = ' Data is not update';
+     drupal_set_message(t($message));
+
+  return array('#type' => 'ajax',  '#commands' => $commands);
+  
+     }    
+
+          //  drupal_get_messages(error);
+                      //return $output1;
+                     // exit;
+
+      }
+

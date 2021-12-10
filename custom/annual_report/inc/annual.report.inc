@@ -3764,7 +3764,7 @@ $form['step1Dfield']['colD1'] = array
   function annual_report_step1_submit($form , $form_state) {	
 
 
-         global $base_root, $base_path,$full_base;
+         global $base_root, $base_path , $full_base;
 
 
 
@@ -4046,7 +4046,7 @@ db_insert('labour_factory_statcell_annual_report_t1_d')->fields($fieldsB)->execu
                       
 				  $full_base=$base_root.$base_path.'admin/annual-report/step1/'.encryption_decryption_fun('encrypt',$annual_inspection_id);
 	           
-	              //drupal_set_message(t($message));
+	              drupal_set_message(t($message));
 	              drupal_goto($full_base);
 
 	             }

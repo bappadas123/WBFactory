@@ -1769,6 +1769,7 @@ $content = '<table width="100%" >
                                              
       
                                             <tr> 
+                                            <th align="center" valign="middle"  > SL.NO</th>
                                             <th align="center" valign="middle"  > Name of the factory</th>
                                             <th align="center" valign="middle"  > Address of the factory</th>
                                             <th align="center" valign="middle"  > Registered/un-registered factory</th>
@@ -1807,7 +1808,7 @@ $content = '<table width="100%" >
 
                                  $content .= '<tr>
 
-                                   
+                                   <td align="center" valign="middle"   >'.$i.'</td>
 				                   <td align="center" valign="middle"   >'.$factory_name.'</td>
 			                       <td align="center" valign="middle"   >'.$factory_address.'</td>
                                    <td align="center" valign="middle"   >'.$reg_unreg.'</td>

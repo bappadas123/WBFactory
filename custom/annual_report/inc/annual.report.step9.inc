@@ -378,8 +378,8 @@ $form['step9field']['col5val'] = array
 		  <th >Sections/Rules <br> violated with a <br> short description	</th>
 		   <th >Result	</th>
 		  <th >Amount of fines	</th>
-		 
-		 <th >DELETE</th>
+		  <th >Edit</th>
+		 <th >Delete</th>
 		</tr></thead>";  
 			  $i=0;
 		foreach($query_tab_1_c as $squan) {
@@ -441,7 +441,8 @@ $form['step9field']['col5val'] = array
                 $output1.= "<td>".$violation_description."</td>";
                 $output1.= "<td>".$results."</td>";
                 $output1.= "<td>".$total_fine."</td>";
-                $output1.= "<td >".$edit_link.'|'.$del_preper."</td>";
+                $output1.= "<td>".$edit_link."</td>";
+                $output1.= "<td >".$del_preper."</td>";
 			
 				
 			

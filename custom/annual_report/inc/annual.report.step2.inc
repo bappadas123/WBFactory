@@ -2535,12 +2535,13 @@ $query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t
         
 
 
-  /* if(!$colB1val)
+   if(!preg_match('/^[0-9]+$/',trim($colC5val)))
 	 {
 	  drupal_get_messages(error);
-	  return "<font color='#FF3333'><b>please select accident type <b>    </font>";
+	  return "<font color='#FF3333'><b>please give integer value the  no. of persons involved   <b>    </font>";
 	  exit;
-	 } */
+	 }
+
 
 	 
 	    

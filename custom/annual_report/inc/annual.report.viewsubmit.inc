@@ -22,7 +22,7 @@ function annual_report_view($form, &$form_state, $id= NULL) {
         $mr_istquery->condition('a.annual_inspection_id',trim($filenumber),'=');
       
     
-        $mr_istquery->fields('a',array('area','inspector_id','annual_form_type','report_from_date','report_to_date'));
+        $mr_istquery->fields('a',array('area','inspector_id','annual_form_type','report_from_date','report_to_date','report_year'));
         $mr_istquery_result = $mr_istquery->execute(); 
     
        $result_mrist=$mr_istquery_result->fetchAssoc();
@@ -32,6 +32,7 @@ function annual_report_view($form, &$form_state, $id= NULL) {
       $annual_form_type=$result_mrist['annual_form_type'];
       $report_from_date=$result_mrist['report_from_date'];
        $report_to_date=$result_mrist['report_to_date'];
+      $thisYear=$result_mrist['report_year'];
 
     $query_uname=db_query('select fname from fa_employee_details where uid = :fuid  ', array(':fuid' => trim($inspector_id)));
     $inspector_name='';
@@ -1716,12 +1717,12 @@ $content = '<table width="100%" >
   											<table  class="table table-striped table-bordered table-responsive admin-custom-table" >
                                              <thead>
                                             <tr> 
-                                            <th align="center" valign="middle"  > &nbsp;</th>
-                                            <th align="center" valign="middle"  > Number</th>
-                                            <th align="center" valign="middle"  > Investigated</th>
-                                            <th align="center" valign="middle"  > Violation observed</th>
-                                            <th align="center" valign="middle"  > Action taken</th>
-                                            <th align="center" valign="middle"  > Remarks</th>
+                                            <th  valign="middle"  > &nbsp;</th>
+                                            <th  valign="middle"  > Number</th>
+                                            <th  valign="middle"  > Investigated</th>
+                                            <th  valign="middle"  > Violation observed</th>
+                                            <th  valign="middle"  > Action taken</th>
+                                            <th  valign="middle"  > Remarks</th>
                                             
                                             
                                             </tr></thead>';
@@ -1739,29 +1740,29 @@ $content = '<table width="100%" >
 
 
                                         $content .= '  <tr>   
-                                             <td align="center" valign="middle"   >Registered factories</td>
+                                             <td  valign="middle"   >Registered factories</td>
       
-                                             <td align="center" valign="middle" >'.$result_8['reg_recv_no'].' </td>
+                                             <td  valign="middle" >'.$result_8['reg_recv_no'].' </td>
 
-                                            <td align="center" valign="middle"   >'.$result_8['reg_investigated'].'</td>
-                                            <td align="center" valign="middle"   >'.$result_8['reg_violation'].'</td>
-                                            <td align="center" valign="middle"   >'.$result_8['reg_action'].'</td>
+                                            <td  valign="middle"   >'.$result_8['reg_investigated'].'</td>
+                                            <td  valign="middle"   >'.$result_8['reg_violation'].'</td>
+                                            <td  valign="middle"   >'.$result_8['reg_action'].'</td>
                                       
-                                            <td align="center" valign="middle"   >'.$result_8['reg_remarks'].'</td>
+                                            <td  valign="middle"   >'.$result_8['reg_remarks'].'</td>
                                             </tr>
                                            <tr>   
-                                             <td align="center" valign="middle"   >Unregister factories</td>  
+                                             <td  valign="middle"   >Unregister factories</td>  
 
-                                           <td align="center" valign="middle"   >'.$result_8['unreg_recv_no'].'</td>
+                                           <td  valign="middle"   >'.$result_8['unreg_recv_no'].'</td>
 
-                                           <td align="center" valign="middle"   >'.$result_8['unreg_investigated'].'</td>
+                                           <td  valign="middle"   >'.$result_8['unreg_investigated'].'</td>
 
 
-                                           <td align="center" valign="middle"   >'.$result_8['unreg_violation'].'</td>
+                                           <td  valign="middle"   >'.$result_8['unreg_violation'].'</td>
 
-                                           <td align="center" valign="middle"   >'.$result_8['unreg_action'].'</td>
+                                           <td  valign="middle"   >'.$result_8['unreg_action'].'</td>
 
-                                           <td align="center" valign="middle"   >'.$result_8['unreg_remarks'].'</td>
+                                           <td  valign="middle"   >'.$result_8['unreg_remarks'].'</td>
 
                                          
 
@@ -1774,6 +1775,7 @@ $content = '<table width="100%" >
   											<table  class="table table-striped table-bordered table-responsive admin-custom-table" >
                                             <thead>
                                             <tr> 
+                                                 <th align="center" valign="middle"  > SL.NO</th>
                                             <th align="center" valign="middle"  > Name of the factory</th>
                                             <th align="center" valign="middle"  > Address of the factory</th>
                                             <th align="center" valign="middle"  > Registered/un-registered factory</th>
@@ -1812,7 +1814,7 @@ $content = '<table width="100%" >
 
                                  $content .= '<tr>
 
-                                   
+                                    <td align="center" valign="middle"   >'.$i.'</td>
 				                   <td align="center" valign="middle"   >'.$factory_name.'</td>
 			                       <td align="center" valign="middle"   >'.$factory_address.'</td>
                                    <td align="center" valign="middle"   >'.$reg_unreg.'</td>
@@ -1856,9 +1858,39 @@ $content = '<table width="100%" >
                                             </tr></thead>';  
 
 
+                   $previous_year=$thisYear - 2;
+        
+        //print "ssss".$previous_year;
+       // exit;
+   
+      if($annual_form_type=='CALENDAR'){
+        $previous_from_year_dt='1900-01-01';
+        $previous_to_year_dt=$previous_year.'-12-31';
+    }
+    elseif($annual_form_type=='FINANCIAL'){
+        $previous_from_year_dt='1900-01-01';
+        $previous_to_year_dt=date("Y")."-03-31";
+    }                         
+
+                                       
+            $tab10_pending_case_select_query = db_select('labour_factory_statcell_annual_report_t9_10', 'a');
+       
+           $tab10_pending_case_select_query->InnerJoin('labour_factory_statcell_annual_report', 'b', 'a.annual_inspection_id=b.annual_inspection_id');
+           $tab10_pending_case_select_query->condition('b.inspector_id',trim($inspector_id),'=');
+           $tab10_pending_case_select_query->condition('b.report_from_date',trim($previous_from_year_dt),'>=');
+           $tab10_pending_case_select_query->condition('b.report_to_date',trim($previous_to_year_dt),'<=');
+           $tab10_pending_case_select_query->condition('a.results','PENDING','=');
+           $tab10_pending_case_select_query->condition('a.is_disabled', 0 ,'=');
+
+            $tab10_pending_case_select_query->fields('a',array('row_id','factory_name','factory_address',
+        'reg_unreg','person_prosecuted','case_number','court_name','violation_description','results','total_fine'));
+
+             $tab10_pending_case_select_query->fields('b',array('annual_inspection_id'));
+
+            $query_tab_10 = $tab10_pending_case_select_query->execute();
                                        
 
-                                      $query_tab_10=db_query('select  *  from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :anid and is_pending  = :ispen', array(':anid' => trim($filenumber) , ':ispen' => 1 ));
+                                     /* $query_tab_10=db_query('select  *  from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :anid and is_pending  = :ispen', array(':anid' => trim($filenumber) , ':ispen' => 1 ));*/
 
 
                                        $i=0;
@@ -1996,10 +2028,10 @@ $content = '<table width="100%" >
 					 						<thead>
                                              <tr> 
                                            
-                                            <th align="center" valign="middle"  > Case No.</th>
-                                            <th align="center" valign="middle"  > Violation</th>
-                                            <th align="center" valign="middle"  > Court</th>
-                                            <th align="center" valign="middle"  > Remarks</th>
+                                            <th  valign="middle"  > Case No.</th>
+                                            <th  valign="middle"  > Violation</th>
+                                            <th  valign="middle"  > Court</th>
+                                            <th  valign="middle"  > Remarks</th>
                                            
                                             
                                             
@@ -2016,10 +2048,10 @@ $content = '<table width="100%" >
                                        $content .= '<tr>
 				                   
 				                  
-				                   <td align="center" valign="middle"   >'.$case_no.'</td>
-			                       <td align="center" valign="middle"   >'.$violation.'</td>
-                                   <td align="center" valign="middle"   >'.$court.'</td>
-                                   <td align="center" valign="middle"   >'.$remarks.'</td>
+				                   <td  valign="middle"   >'.$case_no.'</td>
+			                       <td  valign="middle"   >'.$violation.'</td>
+                                   <td  valign="middle"   >'.$court.'</td>
+                                   <td  valign="middle"   >'.$remarks.'</td>
                                   
 			                     
                                    </tr>';
