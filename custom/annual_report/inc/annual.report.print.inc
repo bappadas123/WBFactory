@@ -44,12 +44,17 @@ function annual_report_print($id=NULL) {
         $mr_istquery->condition('a.annual_inspection_id',trim($filenumber),'=');
       
     
-        $mr_istquery->fields('a',array('area','inspector_id','report_year'));
-        $mr_istquery_result = $mr_istquery->execute(); 
+    $mr_istquery->fields('a',array('area','inspector_id','report_year','annual_form_type','report_from_date','report_to_date'));
+    $mr_istquery_result = $mr_istquery->execute(); 
     
     $result_mrist=$mr_istquery_result->fetchAssoc();
     $area=$result_mrist['area'];
     $report_year=$result_mrist['report_year'];
+    $annual_form_type=$result_mrist['annual_form_type'];
+    $report_from_date=$result_mrist['report_from_date'];
+    $report_to_date=$result_mrist['report_to_date'];
+    $thisYear=$result_mrist['report_year'];
+
     $inspector_id=$result_mrist['inspector_id'];
     $query_uname=db_query('select fname from fa_employee_details where uid = :fuid  ', array(':fuid' => trim($inspector_id)));
     $inspector_name='';
@@ -1855,7 +1860,44 @@ $content = '<table width="100%" >
 
                                        
 
-                                      $query_tab_10=db_query('select  *  from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :anid and is_pending  = :ispen', array(':anid' => trim($filenumber) , ':ispen' => 1 ));
+                                     /* $query_tab_10=db_query('select  *  from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :anid and is_pending  = :ispen', array(':anid' => trim($filenumber) , ':ispen' => 1 )); */
+
+
+
+        $previous_year=$thisYear - 2;
+        
+        //print "ssss".$previous_year;
+       // exit;
+
+
+   
+      if($annual_form_type=='CALENDAR'){
+        $previous_from_year_dt='1900-01-01';
+        $previous_to_year_dt=$previous_year.'-12-31';
+       }
+      elseif($annual_form_type=='FINANCIAL'){
+          $previous_from_year_dt='1900-01-01';
+          $previous_to_year_dt=date("Y")."-03-31";
+    }                         
+
+                                       
+            $tab10_pending_case_select_query = db_select('labour_factory_statcell_annual_report_t9_10', 'a');
+       
+           $tab10_pending_case_select_query->InnerJoin('labour_factory_statcell_annual_report', 'b', 'a.annual_inspection_id=b.annual_inspection_id');
+           $tab10_pending_case_select_query->condition('b.inspector_id',trim($inspector_id),'=');
+           $tab10_pending_case_select_query->condition('b.report_from_date',trim($previous_from_year_dt),'>=');
+           $tab10_pending_case_select_query->condition('b.report_to_date',trim($previous_to_year_dt),'<=');
+           $tab10_pending_case_select_query->condition('a.results','PENDING','=');
+           $tab10_pending_case_select_query->condition('a.is_disabled', 0 ,'=');
+
+            $tab10_pending_case_select_query->fields('a',array('row_id','factory_name','factory_address',
+        'reg_unreg','person_prosecuted','case_number','court_name','violation_description','results','total_fine'));
+
+             $tab10_pending_case_select_query->fields('b',array('annual_inspection_id'));
+
+            $query_tab_10 = $tab10_pending_case_select_query->execute();
+
+
 
 
                                        $i=0;

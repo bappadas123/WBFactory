@@ -128,7 +128,7 @@ $form['#attached']['js'] = array(drupal_get_path('module', 'annual_report') . '/
                     '#title' => ('Zone'),
 				    '#options' 		 => $options_zone,
 			    	
-		           // '#required' => TRUE,
+		            '#required' => TRUE,
 					 '#multiple'     =>  true,
 					  '#attributes' => array('style' => array('height: 100px;')),
 				
@@ -433,6 +433,58 @@ $val=$form_state['values'];
                  if($annualReportid){
 
 
+
+                   $ann_report_cal_fin_year=db_query('select  * from labour_factory_statcell_annual_report where  inspector_id=:filenumber and report_from_date=:fdt and report_to_date=:tdt and annual_inspection_id = :aiid and ( annual_form_type = :afty or annual_form_type = :aftf )', array(':filenumber' => $uid , ':fdt' => $from , ':tdt' => $to, ':aiid' => $annualReportid , ':afty' => 'CALENDAR', ':aftf' => 'FINANCIAL') );
+		
+	      if($ann_report_cal_fin_year->rowCount() > 0)  // same calender or fin year
+          { 
+
+             $area=NULL;
+             $area_id=NULL;
+		     $i=1;
+           foreach( $zone as $a){
+	       $query_zone=db_query('select  *  from fa_zone where  zone_id = :znid', array(':znid' => trim($a) ));
+
+	        $result_zone=$query_zone->fetchAssoc();
+		    
+			
+  
+	           if($i > 1){
+               $area.=","; 
+               $area_id.=","; 
+               }  
+	           $area.=trim($result_zone['zone_name']);
+	           $area_id.=trim($result_zone['zone_id']);
+	           $i++;
+	        
+		  }
+
+
+      $query_update_A = db_update('labour_factory_statcell_annual_report');
+      $query_update_A->fields(array(
+     'area' =>$area ,'area_id' => $area_id));
+                    
+                    
+                    
+       $query_update_A->condition('annual_inspection_id',$annualReportid);
+       $query_update_A->execute();
+
+           $full_base=$base_root.$base_path.'admin/annual-report/step1/'.encryption_decryption_fun('encrypt',$annualReportid);
+	           
+	             drupal_goto($full_base);
+
+          }
+
+
+
+        elseif($ann_report_cal_fin_year->rowCount() == 0)  // not same calender or fin year
+          {
+
+
+
+
+
+
              $area=NULL;
              $area_id=NULL;
 		     $i=1;
@@ -463,10 +515,23 @@ $val=$form_state['values'];
        $query_update_A->condition('annual_inspection_id',$annualReportid);
        $query_update_A->execute();
 
+
+
+       
+
+
+
+          
+
+
+
+
+
+
            $full_base=$base_root.$base_path.'admin/annual-report/step1/'.encryption_decryption_fun('encrypt',$annualReportid);
 	           
 	             drupal_goto($full_base);
-
+           }
 
            }
 
@@ -525,6 +590,8 @@ $val=$form_state['values'];
           $step1_mr_select_query->condition('b.inspector_id',trim($uid),'=');
           $step1_mr_select_query->condition('b.report_from_date',trim($from),'>=');
           $step1_mr_select_query->condition('b.report_to_date',trim($to),'<=');
+          $step1_mr_select_query->condition('b.status','FS','='); 
+
 
           $step1_mr_select_query->addExpression('COALESCE(sum(g_nouv_regfac_2m_i),0)', 'g_nouv_regfac_2m_i');
           $step1_mr_select_query->addExpression('COALESCE(sum(g_nouv_regfac_2m_ii),0)', 'g_nouv_regfac_2m_ii');
@@ -748,6 +815,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
                      $mr_specialVisit_select_query->condition('b.inspector_id',trim($uid),'=');
                      $mr_specialVisit_select_query->condition('b.report_from_date',trim($from),'>=');
                      $mr_specialVisit_select_query->condition('b.report_to_date',trim($to),'<=');
+                     $mr_specialVisit_select_query->condition('b.status','FS','=');
        
                   $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_pwa),0)', 'visit_pwa');
                   $mr_specialVisit_select_query->addExpression('COALESCE(sum(visit_mba),0)', 'visit_mba');
@@ -837,6 +905,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
        $mr_ado_select_query->condition('b.inspector_id',trim($uid),'=');
        $mr_ado_select_query->condition('b.report_from_date',trim($from),'>=');
        $mr_ado_select_query->condition('b.report_to_date',trim($to),'<=');
+       $mr_ado_select_query->condition('b.status','FS','=');
 
         $mr_ado_select_query->addExpression('COALESCE(sum(no_fatal),0)', 'no_fatal');
         $mr_ado_select_query->addExpression('COALESCE(sum(no_serious),0)', 'no_serious');
@@ -908,6 +977,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
                          $mr_det_fatal_serious_select_query->condition('b.inspector_id',trim($uid),'=');
                          $mr_det_fatal_serious_select_query->condition('b.report_from_date',trim($from),'>=');
                          $mr_det_fatal_serious_select_query->condition('b.report_to_date',trim($to),'<=');
+                         $mr_det_fatal_serious_select_query->condition('b.status','FS','=');
 
                           $mr_det_fatal_serious_select_query->fields('a',array('acc_det_name_of_factory','acc_det_address_of_factory',
         'acc_det_name_of_deceased_injured','acc_det_date_of_accident','classification_code'));
@@ -957,6 +1027,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
                          $mr_order_issue_act_rule_select_query->condition('b.inspector_id',trim($uid),'=');
                          $mr_order_issue_act_rule_select_query->condition('b.report_from_date',trim($from),'>=');
                          $mr_order_issue_act_rule_select_query->condition('b.report_to_date',trim($to),'<=');
+                         $mr_order_issue_act_rule_select_query->condition('b.status','FS','=');
 
                           $mr_order_issue_act_rule_select_query->fields('a',array('factory_name','factory_address',
         'acts_issued','time_allowed','result_description'));
@@ -1009,6 +1080,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
                    $mr_complaints_select_query->condition('b.inspector_id',trim($uid),'=');
                    $mr_complaints_select_query->condition('b.report_from_date',trim($from),'>=');
                    $mr_complaints_select_query->condition('b.report_to_date',trim($to),'<=');
+                   $mr_complaints_select_query->condition('b.status','FS','=');
        
                   $mr_complaints_select_query->addExpression('COALESCE(sum(compl_reg_no_rec_fa),0)', 'compl_reg_no_rec_fa');
                   $mr_complaints_select_query->addExpression('COALESCE(sum(compl_reg_no_rec_pwa),0)', 'compl_reg_no_rec_pwa');
@@ -1126,6 +1198,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
                          $mr_prosecution_proceeding_instituted_select_query->condition('b.inspector_id',trim($uid),'=');
                          $mr_prosecution_proceeding_instituted_select_query->condition('b.report_from_date',trim($from),'>=');
                          $mr_prosecution_proceeding_instituted_select_query->condition('b.report_to_date',trim($to),'<=');
+                         $mr_prosecution_proceeding_instituted_select_query->condition('b.status','FS','=');
 
                           $mr_prosecution_proceeding_instituted_select_query->fields('a',array('form_type','pros_instituted_name_of_factory',
         'pros_instituted_address_of_factory','pros_instituted_reg_unreg','pros_instituted_person_prosecuted','pros_instituted_case_no','pros_instituted_name_of_act','pros_instituted_violation','pros_instituted_penal_provision','pros_instituted_name_of_court','pros_instituted_remarks_result'));
@@ -1245,6 +1318,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
            $no_disposed_case_during_year->condition('b.inspector_id',trim($uid),'=');
            $no_disposed_case_during_year->condition('a.case_disposed_date_of_disposal',trim($from),'>=');
            $no_disposed_case_during_year->condition('a.case_disposed_date_of_disposal',trim($to),'<=');
+           $no_disposed_case_during_year->condition('b.status','FS','=');
 
            
 
@@ -1284,6 +1358,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
            $seminar_traning->condition('b.inspector_id',trim($uid),'=');
            $seminar_traning->condition('a.seminar_date_of_program',trim($from),'>=');
            $seminar_traning->condition('a.seminar_date_of_program',trim($to),'<=');
+           $seminar_traning->condition('b.status','FS','=');
 
            
           $seminar_traning->fields('a',array('seminar_name_of_factory','seminar_address_of_factory',
@@ -1341,6 +1416,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
            $tab_14_bocw->condition('b.inspector_id',trim($uid),'=');
            $tab_14_bocw->condition('b.report_from_date',trim($from),'>=');
            $tab_14_bocw->condition('b.report_to_date',trim($to),'<=');
+           $tab_14_bocw->condition('b.status','FS','=');
 
            $tab_14_bocw->fields('a',array('no_of_units_visit ',
         'no_of_visit_paid_general' ,
@@ -1444,6 +1520,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
            $cons_worker_case->condition('b.inspector_id',trim($uid),'=');
            $cons_worker_case->condition('b.report_from_date',trim($from),'>=');
            $cons_worker_case->condition('b.report_to_date',trim($to),'<=');
+           $cons_worker_case->condition('b.status','FS','=');
 
             $cons_worker_case->fields('a',array('details_of_prosecution_violation','details_of_prosecution_court_name',
         'details_of_prosecution_case_no','details_of_prosecution_result'));
@@ -1548,10 +1625,11 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
                    $mr_before_pw_act->condition('b.inspector_id',trim($uid),'=');
                    $mr_before_pw_act->condition('b.report_from_date',trim($from),'>=');
                    $mr_before_pw_act->condition('b.report_to_date',trim($to),'<=');
+                   $mr_before_pw_act->condition('b.status','FS','=');
                    $mr_before_pw_act->addExpression('COALESCE(count(pw_act_name_of_factory),0)', 'no_of_app');
-                  $mr_before_pw_act->addExpression('COALESCE(sum(pw_act_persons_involved), 0)', 'pw_act_persons_involved');
-                  $mr_before_pw_act->addExpression('COALESCE(sum(pw_act_amount_unpaid_wages),0)', 'pw_act_amount_unpaid_wages');
-                  $mr_before_pw_act->addExpression('COALESCE(sum(pw_act_amount_unauthorized_deduction),0)',
+                   $mr_before_pw_act->addExpression('COALESCE(sum(pw_act_persons_involved), 0)', 'pw_act_persons_involved');
+                   $mr_before_pw_act->addExpression('COALESCE(sum(pw_act_amount_unpaid_wages),0)', 'pw_act_amount_unpaid_wages');
+                   $mr_before_pw_act->addExpression('COALESCE(sum(pw_act_amount_unauthorized_deduction),0)',
                   'pw_act_amount_unauthorized_deduction');
 
                   $mr_before_pw_act->addExpression("string_agg(pw_act_name_of_factory, ';')", "pw_act_name_of_factory");
