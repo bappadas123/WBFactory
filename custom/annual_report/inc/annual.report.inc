@@ -806,9 +806,7 @@ $val=$form_state['values'];
 
 
     'visit_approval_of_plan' => $visit_approval_of_plan, 'visit_renew_licence' => $visit_reg_licence , 'visit_collection_statistics' => $visit_collection_statistics
- 	, 'visit_enq_complaints' => $visit_enq_complaints , 'visit_court_prosecution' => $visit_court_attendance , 'visit_to_closed_factory' => $visit_to_closed_factory ,
-
- 	'visit_others' => $visit_others , 'visit_total' => ($visit_total - $visit_attn_seminar_meeting ));
+ 	, 'visit_enq_complaints' => $visit_enq_complaints , 'visit_court_prosecution' => $visit_court_attendance , 'visit_to_closed_factory' => $visit_to_closed_factory ,'visit_others' => $visit_others , 'visit_total' => ($visit_total - $visit_attn_seminar_meeting )));
                     
        $query_update_step1_D->condition('annual_inspection_id',$annualReportid);
       
@@ -1013,6 +1011,447 @@ $val=$form_state['values'];
                     /*  end update  orders issued under various act & rules */
 
 
+          /* start update complaints */
+
+                   $mr_complaints_select_query = db_select('labour_factory_statcell_form_5_t8', 'a');
+
+                   $mr_complaints_select_query->InnerJoin('labour_factory_statcell_form_5', 'b', 'a.monthly_form_id=b.monthly_form_id');
+                   $mr_complaints_select_query->condition('b.inspector_id',trim($uid),'=');
+                   $mr_complaints_select_query->condition('b.report_from_date',trim($from),'>=');
+                   $mr_complaints_select_query->condition('b.report_to_date',trim($to),'<=');
+                   $mr_complaints_select_query->condition('b.status','FS','=');
+       
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_reg_no_rec_fa),0)', 'compl_reg_no_rec_fa');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_reg_no_rec_pwa),0)', 'compl_reg_no_rec_pwa');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_reg_no_rec_mba),0)', 'compl_reg_no_rec_mba');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_reg_no_rec_msihcr),0)', 'compl_reg_no_rec_msihcr');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_reg_no_rec_car),0)', 'compl_reg_no_rec_car');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_reg_no_rec_clpra),0)', 'compl_reg_no_rec_clpra');
+
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_unreg_no_rec_fa),0)', 'compl_unreg_no_rec_fa');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_unreg_no_rec_pwa),0)', 'compl_unreg_no_rec_pwa');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_unreg_no_rec_mba),0)', 'compl_unreg_no_rec_mba');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_unreg_no_rec_msihcr),0)', 'compl_unreg_no_rec_msihcr');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_unreg_no_rec_car),0)', 'compl_unreg_no_rec_car');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_unreg_no_rec_clpra),0)', 'compl_unreg_no_rec_clpra');
+
+
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_reg_no_inv_fa),0)', 'compl_reg_no_inv_fa');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_reg_no_inv_pwa),0)', 'compl_reg_no_inv_pwa');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_reg_no_inv_mba),0)', 'compl_reg_no_inv_mba');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_reg_no_inv_msihcr),0)', 'compl_reg_no_inv_msihcr');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_reg_no_inv_car),0)', 'compl_reg_no_inv_car');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_reg_no_inv_clpra),0)', 'compl_reg_no_inv_clpra');
+
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_unreg_no_inv_fa),0)', 'compl_unreg_no_inv_fa');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_unreg_no_inv_pwa),0)', 'compl_unreg_no_inv_pwa');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_unreg_no_inv_mba),0)', 'compl_unreg_no_inv_mba');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_unreg_no_inv_msihcr),0)', 'compl_unreg_no_inv_msihcr');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_unreg_no_inv_car),0)', 'compl_unreg_no_inv_car');
+                  $mr_complaints_select_query->addExpression('COALESCE(sum(compl_unreg_no_inv_clpra),0)', 'compl_unreg_no_inv_clpra');
+
+
+                  $mr_complaints_select_query->addExpression("string_agg(compl_reg_violation_fa, ';')", "compl_reg_violation_fa");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_reg_violation_pwa, ';')", "compl_reg_violation_pwa");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_reg_violation_mba, ';')", "compl_reg_violation_mba");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_reg_violation_msihcr, ';')", "compl_reg_violation_msihcr");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_reg_violation_car, ';')", "compl_reg_violation_car");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_reg_violation_clpra, ';')", "compl_reg_violation_clpra");
+
+                  $mr_complaints_select_query->addExpression("string_agg(compl_unreg_violation_fa, ';')", "compl_unreg_violation_fa");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_unreg_violation_pwa, ';')", "compl_unreg_violation_pwa");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_unreg_violation_mba, ';')", "compl_unreg_violation_mba");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_unreg_violation_msihcr, ';')", "compl_unreg_violation_msihcr");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_unreg_violation_car, ';')", "compl_unreg_violation_car");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_unreg_violation_clpra, ';')", "compl_unreg_violation_clpra");
+
+
+                  $mr_complaints_select_query->addExpression("string_agg(compl_reg_remarks_fa, ';')", "compl_reg_remarks_fa");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_reg_remarks_pwa, ';')", "compl_reg_remarks_pwa");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_reg_remarks_mba, ';')", "compl_reg_remarks_mba");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_reg_remarks_msihcr, ';')", "compl_reg_remarks_msihcr");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_reg_remarks_car, ';')", "compl_reg_remarks_car");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_reg_remarks_clpra, ';')", "compl_reg_remarks_clpra");
+
+                  $mr_complaints_select_query->addExpression("string_agg(compl_unreg_remarks_fa, ';')", "compl_unreg_remarks_fa");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_unreg_remarks_pwa, ';')", "compl_unreg_remarks_pwa");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_unreg_remarks_mba, ';')", "compl_unreg_remarks_mba");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_unreg_remarks_msihcr, ';')", "compl_unreg_remarks_msihcr");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_unreg_remarks_car, ';')", "compl_unreg_remarks_car");
+                  $mr_complaints_select_query->addExpression("string_agg(compl_unreg_remarks_clpra, ';')", "compl_unreg_remarks_clpra");
+        
+
+
+
+               
+                $mr_complaints_select_query_result = $mr_complaints_select_query->execute(); 
+    
+                $result_complaints=$mr_complaints_select_query_result->fetchAssoc();
+
+
+
+               $reg_complaints_total_no = $result_complaints['compl_reg_no_rec_fa'] + $result_complaints['compl_reg_no_rec_pwa'] + $result_complaints['compl_reg_no_rec_mba'] + $result_complaints['compl_reg_no_rec_msihcr'] + $result_complaints['compl_reg_no_rec_car'] + $result_complaints['compl_reg_no_rec_clpra'];
+
+               $unreg_complaints_total_no = $result_complaints['compl_unreg_no_rec_fa'] + $result_complaints['compl_unreg_no_rec_pwa'] + $result_complaints['compl_unreg_no_rec_mba'] + $result_complaints['compl_unreg_no_rec_msihcr'] + $result_complaints['compl_unreg_no_rec_car'] + $result_complaints['compl_unreg_no_rec_clpra'];
+
+               $reg_complaints_total_inv = $result_complaints['compl_reg_no_inv_fa'] + $result_complaints['compl_reg_no_inv_pwa'] + $result_complaints['compl_reg_no_inv_mba'] + $result_complaints['compl_reg_no_inv_msihcr'] + $result_complaints['compl_reg_no_inv_car'] + $result_complaints['compl_reg_no_inv_clpra'];
+
+               $unreg_complaints_total_inv = $result_complaints['compl_unreg_no_inv_fa'] + $result_complaints['compl_unreg_no_inv_pwa'] + $result_complaints['compl_unreg_no_inv_mba'] + $result_complaints['compl_unreg_no_inv_msihcr'] + $result_complaints['compl_unreg_no_inv_car'] + $result_complaints['compl_unreg_no_inv_clpra'];
+
+               $reg_complaints_total_vio = $result_complaints['compl_reg_violation_fa'] + $result_complaints['compl_reg_violation_pwa'] + $result_complaints['compl_reg_violation_mba'] +
+               $result_complaints['compl_reg_violation_msihcr'] + $result_complaints['compl_reg_violation_car'] + $result_complaints['compl_reg_violation_clpra'];
+
+               $unreg_complaints_total_vio = $result_complaints['compl_unreg_violation_fa'] + $result_complaints['compl_unreg_violation_pwa'] + $result_complaints['compl_unreg_violation_mba'] +
+                 + $result_complaints['compl_unreg_violation_msihcr'] + $result_complaints['compl_unreg_violation_car'] + $result_complaints['compl_unreg_violation_clpra'];
+
+
+                  $reg_complaints_total_remarks = $result_complaints['compl_reg_remarks_fa'] + $result_complaints['compl_reg_remarks_pwa'] + $result_complaints['compl_reg_remarks_mba'] +
+               $result_complaints['compl_reg_remarks_msihcr'] + $result_complaints['compl_reg_remarks_car'] + $result_complaints['compl_reg_remarks_clpra'];
+
+
+                  $unreg_complaints_total_remarks = $result_complaints['compl_unreg_remarks_fa'] + $result_complaints['compl_unreg_remarks_pwa'] + $result_complaints['compl_unreg_remarks_mba'] +
+               $result_complaints['compl_unreg_remarks_msihcr'] + $result_complaints['compl_unreg_remarks_car'] + $result_complaints['compl_unreg_remarks_clpra'];
+
+
+          
+    
+
+
+  
+
+
+       $query_update_tab8 = db_update('labour_factory_statcell_annual_report_t8');
+       $query_update_tab8->fields(array(
+       'reg_recv_no' =>$reg_complaints_total_no, 'reg_investigated' => $reg_complaints_total_inv, 'reg_violation' => $reg_complaints_total_vio, 'reg_action' => NULL, 'reg_remarks' => $reg_complaints_total_remarks, 'unreg_recv_no' => $unreg_complaints_total_inv, 'unreg_investigated' => $unreg_complaints_total_inv, 'unreg_violation' => $unreg_complaints_total_vio, 'unreg_action' => NULL, 'unreg_remarks' => $unreg_complaints_total_remarks ));
+                    
+                    
+                    
+       $query_update_tab8->condition('annual_inspection_id',$annualReportid);
+     
+       $query_update_tab8->execute(); 
+
+
+
+
+          /*  end update complaints */
+
+
+
+           /* update prosecution proceding  current year   */
+
+
+                          db_delete('labour_factory_statcell_annual_report_t9_10')
+                        ->condition('annual_inspection_id', $annualReportid)
+                        ->execute();
+
+                   $mr_prosecution_proceeding_instituted_select_query = db_select('labour_factory_statcell_form_5_t9_7_t6', 'a');
+       
+                         $mr_prosecution_proceeding_instituted_select_query->InnerJoin('labour_factory_statcell_form_5', 'b', 'a.monthly_form_id=b.monthly_form_id');
+                         $mr_prosecution_proceeding_instituted_select_query->condition('b.inspector_id',trim($uid),'=');
+                         $mr_prosecution_proceeding_instituted_select_query->condition('b.report_from_date',trim($from),'>=');
+                         $mr_prosecution_proceeding_instituted_select_query->condition('b.report_to_date',trim($to),'<=');
+                         $mr_prosecution_proceeding_instituted_select_query->condition('b.status','FS','=');
+
+                          $mr_prosecution_proceeding_instituted_select_query->fields('a',array('form_type','pros_instituted_name_of_factory',
+        'pros_instituted_address_of_factory','pros_instituted_reg_unreg','pros_instituted_person_prosecuted','pros_instituted_case_no','pros_instituted_name_of_act','pros_instituted_violation','pros_instituted_penal_provision','pros_instituted_name_of_court','pros_instituted_remarks_result'));
+
+                   $mr_prosecution_proceeding_instituted_result = $mr_prosecution_proceeding_instituted_select_query->execute();
+
+                     
+                       if( $mr_prosecution_proceeding_instituted_result->rowCount() > 0 ) 
+                       { 
+
+                      foreach($mr_prosecution_proceeding_instituted_result as $squan) {
+
+            $maxresult_t9=db_query('select  max(row_id) maxsl from labour_factory_statcell_annual_report_t9_10'); 
+          $result_t9=$maxresult_t9->fetchAssoc();
+          $max_sl_number_t9 = trim($result_t9['maxsl']); 
+        if($max_sl_number_t9==0){$querystring_t9=1; }else{ $querystring_t9=$max_sl_number_t9+1; }
+        $row_id_t9=$querystring_t9;
+    
+            
+
+  $fields_t9 = array('row_id' => $row_id_t9, 'annual_inspection_id' =>$annualReportid,'factory_name' =>trim($squan->pros_instituted_name_of_factory), 'factory_address' => trim($squan->pros_instituted_address_of_factory), 'reg_unreg' => trim($squan->pros_instituted_reg_unreg), 'person_prosecuted' => trim($squan->pros_instituted_person_prosecuted), 'case_number' => trim($squan->pros_instituted_case_no), 'court_name' => trim($squan->pros_instituted_name_of_court), 'violation_description' => trim($squan->pros_instituted_violation)
+                         , 'results' =>  'PENDING', 'total_fine' => 0, 'is_pending' => 0);
+      
+       
+                      db_insert('labour_factory_statcell_annual_report_t9_10')->fields($fields_t9)->execute();
+
+                          
+                      }
+                  }
+             
+
+
+             /* update end prosecution proceding  current year */ 
+
+
+
+              /*  update begin anr tab 11 */
+
+           $no_pending_case_begin_year = db_select('labour_factory_statcell_annual_report_t11', 'a');
+       
+           $no_pending_case_begin_year->InnerJoin('labour_factory_statcell_annual_report', 'b', 'a.annual_inspection_id=b.annual_inspection_id');
+           $no_pending_case_begin_year->condition('b.inspector_id',trim($uid),'=');
+           $no_pending_case_begin_year->condition('b.report_year',trim($thisYear),'=');
+
+       
+
+    $no_pending_case_begin_year->fields('a',array('case_pending_at_beginning','case_disposed_of_during',
+        'case_pending_at_end'));
+
+            $no_pending_case_begin_year_result = $no_pending_case_begin_year->execute();
+
+             $result_pending_case_begin_year=$no_pending_case_begin_year_result->fetchAssoc();
+
+
+                // 11. a
+
+
+           $case_pending_at_end = !empty($result_pending_case_begin_year['case_pending_at_end']) ?  $result_pending_case_begin_year['case_pending_at_end'] : 0 ;
+
+
+              
+
+           $no_disposed_case_during_year = db_select('labour_factory_statcell_form_5_t10_7_t7', 'a');
+       
+           $no_disposed_case_during_year->InnerJoin('labour_factory_statcell_form_5', 'b', 'a.monthly_form_id=b.monthly_form_id');
+           $no_disposed_case_during_year->condition('b.inspector_id',trim($uid),'=');
+           $no_disposed_case_during_year->condition('a.case_disposed_date_of_disposal',trim($from),'>=');
+           $no_disposed_case_during_year->condition('a.case_disposed_date_of_disposal',trim($to),'<=');
+           $no_disposed_case_during_year->condition('b.status','FS','=');
+
+           
+
+           $no_disposed_case_during_year->addExpression('COALESCE(COUNT(case_disposed_name_of_factory),0)', 'no_disposed_case');
+          
+
+           
+
+            $no_disposed_case_during_year_result = $no_disposed_case_during_year->execute();
+
+             $result_disposed_case_year=$no_disposed_case_during_year_result->fetchAssoc();
+
+
+             
+              // 11 . b
+
+               $no_disposed_case= $result_disposed_case_year['no_disposed_case'] ;
+
+              // 11. c
+
+
+              $no_of_case_pending_beganing_year=$case_pending_at_end - $no_disposed_case;
+
+
+           
+
+
+
+
+
+               // 13 ( seminar,training courses, etc conducted)
+
+              
+              $seminar_traning = db_select('labour_factory_statcell_form_5_t12_6_t5_7_t5', 'a');
+       
+           $seminar_traning->InnerJoin('labour_factory_statcell_form_5', 'b', 'a.monthly_form_id=b.monthly_form_id');
+           $seminar_traning->condition('b.inspector_id',trim($uid),'=');
+           $seminar_traning->condition('a.seminar_date_of_program',trim($from),'>=');
+           $seminar_traning->condition('a.seminar_date_of_program',trim($to),'<=');
+           $seminar_traning->condition('b.status','FS','=');
+
+           
+          $seminar_traning->fields('a',array('seminar_name_of_factory','seminar_address_of_factory',
+             'seminar_type_of_program','seminar_date_of_program','seminar_no_of_participants','seminar_status_of_participants'));
+         
+          $seminar_traning_result = $seminar_traning->execute();
+
+               $str_seminar=NULL;
+                if( $seminar_traning_result->rowCount() > 0 ) 
+                       { 
+                   
+                       $s=0;
+                      foreach($seminar_traning_result as $squan) {
+                        $s++;
+
+                        $str_seminar.= $s .') Name of the Factory and Address : '.trim($squan->seminar_name_of_factory).' ,'.trim($squan->seminar_address_of_factory) .', Type of program:'.trim($squan->seminar_type_of_program) .', Date of program: '.trim($squan->seminar_date_of_program).', No of participants'.trim($squan->seminar_no_of_participants).';'." ";
+           
+
+                   }
+
+
+
+             
+                 }
+
+              // end no of seminar , trainging 
+
+
+
+           
+
+
+       $query_update_t11 = db_update('labour_factory_statcell_annual_report_t11');
+       $query_update_t11->fields(array(
+       'case_pending_at_beginning' =>$case_pending_at_end, 'case_disposed_of_during' => $no_disposed_case, 'case_pending_at_end' => $no_of_case_pending_beganing_year,  'seminar_training_courses' => $str_seminar ));
+                    
+                    
+                    
+       $query_update_t11->condition('annual_inspection_id',$annualReportid);
+      
+       $query_update_t11->execute(); 
+
+
+
+
+
+
+
+
+                 /*  end update anr tab 11 */
+
+
+        // begin tab 12 BOCW Act
+
+           $tab_14_bocw = db_select('labour_factory_statcell_form_5_t14_6_t6_7_t8', 'a');
+       
+           $tab_14_bocw->InnerJoin('labour_factory_statcell_form_5', 'b', 'a.monthly_form_id=b.monthly_form_id');
+           $tab_14_bocw->condition('b.inspector_id',trim($uid),'=');
+           $tab_14_bocw->condition('b.report_from_date',trim($from),'>=');
+           $tab_14_bocw->condition('b.report_to_date',trim($to),'<=');
+           $tab_14_bocw->condition('b.status','FS','=');
+
+           $tab_14_bocw->fields('a',array('no_of_units_visit ',
+        'no_of_visit_paid_general' ,
+    'no_of_visit_paid_complaint' ,
+    'no_of_visit_paid_accident',
+    'no_of_complaints_received' ,
+    'details_of_complaint',
+    'no_of_accidents_reported' ,
+    'accident_details_name_of_deceased' ,
+    'accident_details_age',
+    'accident_details_sex' ,
+    'accident_details_date_of_accident',
+    'accident_details_nature_of_accident' ,
+    'accident_details_description' ,
+    'accident_details_place' ,
+    'accident_details_name_of_employer' ,
+    'accident_details_address_of_site' ,
+    'details_of_violation_general_visit' ,
+    'no_of_prosecution_general_visit',
+    'no_of_prosecution_complaint',
+    'no_of_prosecution_accident' ,
+    'details_of_prosecution_violation' ,
+    'details_of_prosecution_court_name',
+    'details_of_prosecution_case_no' ,
+    'details_of_prosecution_result' ,
+    'other_information' ));
+          
+
+           
+
+            $tab_14_bocw_result = $tab_14_bocw->execute();
+
+             $result_tab14=$tab_14_bocw_result->fetchAssoc();
+
+
+             
+             
+
+               $no_of_units_visit= !empty($result_tab14['no_of_units_visit']) ?  $result_tab14['no_of_units_visit'] : 0;
+               $no_of_visit_paid_general= !empty($result_tab14['no_of_visit_paid_general']) ? $result_tab14['no_of_visit_paid_general'] : 0;
+               $no_of_visit_paid_complaint= !empty($result_tab14['no_of_visit_paid_complaint'] ) ? $result_tab14['no_of_visit_paid_complaint'] : 0;
+               $no_of_visit_paid_accident= !empty($result_tab14['no_of_visit_paid_accident']) ? $result_tab14['no_of_visit_paid_accident'] : 0;
+               $no_of_complaints_received= !empty($result_tab14['no_of_complaints_received'] ) ? $result_tab14['no_of_complaints_received'] : 0;
+               $details_of_complaint= $result_tab14['details_of_complaint'] ;
+               $no_of_accidents_reported= !empty($result_tab14['no_of_accidents_reported']) ? $result_tab14['no_of_accidents_reported'] : 0;
+               $accident_details_name_of_deceased= $result_tab14['accident_details_name_of_deceased'] ;
+               $accident_details_age= !empty($result_tab14['accident_details_age']) ? $result_tab14['accident_details_age'] : 0;
+               $accident_details_sex= $result_tab14['accident_details_sex'] ;
+               $accident_details_date_of_accident= $result_tab14['accident_details_date_of_accident'] ;
+
+                $accident_details_nature_of_accident= $result_tab14['accident_details_nature_of_accident'] ;
+                $accident_details_description= $result_tab14['accident_details_description'] ;
+                $accident_details_place= $result_tab14['accident_details_place'] ;
+                $accident_details_name_of_employer= $result_tab14['accident_details_name_of_employer'] ;
+
+
+                $accident_details_address_of_site= $result_tab14['accident_details_address_of_site'] ;
+                $details_of_violation_general_visit= $result_tab14['details_of_violation_general_visit'] ;
+                $no_of_prosecution_general_visit= !empty($result_tab14['no_of_prosecution_general_visit']) ? $result_tab14['no_of_prosecution_general_visit'] : 0;
+                $no_of_prosecution_complaint= !empty($result_tab14['no_of_prosecution_complaint']) ? $result_tab14['no_of_prosecution_complaint'] : 0;
+
+
+                $no_of_prosecution_accident= !empty($result_tab14['no_of_prosecution_accident']) ? $result_tab14['no_of_prosecution_accident'] : 0;
+                $details_of_prosecution_violation= $result_tab14['details_of_prosecution_violation'] ;
+                $details_of_prosecution_court_name= $result_tab14['details_of_prosecution_court_name'] ;
+                $details_of_prosecution_case_no= $result_tab14['details_of_prosecution_case_no'] ;
+
+
+                 $details_of_prosecution_result= $result_tab14['details_of_prosecution_result'] ;
+                 $other_information= $result_tab14['other_information'] ;
+
+
+
+             
+
+            $visit_paid= $no_of_visit_paid_general + $no_of_visit_paid_complaint +  $no_of_visit_paid_accident;
+            $no_prosecution= $no_of_prosecution_general_visit + $no_of_prosecution_complaint + $no_of_prosecution_accident ;
+
+
+               
+               
+        $query_update_construct_t1 = db_update('labour_factory_statcell_annual_report_attach_construct_t1');
+       $query_update_construct_t1->fields(array(
+       'unit_visited' =>$no_of_units_visit, 'visit_paid' => $visit_paid,   'accident' => $no_of_accidents_reported, 'connection_accident' => $no_of_visit_paid_accident, 'complaints' => $no_of_complaints_received, 'connection_complaints' => $no_of_visit_paid_complaint, 'prosecution' => $no_prosecution ));
+                    
+                    
+                    
+       $query_update_construct_t1->condition('annual_inspection_id',$annualReportid);
+     
+       $query_update_construct_t1->execute(); 
+
+
+      //Construction Works Case Details
+
+
+           $cons_worker_case = db_select('labour_factory_statcell_form_5_t14_9', 'a');
+           $cons_worker_case->InnerJoin('labour_factory_statcell_form_5', 'b', 'a.monthly_form_id=b.monthly_form_id');
+           $cons_worker_case->condition('b.inspector_id',trim($uid),'=');
+           $cons_worker_case->condition('b.report_from_date',trim($from),'>=');
+           $cons_worker_case->condition('b.report_to_date',trim($to),'<=');
+           $cons_worker_case->condition('b.status','FS','=');
+
+            $cons_worker_case->fields('a',array('details_of_prosecution_violation','details_of_prosecution_court_name',
+        'details_of_prosecution_case_no','details_of_prosecution_result'));
+
+            $cons_worker_case_result = $cons_worker_case->execute();
+
+                     
+            if( $cons_worker_case_result->rowCount() > 0 ) 
+                       { 
+
+                      foreach($cons_worker_case_result as $squan) {
+
+            $maxresult_cw_case=db_query('select  max(row_id) maxsl from labour_factory_statcell_annual_report_attach_construct_t2');  
+          $result_cw_case=$maxresult_cw_case->fetchAssoc();
+          $max_sl_number_cw_case = trim($result_cw_case['maxsl']); 
+            if($max_sl_number_cw_case==0){$querystring_cw_case=1; }else{ $querystring_cw_case=$max_sl_number_cw_case+1; }
+        $row_id_cw_case=$querystring_cw_case;
+    
+
+
+  $fields_cw_case = array('row_id' => $row_id_cw_case, 'annual_inspection_id' =>$annualReportid,'case_no' =>trim($squan->details_of_prosecution_case_no), 'violation' => trim($squan->details_of_prosecution_violation), 'court' => trim($squan->details_of_prosecution_court_name), 'remarks' => trim($squan->details_of_prosecution_result));
+      
+       
+                      db_insert('labour_factory_statcell_annual_report_attach_construct_t2')->fields($fields_cw_case)->execute();
+
+             }
+
+         }
+
+                   // end coonstractor case details
 
 
 
