@@ -400,8 +400,8 @@ $val=$form_state['values'];
 	$uid=trim($val['uid']);
 	//$from=trim($val['from']);
 	//$to=trim($val['to']);
-	$from="2021-01-01";//date('Y-m-d', strtotime(trim($val['from'])));
-    $to="2021-12-31";//date('Y-m-d', strtotime(trim($val['to'])));
+	$from="2021-04-01";//"2021-01-01";//date('Y-m-d', strtotime(trim($val['from'])));
+    $to="2022-03-31";//"2021-12-31";//date('Y-m-d', strtotime(trim($val['to'])));
 	$thisYear = "2022";//date("Y")-1;
 
 	$previous_year="2020";//$thisYear - 1;
@@ -412,7 +412,7 @@ $val=$form_state['values'];
 	}
 	elseif($annual_report=='FINANCIAL'){
 		$previous_from_year_dt='1900-01-01';
-	    $previous_to_year_dt=date("Y")."-03-31";
+	    $previous_to_year_dt="2022-03-31";//date("Y")."-03-31";
 	}
 
    
@@ -1452,6 +1452,124 @@ $val=$form_state['values'];
          }
 
                    // end coonstractor case details
+
+
+            
+             // begin tab 12 maternity benefit
+
+
+
+           
+           
+
+            $maternity_benefit = db_select('labour_factory_statcell_annual_report_attach_maternity_t1', 'a'); 
+            $maternity_benefit->InnerJoin('labour_factory_statcell_annual_report', 'b', 'a.annual_inspection_id=b.annual_inspection_id');
+            $maternity_benefit->condition('b.inspector_id',trim($uid),'=');
+            $maternity_benefit->condition('b.report_year',trim($thisYear),'=');
+           
+
+            $maternity_benefit->fields('a',array('case_pending_at_end_4_c'));
+
+            $maternity_benefit_result = $maternity_benefit->execute();
+            $result_maternity_benefit=$maternity_benefit_result->fetchAssoc();
+
+           $case_pending_at_end_4_c=$result_maternity_benefit['case_pending_at_end_4_c'];
+
+
+        
+
+
+
+         $query_update_maternity_benefit = db_update('labour_factory_statcell_annual_report_attach_maternity_t1');
+       $query_update_maternity_benefit->fields(array(
+       'case_pending_at_beginning_4_a' => $case_pending_at_end_4_c ));
+                    
+                    
+                    
+       $query_update_maternity_benefit->condition('annual_inspection_id',$annualReportid);
+     
+       $query_update_maternity_benefit->execute();
+
+
+
+
+                 
+                       // end tab 12 maternity benefit
+
+
+
+         // begin tab 12 Payment of wages
+
+
+
+            $payment_wages = db_select('labour_factory_statcell_annual_report_attach_wages_t1', 'a'); 
+            $payment_wages->InnerJoin('labour_factory_statcell_annual_report', 'b', 'a.annual_inspection_id=b.annual_inspection_id');
+            $payment_wages->condition('b.inspector_id',trim($uid),'=');
+            $payment_wages->condition('b.report_year',trim($thisYear),'=');
+           
+
+            $payment_wages->fields('a',array('case_pending_at_end_3_c','app_pending_at_end_4_h'));
+
+            $payment_wages_result = $payment_wages->execute();
+            $result_payment_wages=$payment_wages_result->fetchAssoc();
+
+        $case_pending_at_end_3_c=!empty($result_payment_wages['case_pending_at_end_3_c']) ? trim($result_payment_wages['case_pending_at_end_3_c']) : 0;
+        $app_pending_at_end_4_h=!empty($result_payment_wages['app_pending_at_end_4_h']) ?  trim($result_payment_wages['app_pending_at_end_4_h']) : 0 ;
+
+
+
+
+          
+               
+                   $mr_before_pw_act = db_select('labour_factory_statcell_form_5_t13', 'a');
+
+                   $mr_before_pw_act->InnerJoin('labour_factory_statcell_form_5', 'b', 'a.monthly_form_id=b.monthly_form_id');
+                   $mr_before_pw_act->condition('b.inspector_id',trim($uid),'=');
+                   $mr_before_pw_act->condition('b.report_from_date',trim($from),'>=');
+                   $mr_before_pw_act->condition('b.report_to_date',trim($to),'<=');
+                   $mr_before_pw_act->condition('b.status','FS','=');
+                   $mr_before_pw_act->addExpression('COALESCE(count(pw_act_name_of_factory),0)', 'no_of_app');
+                   $mr_before_pw_act->addExpression('COALESCE(sum(pw_act_persons_involved), 0)', 'pw_act_persons_involved');
+                   $mr_before_pw_act->addExpression('COALESCE(sum(pw_act_amount_unpaid_wages),0)', 'pw_act_amount_unpaid_wages');
+                   $mr_before_pw_act->addExpression('COALESCE(sum(pw_act_amount_unauthorized_deduction),0)',
+                  'pw_act_amount_unauthorized_deduction');
+
+                  $mr_before_pw_act->addExpression("string_agg(pw_act_name_of_factory, ';')", "pw_act_name_of_factory");
+                 
+
+                  $mr_before_pw_act_result = $mr_before_pw_act->execute(); 
+    
+                  $result_before_pw_act=$mr_before_pw_act_result->fetchAssoc();
+
+                  $pw_act_name_of_factory=$result_before_pw_act['pw_act_name_of_factory'];
+                  $pw_act_persons_involved=$result_before_pw_act['pw_act_persons_involved'] ;
+                  $pw_act_amount_unpaid_wages= $result_before_pw_act['pw_act_amount_unpaid_wages'] ;
+                  $pw_act_amount_unauthorized_deduction=$result_before_pw_act['pw_act_amount_unauthorized_deduction'] ;
+
+                  $no_of_app=$result_before_pw_act['no_of_app'] ; 
+              
+
+
+     $query_update_maternity_benefit = db_update('labour_factory_statcell_annual_report_attach_wages_t1');
+       $query_update_maternity_benefit->fields(array(
+       'case_pending_at_beginning_3_a' => $case_pending_at_end_3_c ,
+
+
+'factories_name_4_a' => $pw_act_name_of_factory, 'application_filed_4_b' => $no_of_app, 'person_involved_4_c' => $pw_act_persons_involved, 'wages_claimed_4_d' => $pw_act_amount_unpaid_wages, 'deduction_claimed_4_e' => $pw_act_amount_unauthorized_deduction, 'app_pending_at_beginning_4_f' => $app_pending_at_end_4_h ));
+                    
+                    
+                    
+       $query_update_maternity_benefit->condition('annual_inspection_id',$annualReportid);
+     
+       $query_update_maternity_benefit->execute();
+
+
+
+// end tab 12 payment of wages
+
+
+
+
 
 
 
@@ -2532,19 +2650,19 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
 
 
 
-            $maternity_benefit = db_select('labour_factory_statcell_annual_report_attach_wages_t1', 'a'); 
-            $maternity_benefit->InnerJoin('labour_factory_statcell_annual_report', 'b', 'a.annual_inspection_id=b.annual_inspection_id');
-            $maternity_benefit->condition('b.inspector_id',trim($uid),'=');
-            $maternity_benefit->condition('b.report_year',trim($thisYear),'=');
+            $payment_wages = db_select('labour_factory_statcell_annual_report_attach_wages_t1', 'a'); 
+            $payment_wages->InnerJoin('labour_factory_statcell_annual_report', 'b', 'a.annual_inspection_id=b.annual_inspection_id');
+            $payment_wages->condition('b.inspector_id',trim($uid),'=');
+            $payment_wages->condition('b.report_year',trim($thisYear),'=');
            
 
-            $maternity_benefit->fields('a',array('case_pending_at_end_3_c','app_pending_at_end_4_h'));
+            $payment_wages->fields('a',array('case_pending_at_end_3_c','app_pending_at_end_4_h'));
 
-            $maternity_benefit_result = $maternity_benefit->execute();
-            $result_maternity_benefit=$maternity_benefit_result->fetchAssoc();
+            $payment_wages_result = $payment_wages->execute();
+            $result_payment_wages=$payment_wages_result->fetchAssoc();
 
-		    $case_pending_at_end_3_c=!empty($result_maternity_benefit['case_pending_at_end_3_c']) ? trim($result_maternity_benefit['case_pending_at_end_3_c']) : 0;
-		    $app_pending_at_end_4_h=!empty($result_maternity_benefit['app_pending_at_end_4_h']) ?  trim($result_maternity_benefit['app_pending_at_end_4_h']) : 0 ;
+		    $case_pending_at_end_3_c=!empty($result_payment_wages['case_pending_at_end_3_c']) ? trim($result_payment_wages['case_pending_at_end_3_c']) : 0;
+		    $app_pending_at_end_4_h=!empty($result_payment_wages['app_pending_at_end_4_h']) ?  trim($result_payment_wages['app_pending_at_end_4_h']) : 0 ;
 
 
 
@@ -2602,7 +2720,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
      db_insert('labour_factory_statcell_annual_report_attach_wages_t1')->fields($fieldsE_mtb)->execute();
 
 
-                            // end tab 12 payment of wage
+                            // end tab 12 payment of wages
 
 
 
