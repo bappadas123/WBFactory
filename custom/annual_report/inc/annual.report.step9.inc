@@ -26,7 +26,7 @@ function annual_report_step9( $form, &$form_state, $filenumber= NULL , $row_id= 
        $result_mrist=$mr_istquery_result->fetchAssoc();
        $area=$result_mrist['area'];
        $inspector_id=$result_mrist['inspector_id'];
-       $inspector_name=get_name($inspector_id);
+       //$inspector_name=get_name($inspector_id);
 		
 	
       $report_from_date=date('d-m-Y', strtotime($result_mrist['report_from_date']));
@@ -349,7 +349,8 @@ $form['step9field']['col5val'] = array
                                                                '#prefix' => '<div style="text-align:center;" >',
                                                                  '#suffix'=>'</div>', 
 																'#type'					=>'submit',
-																'#value'				=> !empty(trim($row_id)) ?  t(' Update ') : t(' Save ') 
+																//'#value'				=> !empty(trim($row_id)) ?  t(' Update ') : t(' Save ') 
+																'#value'				=>!(trim($row_id)) ?  t(' Save ') : t(' Update ') ,
 																);
 		 
 		 

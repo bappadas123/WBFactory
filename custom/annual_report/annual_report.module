@@ -152,7 +152,7 @@ $items['admin/annual-report/step1/%'] = array(
   'access callback' => 'user_access',
   'access arguments' => array('annual_report_per'),
   //'weight' => 10,
-  'type' => MENU_CALLBACK,
+ // 'type' => MENU_CALLBACK,
  );
 
 

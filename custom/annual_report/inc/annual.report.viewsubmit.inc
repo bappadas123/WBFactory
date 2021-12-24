@@ -475,13 +475,17 @@ $content = '<table width="100%" >
                                                  $classification_details=$squan->classification_details;
                                                   $acc_det_action_case_no=$squan->acc_det_action_case_no;
                                                    $remarks=$squan->remarks;
+
+                                                $ade=  !trim($squan->acc_det_expiry) ? ' ' : date('d-m-Y', strtotime($squan->acc_det_expiry));
+
+
                                               $content .= ' <tr>      
                                          <td align="center" valign="middle">'.$accident_type.'</td>
                                          <td align="center" valign="middle">'.$acc_det_name_of_factory.'</td>
                                          <td align="center" valign="middle">'.$acc_det_address_of_factory.'</td>
                                          <td align="center" valign="middle">'.$acc_det_name_of_deceased_injured.'</td>
                                          <td align="center" valign="middle">'.date('d-m-Y', strtotime($squan->acc_det_date_of_accident)).'</td>
-                                         <td align="center" valign="middle">'.date('d-m-Y', strtotime($squan->acc_det_expiry)).'</td>
+                                         <td align="center" valign="middle">'.$ade.'</td>
              
                                          <td align="center" valign="middle">'.$acc_det_section_violation.'</td>
                                          <td align="center" valign="middle">'.$classification_details.'</td>
@@ -527,6 +531,7 @@ $content = '<table width="100%" >
                                             $factory_name=$squan->factory_name;
                                             $factory_address=$squan->factory_address;
                                             $date_time=$squan->date_time;
+                                            $dho= !trim($date_time) ? ' ' : date('d-m-Y', strtotime($date_time));
                                             $desc_incident=$squan->desc_incident;
 
               
@@ -538,7 +543,7 @@ $content = '<table width="100%" >
                                               <td align="center" valign="middle">'.$factory_name.'</td>
                                               <td align="center" valign="middle">'.$factory_address.'</td>
                 
-                                             <td align="center" valign="middle">'.date('d-m-Y', strtotime($date_time)).'</td>
+                                             <td align="center" valign="middle">'.$dho.'</td>
                
              
                                            <td align="center" valign="middle">'.$desc_incident.'</td>
@@ -1858,7 +1863,7 @@ $content = '<table width="100%" >
                                             </tr></thead>';  
 
 
-                   $previous_year=$thisYear - 2;
+                   $previous_year=$thisYear - 1;
         
         //print "ssss".$previous_year;
        // exit;
@@ -2149,11 +2154,7 @@ $content = '<table width="100%" >
                                    </tr>
                                </table></div>
 								
-							<div class="table-responsive">
-                    		 <table class="table table-striped table-bordered table-responsive admin-custom-table">
-                                <div><b> 4. a) No. of case pending at the beginning of the year </b> '.$result_step12c['case_pending_at_beginning_4_a'].'</div>
-                                <div><b> b) No. of case in disposed off during the year </b> '.$result_step12c['case_disposed_4_b'].'</div>
-                                 <div><b> c) No. of case pending at the end of the year </b> '.$result_step12c['case_pending_at_end_4_c'].'</div></table></div>
+							
 
                                       ';
 
@@ -2161,7 +2162,10 @@ $content = '<table width="100%" >
 
                              $query_tab_12_d=db_query('select  *  from labour_factory_statcell_annual_report_attach_maternity_wages where  maternity_wages_id = :anid and maternity_wages_type = :mwt', array(':anid' => trim($filenumber) , ':mwt' => 'MATERNITY'));
      
-      $content .= ' <div class="table-responsive">
+      $content .= ' 
+
+       <div><b> 3. Maternity Benefit Case Details </b></div>
+      <div class="table-responsive">
                      <table class="table table-striped table-bordered table-responsive admin-custom-table">
 					 <thead>
 	    <tr > <th >SL.NO</th>
@@ -2203,11 +2207,17 @@ $content = '<table width="100%" >
 			 </tr>';
 	        }
               $content .= '</table></div>
+            
+              <div class="table-responsive">
+                             <table class="table table-striped table-bordered table-responsive admin-custom-table">
+                                <div><b> 4. a) No. of case pending at the beginning of the year </b> '.$result_step12c['case_pending_at_beginning_4_a'].'</div>
+                                <div><b> b) No. of case in disposed off during the year </b> '.$result_step12c['case_disposed_4_b'].'</div>
+                                 <div><b> c) No. of case pending at the end of the year </b> '.$result_step12c['case_pending_at_end_4_c'].'</div></table></div>
 
 
                   <div><b> Payment of wages </b></div>
-                   <div><b> Information relating to payment of Wages act & Rules </b></div>
-                  <div><b> 1. No. of violations in respect of </b></div>';
+                   <div><b> Information relating to payment of Wages act & Rules </b></div> ';
+                 
 
                   $step12e_query = db_select('labour_factory_statcell_annual_report_attach_wages_t1', 'd');
        
@@ -2247,7 +2257,7 @@ $content = '<table width="100%" >
 		 
 		$result_step2e=$step12e_query_result->fetchAssoc();
                  $content .= '   
-                 <div class="table-panel-header"><b> Information relating to payment of Wages act & Rules </b></div>
+                 <div class="table-panel-header"><b> 1. No. of violations in respect of </b></div>
                  <div class="table-responsive">
                      <table class="table table-striped table-bordered table-responsive admin-custom-table">
                  <tr> <td align="left" valign="middle"  > a) Display of the Abstract of the Act and the Rules</td>  <td> '.$result_step2e['no_act_and_rules_1_a'] .'</td></tr>

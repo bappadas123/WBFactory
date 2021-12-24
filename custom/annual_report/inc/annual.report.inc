@@ -400,9 +400,9 @@ $val=$form_state['values'];
 	$uid=trim($val['uid']);
 	//$from=trim($val['from']);
 	//$to=trim($val['to']);
-	$from="2021-04-01";//"2021-01-01";//date('Y-m-d', strtotime(trim($val['from'])));
-    $to="2022-03-31";//"2021-12-31";//date('Y-m-d', strtotime(trim($val['to'])));
-	$thisYear = "2022";//date("Y")-1;
+	$from="2021-01-01";//"2021-04-01";//"2021-01-01";//date('Y-m-d', strtotime(trim($val['from'])));
+    $to="2021-12-31";//"2022-03-31";//"2021-12-31";//date('Y-m-d', strtotime(trim($val['to'])));
+	$thisYear = "2021";//date("Y")-1;
 
 	$previous_year="2020";//$thisYear - 1;
 
@@ -1275,7 +1275,7 @@ $val=$form_state['values'];
                       foreach($seminar_traning_result as $squan) {
                         $s++;
 
-                        $str_seminar.= $s .') Name of the Factory and Address : '.trim($squan->seminar_name_of_factory).' ,'.trim($squan->seminar_address_of_factory) .', Type of program:'.trim($squan->seminar_type_of_program) .', Date of program: '.trim($squan->seminar_date_of_program).', No of participants'.trim($squan->seminar_no_of_participants).';'." ";
+                        $str_seminar.= $s .') Name of the Factory and Address : '.trim($squan->seminar_name_of_factory).' ,'.trim($squan->seminar_address_of_factory) .', Type of program:'.trim($squan->seminar_type_of_program) .', Date of program: '.trim($squan->seminar_date_of_program).', No of participants:'.trim($squan->seminar_no_of_participants).';'." ";
            
 
                    }
@@ -2424,7 +2424,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
                       foreach($seminar_traning_result as $squan) {
                       	$s++;
 
-                      	$str_seminar.= $s .') Name of the Factory and Address : '.trim($squan->seminar_name_of_factory).' ,'.trim($squan->seminar_address_of_factory) .', Type of program:'.trim($squan->seminar_type_of_program) .', Date of program: '.trim($squan->seminar_date_of_program).', No of participants'.trim($squan->seminar_no_of_participants).';'." ";
+                      	$str_seminar.= $s .') Name of the Factory and Address : '.trim($squan->seminar_name_of_factory).' ,'.trim($squan->seminar_address_of_factory) .', Type of program:'.trim($squan->seminar_type_of_program) .', Date of program: '.trim($squan->seminar_date_of_program).', No of participants:'.trim($squan->seminar_no_of_participants).';'." ";
            
 
                    }

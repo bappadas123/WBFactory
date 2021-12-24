@@ -120,7 +120,7 @@ function anr_step2_part2_edit($ajax, $filenumber = NULL , $rowid = NULL){
                          $classification_code=$anr_t9_fetch['classification_code'];
                          $remarks=$anr_t9_fetch['remarks'];
                          $acc_det_date_of_accident=date('d-m-Y', strtotime($anr_t9_fetch['acc_det_date_of_accident']));
-                        $acc_det_expiry= !empty(trim($anr_t9_fetch['acc_det_expiry'])) ? date('d-m-Y', strtotime($anr_t9_fetch['acc_det_expiry'])) : NULL ;
+                        $acc_det_expiry= !(trim($anr_t9_fetch['acc_det_expiry'])) ? NULL : date('d-m-Y', strtotime($anr_t9_fetch['acc_det_expiry'])) ;
                      
 
                        }

@@ -58,14 +58,14 @@ function annual_report_step2( $form, &$form_state, $filenumber= NULL   ){
        $result_mrist=$mr_istquery_result->fetchAssoc();
        $area=$result_mrist['area'];
        $inspector_id=$result_mrist['inspector_id'];
-       $inspector_name=get_name($inspector_id);
+      // $inspector_name=get_name($inspector_id);
        $report_from_date=date('d-m-Y', strtotime($result_mrist['report_from_date']));
       $report_to_date=date('d-m-Y', strtotime($result_mrist['report_to_date']));
 	      
 	
 	
 	// Part A
-	drupal_add_js(drupal_get_path('module', 'caf_form') . '/js/formcheck.js');
+	 drupal_add_js(drupal_get_path('module', 'caf_form') . '/js/formcheck.js');
      drupal_add_js(drupal_get_path('module', 'caf_form') . '/js/myfunction.js');
 		
 	      $form['step2Afield'] = array(
@@ -510,7 +510,7 @@ $form['step2Afield']['submit_button_one']					= array(
 
        //part B
 
-        $form['step2Bfield'] = array(
+      $form['step2Bfield'] = array(
          '#title' => t(''),
           '#type' => 'fieldset',
           '#collapsed' => FALSE
@@ -797,8 +797,8 @@ $form['step2Afield']['submit_button_one']					= array(
 
        $output1='';
       if(trim($filenumber)){
-      $query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t2_b a, labour_factory_accident_classification_mst b where  CAST (a.classification_code AS INTEGER)=b.accident_classification_id and annual_inspection_id = :anid', array(':anid' => trim($filenumber) ));
-      if($query_tab_1_c->rowCount() > 0) 
+      $query_tab_1_b=db_query('select  *  from labour_factory_statcell_annual_report_t2_b a, labour_factory_accident_classification_mst b where  CAST (a.classification_code AS INTEGER)=b.accident_classification_id and annual_inspection_id = :anid', array(':anid' => trim($filenumber) ));
+      if($query_tab_1_b->rowCount() > 0) 
               { 
      $output1 = "<div class='table-responsive'><table class='table table-striped table-bordered table-responsive admin-custom-table add-employee-table-view'>
 	 <thead>
@@ -821,7 +821,7 @@ $form['step2Afield']['submit_button_one']					= array(
 		 <th >DELETE</th>
 		</tr></thead>";  
 			  $i=0;
-		foreach($query_tab_1_c as $squan) {
+		foreach($query_tab_1_b as $squan) {
 			$i++;
 		      $row_id = $squan->row_id; 
 		      $annual_inspection_id = $squan->annual_inspection_id; 
@@ -838,7 +838,7 @@ $form['step2Afield']['submit_button_one']					= array(
               $acc_det_action_case_no=$squan->acc_det_action_case_no;
               $remarks=$squan->remarks;
               
-              $acc_det_expiry = !empty(trim($squan->acc_det_expiry)) ? date('d-m-Y', strtotime($squan->acc_det_expiry)) : '';
+              $acc_det_expiry = !(trim($squan->acc_det_expiry)) ?  '' :  date('d-m-Y', strtotime($squan->acc_det_expiry));
               
 			
 
@@ -1155,7 +1155,7 @@ $form['step2Cfield']['submit_button']					= array(
               $remarks=$squan->remarks;
              
               
-              
+             $dho= !trim($date_time) ? ' ' : date('d-m-Y', strtotime($date_time));
 			
 
 			   $bb=$base_root.$base_path.'admin/annual-report-tab2-partc-del/'.encryption_decryption_fun('encrypt',$annual_inspection_id).'/'.encryption_decryption_fun('encrypt',$row_id);
@@ -1180,7 +1180,7 @@ $form['step2Cfield']['submit_button']					= array(
 				$output2.= "<td>".$factory_name."</td>";
 			    $output2.= "<td>".$factory_address."</td>";
                 
-                $output2.= "<td>".date('d-m-Y', strtotime($date_time))."</td>";
+                $output2.= "<td>".$dho."</td>";
                
              
                 $output2.= "<td>".$desc_incident."</td>";
@@ -2004,7 +2004,7 @@ $form['step2Cfield']['submit_button']					= array(
 	 	'#prefix' => '<div align="left" id="step2_part4_div">'.$output4,
 		'#suffix' => '</div>',
        
-	);
+	); 
 
 
 	
@@ -2386,6 +2386,7 @@ $query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t
 		 <th >Classification</th>
 		  <th >Legal Action Taken(Case No.)</th>
 		   <th >Remarks</th>
+		    <th >EDIT</th>
 		 <th >DELETE</th>
 		</tr>";  
 			  $i=0;
@@ -2406,7 +2407,7 @@ $query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t
               $acc_det_action_case_no=$squan->acc_det_action_case_no;
               $remarks=$squan->remarks;
 
-             $acc_det_expiry= !empty(trim($squan->acc_det_expiry)) ? date('d-m-Y', strtotime($squan->acc_det_expiry)) : ' ';
+             $acc_det_expiry= !(trim($squan->acc_det_expiry)) ? '' : date('d-m-Y', strtotime($squan->acc_det_expiry));
               
               
 			
@@ -2419,6 +2420,21 @@ $query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t
 		
 		
 		      $del_preper=l(t('Delete'),$bb ,array('html'=>TRUE)) ;
+
+
+
+
+		       ctools_include('ajax');
+                  ctools_include('modal');
+	            ctools_modal_add_js();	
+
+		        $ed=$base_root.$base_path.'admin/annual-report/step2-edit/nojs/'.encryption_decryption_fun('encrypt',$annual_inspection_id).'/'.encryption_decryption_fun('encrypt',$row_id);
+      
+		   
+
+
+               	
+			$ed_partb_link=ctools_modal_text_button(t('Edit'), $ed ,t('Edit')) ;
 			  
 			  
 			  
@@ -2434,7 +2450,7 @@ $query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t
 			    $output1.= "<td>".$acc_det_name_of_factory."</td>";
                 $output1.= "<td>".$acc_det_address_of_factory."</td>";
                 $output1.= "<td>".$acc_det_name_of_deceased_injured."</td>";
-                $output1.= "<td>".date('d-m-Y', strtotime($squan->acc_det_date_of_accident))."</td>";
+                $output1.= "<td>".trim($squan->acc_det_date_of_accident) ? date('d-m-Y', strtotime($squan->acc_det_date_of_accident)) : ''."</td>";
                 $output1.= "<td>".$acc_det_expiry."</td>";
              
                 $output1.= "<td>".$acc_det_section_violation."</td>";
@@ -2442,6 +2458,7 @@ $query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t
                 $output1.= "<td >".$acc_det_action_case_no."</td>";
 				
 				$output1.= "<td >".$remarks."</td>";
+				$output1.= "<td >".$ed_partb_link."</td>";
 				$output1.= "<td >".$del_preper."</td>";
 			
               
@@ -2527,7 +2544,10 @@ $query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t
       $inspectionid=trim($val['inspectionid']);
       $colC1val=trim($val['colC1val']); 
       $colC2val=trim($val['colC2val']);   //if(!$colB2val)   $colB2val= NULL;  
-      $colC3val=   date('Y-m-d', strtotime(trim($val['colC3val']))) ;
+      if(trim($val['colC3val']))
+      $colC3val=  date('Y-m-d', strtotime(trim($val['colC3val']))) ;
+      else
+      	$colC3val=   NULL  ;
       $colC4val=trim($val['colC4val']);  
       $colC5val=trim($val['colC5val']);   if(!$colC5val)   $colC5val= NULL;  
       $colC6val=trim($val['colC6val']);  
@@ -2615,7 +2635,7 @@ $query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t
               $legal_action=$squan->legal_action;
               $remarks=$squan->remarks;
              
-              
+               $dho= !trim($date_time) ? ' ' : date('d-m-Y', strtotime($date_time));
               
 			
 
@@ -2641,7 +2661,7 @@ $query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t
 				$output2.= "<td>".$factory_name."</td>";
 			    $output2.= "<td>".$factory_address."</td>";
                 
-                $output2.= "<td>".date('d-m-Y', strtotime($date_time))."</td>";
+                $output2.= "<td>". $dho ."</td>";
                
              
                 $output2.= "<td>".$desc_incident."</td>";

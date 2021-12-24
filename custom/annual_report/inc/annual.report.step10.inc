@@ -25,7 +25,7 @@ function annual_report_step10( $form, &$form_state, $filenumber= NULL , $row_id=
        $result_mrist=$mr_istquery_result->fetchAssoc();
        $area=$result_mrist['area'];
        $inspector_id=$result_mrist['inspector_id'];
-       $inspector_name=get_name($inspector_id);
+     //  $inspector_name=get_name($inspector_id);
 		
 	  $report_from_date=date('d-m-Y', strtotime($result_mrist['report_from_date']));
       $report_to_date=date('d-m-Y', strtotime($result_mrist['report_to_date']));
@@ -33,7 +33,7 @@ function annual_report_step10( $form, &$form_state, $filenumber= NULL , $row_id=
       $thisYear=$result_mrist['report_year'];
       $annual_report=$result_mrist['annual_form_type'];
 
-     $previous_year=$thisYear - 2;
+     $previous_year=$thisYear - 1;
         
         //print "ssss".$previous_year;
        // exit;
@@ -84,7 +84,7 @@ function annual_report_step10( $form, &$form_state, $filenumber= NULL , $row_id=
                          $total_fine=0;
                     
                         
-                         if( $filenumber &&   $row_id) 
+                       if( $filenumber &&   $row_id) 
                          { 
 
                          $t9_row_query = db_select('labour_factory_statcell_annual_report_t9_10', 'a');
@@ -371,7 +371,7 @@ $form['step10field']['col5val'] = array
                                                                '#prefix' => '<div style="text-align:center;" >',
                                                                  '#suffix'=>'</div>', 
 																'#type'					=>'submit',
-																'#value'				=>!empty(trim($row_id)) ?  t(' Update ') : t(' Save ') 
+																'#value'				=>!(trim($row_id)) ?  t(' Save ') : t(' Update ') ,
 																);
 
 			
@@ -380,10 +380,10 @@ $form['step10field']['col5val'] = array
 	 	
 		$output1='';
 
-  //  print $previous_from_year_dt."sss".$previous_to_year_dt;
+    //print $previous_from_year_dt."sss".$previous_to_year_dt."sss".$inspector_id;
     //exit;
 
-      if(trim($filenumber)){
+    if(trim($filenumber)){
       //$query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :anid ', array(':anid' => trim($filenumber)  ));
 
             $mr_pending_case_select_query = db_select('labour_factory_statcell_annual_report_t9_10', 'a');
@@ -423,6 +423,7 @@ $form['step10field']['col5val'] = array
 		  <th >Sections/Rules violated <br>with a short description	</th>
 		   <th >Result	</th>
 		  <th >Amount of fines	</th>
+		   <th >EDIT</th>
 		 
 		 <th >DELETE</th>
 		</tr></thead>";  
@@ -488,7 +489,8 @@ $form['step10field']['col5val'] = array
                 $output1.= "<td>".$violation_description."</td>";
                 $output1.= "<td>".$results."</td>";
                 $output1.= "<td>".$total_fine."</td>";
-                $output1.= "<td >".$edit_link.'|'.$del_preper."</td>";
+                 $output1.= "<td>".$edit_link."</td>";
+                $output1.= "<td >".$del_preper."</td>";
 			
 				
 			
