@@ -2017,7 +2017,7 @@ $content = '<table width="100%" >
                                      /* $query_tab_10=db_query('select  *  from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :anid and is_pending  = :ispen', array(':anid' => trim($filenumber) , ':ispen' => 1 )); */
 
                                    
-       $previous_year=$thisYear - 2;
+       $previous_year=$thisYear - 1;
         
         //print "ssss".$previous_year;
        // exit;

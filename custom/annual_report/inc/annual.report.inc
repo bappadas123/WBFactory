@@ -400,11 +400,16 @@ $val=$form_state['values'];
 	$uid=trim($val['uid']);
 	//$from=trim($val['from']);
 	//$to=trim($val['to']);
-	$from="2021-01-01";//"2021-04-01";//"2021-01-01";//date('Y-m-d', strtotime(trim($val['from'])));
-    $to="2021-12-31";//"2022-03-31";//"2021-12-31";//date('Y-m-d', strtotime(trim($val['to'])));
-	$thisYear = "2021";//date("Y")-1;
+	//$from="2021-04-01";//"2021-01-01";//date('Y-m-d', strtotime(trim($val['from'])));
+   // $to="2022-03-31";//"2021-12-31";//date('Y-m-d', strtotime(trim($val['to'])));
 
-	$previous_year="2020";//$thisYear - 1;
+	$from=date('Y-m-d', strtotime(trim($val['from'])));
+    $to=date('Y-m-d', strtotime(trim($val['to'])));
+
+
+	$thisYear = date("Y")-1;
+
+	$previous_year=$thisYear -1;
 
 	if($annual_report=='CALENDAR'){
 		$previous_from_year_dt='1900-01-01';
@@ -412,7 +417,7 @@ $val=$form_state['values'];
 	}
 	elseif($annual_report=='FINANCIAL'){
 		$previous_from_year_dt='1900-01-01';
-	    $previous_to_year_dt="2022-03-31";//date("Y")."-03-31";
+	    $previous_to_year_dt=date("Y")."-03-31";
 	}
 
    
