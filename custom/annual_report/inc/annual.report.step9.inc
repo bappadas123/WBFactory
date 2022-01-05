@@ -544,7 +544,7 @@ $val=$form_state['values'];
 	  try {
    
 
-
+        if($rowid){
 
         $query_update_a_yes=db_query('select  * from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :filenumber and row_id = :rid', array(':filenumber' => $inspectionid, ':rid' => $rowid));
 
@@ -567,6 +567,11 @@ $val=$form_state['values'];
         
 
         $message = 'DATA  UPDATE  SUCCESSFULLY  . ';
+         }
+         else
+         {
+         	$message = 'DATA  NOT UPDATE    . ';
+         }
 
 	      }
 	      else
@@ -585,7 +590,7 @@ $val=$form_state['values'];
 
 
   $fieldsE = array('row_id' => $autoGENNO, 'annual_inspection_id' =>$inspectionid,'factory_name' =>$col1val, 'factory_address' => $col2val, 'reg_unreg' => $col3val, 'person_prosecuted' => $col4val, 'case_number' => $col5val, 'court_name' => $col6val, 'violation_description' => $col7val
-                         , 'results' => $col8val, 'total_fine' => $col9val, 'is_pending' => 0);
+                         , 'results' => $col8val, 'total_fine' => $col9val, 'is_pending' => 0 ,'is_disabled'=> 0);
 		  
 		   
                       db_insert('labour_factory_statcell_annual_report_t9_10')->fields($fieldsE)->execute();

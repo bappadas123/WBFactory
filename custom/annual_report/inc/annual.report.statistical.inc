@@ -196,7 +196,7 @@ function statistical_annual_report_view($form, &$form_state, $id= NULL) {
 
 $content = '<table width="100%" >				
 					<tr><td colspan="3"></td></tr>				
-					<tr><td colspan="3" align="center" style="font-size:20px;text-transform:uppercase;"><h2>Annual Report  </h2></td></tr>
+					<tr><td colspan="3" align="center" style="font-size:20px;text-transform:uppercase;"><h2>'.$annual_form_type.' Report  </h2></td></tr>
 					<tr><td colspan="3" align="center" style="font-size:20px;text-transform:uppercase;">Name of the Inspector:'.$inspector_name.', Area:'.$area.'</td></tr>
                     <tr><td colspan="3" align="center" style="font-size:20px;text-transform:uppercase;">Report For: '.$annual_form_type.', From Date:'.date('d-m-Y', strtotime($report_from_date)).' , To:'.date('d-m-Y', strtotime($report_to_date)).'</td></tr>
 					<tr><td colspan="3"></td></tr></table>';
@@ -608,14 +608,15 @@ $content = '<table width="100%" >
                                                  $acc_det_section_violation=$squan->acc_det_section_violation;
                                                  $classification_details=$squan->classification_details;
                                                   $acc_det_action_case_no=$squan->acc_det_action_case_no;
-                                                   $remarks=$squan->remarks;
+                                                  $remarks=$squan->remarks;
+                                                  $acc_det_expiry = !(trim($squan->acc_det_expiry)) ?  '' :  date('d-m-Y', strtotime($squan->acc_det_expiry));
                                               $content .= ' <tr>      
                                          <td align="center" valign="middle">'.$accident_type.'</td>
                                          <td align="center" valign="middle">'.$acc_det_name_of_factory.'</td>
                                          <td align="center" valign="middle">'.$acc_det_address_of_factory.'</td>
                                          <td align="center" valign="middle">'.$acc_det_name_of_deceased_injured.'</td>
                                          <td align="center" valign="middle">'.date('d-m-Y', strtotime($squan->acc_det_date_of_accident)).'</td>
-                                         <td align="center" valign="middle">'.date('d-m-Y', strtotime($squan->acc_det_expiry)).'</td>
+                                         <td align="center" valign="middle">'.$acc_det_expiry.'</td>
              
                                          <td align="center" valign="middle">'.$acc_det_section_violation.'</td>
                                          <td align="center" valign="middle">'.$classification_details.'</td>

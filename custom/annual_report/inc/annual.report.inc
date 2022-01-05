@@ -252,7 +252,7 @@ $form['#attached']['js'] = array(drupal_get_path('module', 'annual_report') . '/
 		elseif(trim($data->is_submitted)  && trim($data->status) =='BI' ){
 		     $status_text='Back to inspector';
 
-             $kk=$base_root.$base_path.'admin/annual-report/step1/'.encryption_decryption_fun('encrypt',encryption_decryption_fun('encrypt',$data->annual_inspection_id));
+         $kk=$base_root.$base_path.'admin/annual-report/step1/'.encryption_decryption_fun('encrypt',$data->annual_inspection_id);
 		     $link_create_annual_report=l(t('<font color="DarkGreen"><b>EDIT</b></font></br>'), $kk,array('html'=>TRUE)) ;
 
 		}
@@ -1177,7 +1177,7 @@ $val=$form_state['values'];
             
 
   $fields_t9 = array('row_id' => $row_id_t9, 'annual_inspection_id' =>$annualReportid,'factory_name' =>trim($squan->pros_instituted_name_of_factory), 'factory_address' => trim($squan->pros_instituted_address_of_factory), 'reg_unreg' => trim($squan->pros_instituted_reg_unreg), 'person_prosecuted' => trim($squan->pros_instituted_person_prosecuted), 'case_number' => trim($squan->pros_instituted_case_no), 'court_name' => trim($squan->pros_instituted_name_of_court), 'violation_description' => trim($squan->pros_instituted_violation)
-                         , 'results' =>  'PENDING', 'total_fine' => 0, 'is_pending' => 0);
+                         , 'results' =>  'PENDING', 'total_fine' => 0, 'is_pending' => 0 ,'is_disabled'=> 0);
       
        
                       db_insert('labour_factory_statcell_annual_report_t9_10')->fields($fields_t9)->execute();
@@ -2275,7 +2275,7 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
             
 
   $fields_t9 = array('row_id' => $row_id_t9, 'annual_inspection_id' =>$autoGENNO,'factory_name' =>trim($squan->pros_instituted_name_of_factory), 'factory_address' => trim($squan->pros_instituted_address_of_factory), 'reg_unreg' => trim($squan->pros_instituted_reg_unreg), 'person_prosecuted' => trim($squan->pros_instituted_person_prosecuted), 'case_number' => trim($squan->pros_instituted_case_no), 'court_name' => trim($squan->pros_instituted_name_of_court), 'violation_description' => trim($squan->pros_instituted_violation)
-                         , 'results' =>  'PENDING', 'total_fine' => 0, 'is_pending' => 0);
+                         , 'results' =>  'PENDING', 'total_fine' => 0, 'is_pending' => 0 ,'is_disabled'=> 0);
 		  
 		   
                       db_insert('labour_factory_statcell_annual_report_t9_10')->fields($fields_t9)->execute();

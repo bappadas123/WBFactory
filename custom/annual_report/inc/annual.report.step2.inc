@@ -2350,7 +2350,13 @@ function add_step2_partb_data($form , $form_state) {
       $colB3val=trim($val['colB3val']);  
       $colB4val=trim($val['colB4val']);  
       $colB5val= date('Y-m-d', strtotime(trim($val['colB5val'])))  ;
-      $colB6val= date('Y-m-d', strtotime(trim($val['colB6val']))) ;
+      if(!trim($val['colB6val']))
+      	$colB6val=NULL ;
+      else
+      	$colB6val=date('Y-m-d', strtotime(trim($val['colB6val']))) ;
+
+
+      //$colB6val= !trim($val['colB6val']) ? NULL : date('Y-m-d', strtotime(trim($val['colB6val']))) ;
       $colB7val=trim($val['colB7val']);  
       $colB8val=trim($val['colB8val']);   
       $colB9val=trim($val['colB9val']); 
@@ -2408,6 +2414,8 @@ $query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t
               $remarks=$squan->remarks;
 
              $acc_det_expiry= !(trim($squan->acc_det_expiry)) ? '' : date('d-m-Y', strtotime($squan->acc_det_expiry));
+
+             $acc_det_date_of_accident= !(trim($squan->acc_det_date_of_accident)) ? '' : date('d-m-Y', strtotime($squan->acc_det_date_of_accident));
               
               
 			
@@ -2450,7 +2458,7 @@ $query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t
 			    $output1.= "<td>".$acc_det_name_of_factory."</td>";
                 $output1.= "<td>".$acc_det_address_of_factory."</td>";
                 $output1.= "<td>".$acc_det_name_of_deceased_injured."</td>";
-                $output1.= "<td>".trim($squan->acc_det_date_of_accident) ? date('d-m-Y', strtotime($squan->acc_det_date_of_accident)) : ''."</td>";
+                $output1.= "<td>".$acc_det_date_of_accident ."</td>";
                 $output1.= "<td>".$acc_det_expiry."</td>";
              
                 $output1.= "<td>".$acc_det_section_violation."</td>";

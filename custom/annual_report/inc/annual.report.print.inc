@@ -73,7 +73,7 @@ function annual_report_print($id=NULL) {
 
 $content = '<table width="100%" >				
 					<tr><td colspan="3"></td></tr>				
-					 <tr><td colspan="4" align="center" style="font-size:20px;text-transform:uppercase;"><h4>Annual Report for the year - '.$report_year.'  </h2></td></tr>
+					 <tr><td colspan="4" align="center" style="font-size:20px;text-transform:uppercase;"><h4>'.$annual_form_type.' Report for the year - '.$report_year.'  </h2></td></tr>
             <tr><td colspan="4" align="center" style="font-size:20px;text-transform:uppercase; text-align: left"><h5>Name of the Inspector- '.$inspector_name.'  </h2></td></tr>
                      <tr><td colspan="4" align="center" style="font-size:20px;text-transform:uppercase;"><h5>Area- '.$area.' </h2></td></tr>
                         <tr><td colspan="4" align="center" style="font-size:20px;text-transform:uppercase;"><h5>(To be submitted before 5th January of each year . Attach separate sheet where necessary)   </h2></td></tr>
@@ -485,13 +485,16 @@ $content = '<table width="100%" >
                                                  $classification_details=$squan->classification_details;
                                                   $acc_det_action_case_no=$squan->acc_det_action_case_no;
                                                    $remarks=$squan->remarks;
+
+                                             $acc_det_expiry = !(trim($squan->acc_det_expiry)) ?  '' :  date('d-m-Y', strtotime($squan->acc_det_expiry));
+
                                               $content .= ' <tr>      
                                          <td align="center" valign="middle">'.$accident_type.'</td>
                                          <td align="center" valign="middle">'.$acc_det_name_of_factory.'</td>
                                          <td align="center" valign="middle">'.$acc_det_address_of_factory.'</td>
                                          <td align="center" valign="middle">'.$acc_det_name_of_deceased_injured.'</td>
                                          <td align="center" valign="middle">'.date('d-m-Y', strtotime($squan->acc_det_date_of_accident)).'</td>
-                                         <td align="center" valign="middle">'.date('d-m-Y', strtotime($squan->acc_det_expiry)).'</td>
+                                         <td align="center" valign="middle">'.$acc_det_expiry.'</td>
              
                                          <td align="center" valign="middle">'.$acc_det_section_violation.'</td>
                                          <td align="center" valign="middle">'.$classification_details.'</td>
@@ -1852,6 +1855,7 @@ $content = '<table width="100%" >
                                             <th align="center" valign="middle"  > Sections/Rules violated with a short description</th>
 
                                             <th align="center" valign="middle"  > Result</th>
+                                            <th align="center" valign="middle"  > Case Date </th>
                                              <th align="center" valign="middle"  >Amount of fines</th>
                                             
                                             
@@ -1885,13 +1889,13 @@ $content = '<table width="100%" >
        
            $tab10_pending_case_select_query->InnerJoin('labour_factory_statcell_annual_report', 'b', 'a.annual_inspection_id=b.annual_inspection_id');
            $tab10_pending_case_select_query->condition('b.inspector_id',trim($inspector_id),'=');
-           $tab10_pending_case_select_query->condition('b.report_from_date',trim($previous_from_year_dt),'>=');
-           $tab10_pending_case_select_query->condition('b.report_to_date',trim($previous_to_year_dt),'<=');
+           $tab10_pending_case_select_query->condition('a.case_date',trim($previous_from_year_dt),'>=');
+           $tab10_pending_case_select_query->condition('a.case_date',trim($previous_to_year_dt),'<=');
            $tab10_pending_case_select_query->condition('a.results','PENDING','=');
            $tab10_pending_case_select_query->condition('a.is_disabled', 0 ,'=');
 
             $tab10_pending_case_select_query->fields('a',array('row_id','factory_name','factory_address',
-        'reg_unreg','person_prosecuted','case_number','court_name','violation_description','results','total_fine'));
+        'reg_unreg','person_prosecuted','case_number','court_name','violation_description','results','total_fine','case_date'));
 
              $tab10_pending_case_select_query->fields('b',array('annual_inspection_id'));
 
@@ -1916,6 +1920,7 @@ $content = '<table width="100%" >
                                   $violation_description=$squan->violation_description; 
                                   $results=$squan->results; 
                                   $total_fine=$squan->total_fine; 
+                                   $case_date = !(trim($squan->case_date)) ?  '' :  date('d-m-Y', strtotime($squan->case_date));
 
                                  $content .= '<tr>
 
@@ -1928,6 +1933,7 @@ $content = '<table width="100%" >
                                    <td align="center" valign="middle"   >'.$court_name.'</td>
                                    <td align="center" valign="middle"   >'.$violation_description.'</td>
                                    <td align="center" valign="middle"   >'.$results.'</td>
+                                    <td align="center" valign="middle"   >'.$case_date.'</td>
                                    <td align="center" valign="middle"   >'.$total_fine.'</td>
                                    
 			

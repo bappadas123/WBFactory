@@ -1857,6 +1857,7 @@ $content = '<table width="100%" >
                                             <th align="center" valign="middle"  > Sections/Rules <br>violated with a short description</th>
 
                                             <th align="center" valign="middle"  > Result</th>
+                                             <th align="center" valign="middle"  > Case Date </th>
                                              <th align="center" valign="middle"  >Amount of fines</th>
                                             
                                             
@@ -1882,13 +1883,13 @@ $content = '<table width="100%" >
        
            $tab10_pending_case_select_query->InnerJoin('labour_factory_statcell_annual_report', 'b', 'a.annual_inspection_id=b.annual_inspection_id');
            $tab10_pending_case_select_query->condition('b.inspector_id',trim($inspector_id),'=');
-           $tab10_pending_case_select_query->condition('b.report_from_date',trim($previous_from_year_dt),'>=');
-           $tab10_pending_case_select_query->condition('b.report_to_date',trim($previous_to_year_dt),'<=');
+           $tab10_pending_case_select_query->condition('a.case_date',trim($previous_from_year_dt),'>=');
+           $tab10_pending_case_select_query->condition('a.case_date',trim($previous_to_year_dt),'<=');
            $tab10_pending_case_select_query->condition('a.results','PENDING','=');
            $tab10_pending_case_select_query->condition('a.is_disabled', 0 ,'=');
 
             $tab10_pending_case_select_query->fields('a',array('row_id','factory_name','factory_address',
-        'reg_unreg','person_prosecuted','case_number','court_name','violation_description','results','total_fine'));
+        'reg_unreg','person_prosecuted','case_number','court_name','violation_description','results','total_fine','case_date'));
 
              $tab10_pending_case_select_query->fields('b',array('annual_inspection_id'));
 
@@ -1914,6 +1915,7 @@ $content = '<table width="100%" >
                                   $violation_description=$squan->violation_description; 
                                   $results=$squan->results; 
                                   $total_fine=$squan->total_fine; 
+                                   $case_date = !(trim($squan->case_date)) ?  '' :  date('d-m-Y', strtotime($squan->case_date));
 
                                  $content .= '<tr>
 
@@ -1925,7 +1927,8 @@ $content = '<table width="100%" >
                                    <td align="center" valign="middle"   >'.$case_number.'</td>
                                    <td align="center" valign="middle"   >'.$court_name.'</td>
                                    <td align="center" valign="middle"   >'.$violation_description.'</td>
-                                   <td align="center" valign="middle"   >'.$results.'</td>
+                                    <td align="center" valign="middle"   >'.$results.'</td>
+                                   <td align="center" valign="middle"   >'.$case_date.'</td>
                                    <td align="center" valign="middle"   >'.$total_fine.'</td>
                                    
 			

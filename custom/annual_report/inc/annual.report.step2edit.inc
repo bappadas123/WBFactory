@@ -365,7 +365,13 @@ function edit_step2_partb($form , $form_state) {
       $colB3val=trim($val['colB3val']);  
       $colB4val=trim($val['colB4val']);  
       $colB5val=trim($val['colB5val']);   
-      $colB6val=trim($val['colB6val']);  
+      //$colB6val=trim($val['colB6val']); 
+
+     if(!trim($val['colB6val']))
+        $colB6val=NULL ;
+      else
+        $colB6val=date('Y-m-d', strtotime(trim($val['colB6val']))) ;
+
       $colB7val=trim($val['colB7val']);  
       $colB8val=trim($val['colB8val']);   
       $colB9val=trim($val['colB9val']); 

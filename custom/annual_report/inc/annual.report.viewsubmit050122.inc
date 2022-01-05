@@ -1,213 +1,37 @@
 <?php
-
-function deputy_director_annual_report_list( $form, &$form_state   ){
-	
-	
-	 global $base_root, $base_path , $user;
-	 
-	
-	 
-	   $uid	=	$user->uid; 
-
-//$form['#attached']['js'] = array(drupal_get_path('module', 'annual_report') . '/js/annualreport.js',);	
-   
-    
-		 //print  "ssssssssssssss".$uid;
-		// exit;
-	
-	   $form['annulreportListfield'] = array(
-          '#title' => t('<font color="DarkGreen"><b>  Annual Report List  </b></font>'),
-          '#type' => 'fieldset',
-          '#collapsed' => FALSE
-          ); 
-		 
-	 $rows = array();
-    $header = array();
-
-    	$header = array(
-          array('data'=> 'SL.NO', 'class' => array('')),
-		  array('data' => ' YEAR',   'class' => array('')),
-		  array('data'=> 'From - To', 'class' => array('')),
-          array('data' => 'Area', 'class' => array('')),
-          array('data' => 'Status', 'class' => array('')),
-           array('data' => 'Remarks', 'class' => array('')),
-          array('data' => 'View', 'class' => array('')),
-		  array('data' => 'PRINT', 'class' => array('')),
-		 
-		 
-		 
-		 
-	);	
-	
-	//$query_oldinsid=db_query('select old_uid from tm_users where fa_uid = :fuid  ', array(':fuid' => trim($uid)));
-
-    //$result_oldinsId=$query_oldinsid->fetchAssoc();
-   // $old_uid = $result_oldinsId['old_uid']; 
-    //print $uid.'=='.$old_uid;
-    //if(!$old_uid) $old_uid='NULL';
-
-    	//print $uid;
-    	//exit;
-
-	$sort = 'DESC';
-	$order = 'annual_inspection_id';
-	
-
-
-	$annual_list_query = db_select('labour_factory_statcell_annual_report', 'p');
-	$annual_list_query->fields('p',array('annual_inspection_id','inspector_id','report_from_date','report_to_date',
-	'report_year','annual_form_type','status','submit_date','area','e_note','create_date','create_by','is_submitted','remarks','accept_by'));
-	$annual_list_query->condition('p.accept_by',trim($uid),'=');
-	$annual_list_query->orderBy($order, $sort);
-	$annual_list_query = $annual_list_query->extend('TableSort')->extend('PagerDefault')->limit(15);
-	
-  //print $annual_list_query;
-
-
-	
-	$annual_list_query_result = $annual_list_query->execute();
-	
-	//print $ins_list_query;
-	$i=0;
-	foreach($annual_list_query_result as $data){
-		$i++;
-		$link_create_annual_report='';
-		$status_text='';
-		$link_for_annual_report_view='';
-
-           if(trim($data->is_submitted)  && trim($data->status) =='FD' ){
-
-           	$query_namedd=db_query('select fname from fa_employee_details where uid = :fuid  ', array(':fuid' => trim($data->accept_by)));
-
-          $result_deputy_dir=$query_namedd->fetchAssoc();
-          $name_deputy_director = $result_deputy_dir['fname'];
-		   
-            $status_text='Forward to Deputy Director ('. $name_deputy_director.')';
-
-		    $pp=$base_root.$base_path.'admin/annual-report-deputy-director-view/'.encryption_decryption_fun('encrypt',$data->annual_inspection_id);
-		   $link_for_annual_report_view=l(t('<font color="DarkGreen"><b>View</b></font></br>'), $pp, array('attributes' => array('target'=>'_blank'), 'html'=>TRUE)) ;
-
-		    $kk=$base_root.$base_path.'admin/annual-report-print/'.encryption_decryption_fun('encrypt',$data->annual_inspection_id);
-		   $link_create_annual_report=l(t('<font color="DarkGreen"><b>Print</b></font></br>'), $kk, array('attributes' => array('target'=>'_blank'), 'html'=>TRUE)) ;
-
-		}
-		elseif(trim($data->is_submitted)  && trim($data->status) =='BI' ){
-		     $status_text='Back to inspector';
-
-           $pp=$base_root.$base_path.'admin/annual-report-deputy-director-view/'.encryption_decryption_fun('encrypt',$data->annual_inspection_id);
-		   $link_for_annual_report_view=l(t('<font color="DarkGreen"><b>View</b></font></br>'), $pp, array('attributes' => array('target'=>'_blank'), 'html'=>TRUE)) ;
-
-
-		}
-		elseif(trim($data->is_submitted)  && trim($data->status) =='FS' ){
-		     $status_text='Forward to Statistical Unit';
-
-
-		    $pp=$base_root.$base_path.'admin/annual-report-deputy-director-view/'.encryption_decryption_fun('encrypt',$data->annual_inspection_id);
-		   $link_for_annual_report_view=l(t('<font color="DarkGreen"><b>View</b></font></br>'), $pp, array('attributes' => array('target'=>'_blank'), 'html'=>TRUE)) ;
-
-		    $kk=$base_root.$base_path.'admin/annual-report-print/'.encryption_decryption_fun('encrypt',$data->annual_inspection_id);
-		   $link_create_annual_report=l(t('<font color="DarkGreen"><b>Print</b></font></br>'), $kk, array('attributes' => array('target'=>'_blank'), 'html'=>TRUE)) ;
-
-		}
-		
-
-
-	$rows[] = array(
-      				
-					$i,
-					
-					$data->report_year,
-					
-					date('d/m/Y', strtotime($data->report_from_date)).'-'.date('d/m/Y', strtotime($data->report_to_date)),
-					
-					$data->area,
-					$status_text,
-					$data->remarks,
-					$link_for_annual_report_view,
-					$link_create_annual_report,
-					
-					
-					
-				);
-
-
-}
-				$variables = array(
-	  			  'attributes' 	=> array('class' => array('table no-margin remove-odd-even# custom-table-view-dashboard')),
-	  			'header' 			=> $header,
-	  			'rows'				=> $rows,
-		);
-		$output = theme('table', $variables).theme("pager");
-	     $form['annulreportListfield']['addshowprin'] = array(
-					'#markup'=>$output,
-					);
-	
-		
-
-	   
-	
-	   
-       return $form; 
-  }
-
-
-function deputy_director_annual_report_view($form, &$form_state, $id= NULL) {
+function annual_report_view($form, &$form_state, $id= NULL) {
 	 global $base_root, $base_path;
 
 	// require_once $_SERVER['DOCUMENT_ROOT'].$base_path.'sites/all/modules/contrib/pdf_using_mpdf/mpdf/mpdf.php';
 	 
      $filenumber= encryption_decryption_fun('decrypt', trim($id));
     // $id=5;
-	// $filenumber=  trim($id);
-    // print "aaaaaaaaaaaaaaaaaa".$filenumber;
+	 //$filenumber=  trim($id);
+     //print "aaaaaaaaaaaaaaaaaa".$filenumber;
      //exit;
 
 	
 		
 		$content = '<style type="text/css">
-					table, td, th {
-							font-size:12px;
-							font-family:Times New Roman;
-							height:15px;
-							color:#000;
-							margin-top:10px;
-							background:#fff;
-					}
-					th {
-						background-color: #008BD1;
-						color: white;
-					}
-					td:hover {
-						background-color:#d4e3e5;
-					}
-					h1 {
-						font-size:11px;
-						font-weight:normal;
-					}
-					h2,h3,h4 {
-						font-size:12px;
-					}
-					.data{ text-transform: uppercase;font-weight:bold;}
-					
-			</style>';
+          
+          .data{ text-transform: uppercase;font-weight:bold;}
+          
+      </style>';
       $mr_istquery = db_select('labour_factory_statcell_annual_report', 'a');
        
         $mr_istquery->condition('a.annual_inspection_id',trim($filenumber),'=');
       
     
-        $mr_istquery->fields('a',array('area','inspector_id','annual_form_type','report_from_date','report_to_date','status','remarks','report_year'));
+        $mr_istquery->fields('a',array('area','inspector_id','annual_form_type','report_from_date','report_to_date','report_year'));
         $mr_istquery_result = $mr_istquery->execute(); 
     
        $result_mrist=$mr_istquery_result->fetchAssoc();
        $area=$result_mrist['area'];
-       $status=$result_mrist['status'];
-       $remarks=$result_mrist['remarks'];
        $inspector_id=$result_mrist['inspector_id'];
        //$inspector_name=get_name($inspector_id);
       $annual_form_type=$result_mrist['annual_form_type'];
       $report_from_date=$result_mrist['report_from_date'];
-      $report_to_date=$result_mrist['report_to_date'];
+       $report_to_date=$result_mrist['report_to_date'];
       $thisYear=$result_mrist['report_year'];
 
     $query_uname=db_query('select fname from fa_employee_details where uid = :fuid  ', array(':fuid' => trim($inspector_id)));
@@ -227,19 +51,19 @@ function deputy_director_annual_report_view($form, &$form_state, $id= NULL) {
 
 $content = '<table width="100%" >				
 					<tr><td colspan="3"></td></tr>				
-					<tr><td colspan="3" align="center" style="font-size:20px;text-transform:uppercase;"><h2>'.$annual_form_type.' Report  </h2></td></tr>
-					<tr><td colspan="3" align="center" style="font-size:20px;text-transform:uppercase;">Name of the Inspector:'.$inspector_name.', Area:'.$area.'</td></tr>
-                    <tr><td colspan="3" align="center" style="font-size:20px;text-transform:uppercase;">Report For: '.$annual_form_type.', From Date:'.date('d-m-Y', strtotime($report_from_date)).' , To:'.date('d-m-Y', strtotime($report_to_date)).'</td></tr>
+					<tr><td colspan="3" align="center" style="font-size:20px;text-transform:uppercase;"><h4><b>Annual Report</b></h4></td></tr>
+					<tr><td colspan="3" align="center" style="font-size:16px;text-transform:uppercase;"><span style="color: #045541;"><b>Name of the Inspector: '.$inspector_name.', Area:'.$area.'</b></span></td></tr>
+                    <tr><td colspan="3" align="center" style="font-size:16px;text-transform:uppercase;"><span style="color: #045541;"><b>Report For: '.$annual_form_type.', From Date:'.date('d-m-Y', strtotime($report_from_date)).' , To:'.date('d-m-Y', strtotime($report_to_date)).'</b></span></td></tr>
 					<tr><td colspan="3"></td></tr></table>';
 
 	
 
 	$content .= ' 
-    <div><b>1.INSPECTION ETC. </b></div>
+    <div class="table-panel-header"><b>1.INSPECTION ETC. </b></div>
 	<div><b>(a). No. of units visited</b> </div>
-
-	<table width="100%" border="1"   >
-                                                
+	<div class="table-responsive">
+	<table class="table table-striped table-bordered table-responsive admin-custom-table" >
+                                                <thead>
                                                     <tr>
                                                         <th rowspan="4" align="center" valign="middle" >Group</th>
                                                         <th colspan="8" align="center" valign="middle">No. of units visited</th>
@@ -254,7 +78,7 @@ $content = '<table width="100%" >
                                                         <th rowspan="3" align="center" valign="middle" >Total</th>
                                                       
                                                     </tr>
-
+												
                                                     <tr>
                                                         <th colspan="2" align="center" valign="middle" >2(m)</th>
                                                         <th rowspan="2" align="center" valign="middle">85</th>
@@ -268,7 +92,7 @@ $content = '<table width="100%" >
                                                         <th  align="center" valign="middle" >(i)</th>
                                                         <th  align="center" valign="middle">(ii)</th>
                                                       
-                                                    </tr>';
+                                                    </tr></thead>';
 
         $step1_select_query = db_select('labour_factory_statcell_annual_report_t1_a_b', 'a');
        
@@ -326,11 +150,12 @@ $content = '<table width="100%" >
                                                       
                                                     </tr>
                                                    
-                                                    </table>
+                                                    </table></div>
 
-                                                    <div><b>(b). No. of visits paid to </b></div>
-                                                    <table width="100%" border="1"   >
-                                                
+                                                    <div class="table-panel-header"><b>(b). No. of visits paid to </b></div>
+													<div class="table-responsive">
+                                                    <table class="table table-striped table-bordered table-responsive admin-custom-table">
+                                                	<thead>
                                                     <tr>
                                                         <th rowspan="4" align="center" valign="middle" >Group</th>
                                                         <th colspan="8" align="center" valign="middle">No. of visits paid to</th>
@@ -359,7 +184,7 @@ $content = '<table width="100%" >
                                                         <th  align="center" valign="middle" >(i)</th>
                                                         <th  align="center" valign="middle">(ii)</th>
                                                       
-                                                    </tr>
+                                                    </tr></thead>
 
                                                      <tr>
                                                         <td  align="center" valign="middle" >G</td>
@@ -401,10 +226,10 @@ $content = '<table width="100%" >
                                                       
                                                     </tr>
                                                    
-                                                    </table>
-                                                    <div><b>C.Frequency of Visit </b></div>
-                                                    <table width="100%" border="1"   >
-                                                
+                                                    </table></div>
+                                                    <div class="table-panel-header"><b>C.Frequency of Visit </b></div>
+                                                    <table class="table table-striped table-bordered table-responsive admin-custom-table">
+                                                	<thead>
                                                     <tr>
                                                         <th rowspan="2" align="center" valign="middle" >Frequency</th>
                                                         <th colspan="2" align="center" valign="middle">Factories other than defence installations</th>
@@ -421,7 +246,7 @@ $content = '<table width="100%" >
                                                         <th  align="center" valign="middle">Regd...</th>
                                                         <th  align="center" valign="middle">Un-registered (Amenable & Non-Amenable).</th>
                                                       
-                                                    </tr>';
+                                                    </tr></thead>';
 
                                                      $query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t1_c where  annual_inspection_id = :anid', array(':anid' => trim($filenumber) ));
                                                       foreach($query_tab_1_c as $squan) {
@@ -436,7 +261,13 @@ $content = '<table width="100%" >
                                                         elseif($frequency==3)
                                                          $frequency='thrice';
                                                         elseif($frequency==4)
-                                                         $frequency='More than three times';
+                                                         $frequency='four times'; 
+                                                       elseif($frequency==5)
+                                                         $frequency='five times';
+                                                     elseif($frequency==6)
+                                                         $frequency='six times';
+                                                     elseif($frequency==7)
+                                                         $frequency='More than six times';
 
                                                       $not_defence_reg=$squan->not_defence_reg;
                                                       $not_defence_unreg=$squan->not_defence_unreg;
@@ -460,10 +291,11 @@ $content = '<table width="100%" >
                                                       
                                                     </tr>';
                                                 }
-                                                 $content .= '</table>
-                                                 <div><b>D.No. of Visits paid. </b></div>
-                                                  <table width="100%" border="1"   >
-                                                
+                                                 $content .= '</table></div>
+                                                 <div class="table-panel-header"><b>D.No. of Visits paid. </b></div>
+												 <div class="table-responsive">
+                                                  <table  class="table table-striped table-bordered table-responsive admin-custom-table">
+                                                	<thead>
                                                     <tr>
                                                         <th colspan="5" align="center" valign="middle" >Exclusive Under</th>
                                                         <th rowspan="2" align="center" valign="middle">During Rest Interval</th>
@@ -482,7 +314,7 @@ $content = '<table width="100%" >
                                                         <th  align="center" valign="middle">C.I.(P&R)A</th>
                                                       
                                                       
-                                                    </tr>';
+                                                    </tr></thead>';
                                                     $step1_select_B_query = db_select('labour_factory_statcell_annual_report_t1_d', 'b');
        
                                                     $step1_select_B_query->condition('b.annual_inspection_id',trim($filenumber),'=');
@@ -508,12 +340,12 @@ $content = '<table width="100%" >
                                                     </tr>
 
                                                     <tr>
-                                                        <th  colspan="2" align="center" valign="middle" >For collections of statistics.</th>
-                                                        <th  colspan="2" align="center" valign="middle">For enquiry into complaints</th>
-                                                        <th  colspan="2" align="center" valign="middle">To court for prosecution cases</th>
-                                                        <th  colspan="2" align="center" valign="middle">To closed factories</th>
-                                                        <th  align="center" valign="middle">Others</th>
-                                                        <th   align="center" valign="middle">Total</th>
+                                                        <th  colspan="2" valign="middle" style="text-align:center;">For collections of statistics.</th>
+                                                        <th  colspan="2" align="center" style="text-align:center;">For enquiry into complaints</th>
+                                                        <th  colspan="2" align="center" style="text-align:center;">To court for prosecution cases</th>
+                                                        <th  colspan="2" align="center" style="text-align:center;">To closed factories</th>
+                                                        <th  align="center" style="text-align:center;">Others</th>
+                                                        <th   align="center" style="text-align:center;">Total</th>
                                                       
                                                     </tr>
                                                      <tr>
@@ -528,10 +360,11 @@ $content = '<table width="100%" >
                                                         
                                                       
                                                     </tr>
-                                                </table>
-                                                 <div><b>2(A) Accident and Dangerous occurrances </b></div>
-                                                 <table width="100%" border="1"   >
-                                                
+                                                </table></div>
+                                                 <div class="table-panel-header"><b>2(A) Accident and Dangerous occurrances </b></div>
+                                                 <div class="table-responsive">
+  													<table class="table table-striped table-bordered table-responsive admin-custom-table" >
+                                                	`<thead>
                                                     <tr>
                                                         <th colspan="2" align="center" valign="middle" >Accidents</th>
                                                         <th colspan="6" align="center" valign="middle">Dangerous Occurrenccs</th>
@@ -551,7 +384,7 @@ $content = '<table width="100%" >
                                                         
                                                         
                                                       
-                                                    </tr>';
+                                                    </tr></thead>';
                                                     $step2_select_query = db_select('labour_factory_statcell_annual_report_t2_a', 'a');
        
                                                     $step2_select_query->condition('a.annual_inspection_id',trim($filenumber),'=');
@@ -603,10 +436,12 @@ $content = '<table width="100%" >
                                                         <td   align="center" valign="middle"> '.$result_step2['ado_no_visit_paid_others'].'</td>
                                                     </tr>
 
-                                                </table>
-                                                <div><b>2(B) Details of Accidents(Fatal/Serious) </b></div>
+                                                </table></div>
+                                                <div class="table-panel-header"><b>2(B) Details of Accidents(Fatal/Serious) </b></div>
 
-                                             <table width="100%" border="1">
+                                             <div class="table-responsive">
+  												<table  class="table table-striped table-bordered table-responsive admin-custom-table" >
+                                                  <thead>
                                               <tr > <th align="center" valign="middle" >Fatal / Serious</th>
       
                                               <th align="center" valign="middle" > Name Of Factory(R/UR)</th>
@@ -623,7 +458,7 @@ $content = '<table width="100%" >
                                               <th align="center" valign="middle" >Legal Action Taken(Case No.)</th>
                                               <th align="center" valign="middle">Remarks</th>
                                               
-                                               </tr>';
+                                               </tr></thead>';
                                              $query_tab_2_b=db_query('select  *  from labour_factory_statcell_annual_report_t2_b a , labour_factory_accident_classification_mst b  where CAST(a.classification_code AS INTEGER)=b.accident_classification_id  and  annual_inspection_id = :anid', array(':anid' => trim($filenumber) ));
 
                                                foreach($query_tab_2_b as $squan) {
@@ -641,7 +476,7 @@ $content = '<table width="100%" >
                                                   $acc_det_action_case_no=$squan->acc_det_action_case_no;
                                                    $remarks=$squan->remarks;
 
-                                        $acc_det_expiry = !(trim($squan->acc_det_expiry)) ?  '' :  date('d-m-Y', strtotime($squan->acc_det_expiry));
+                                                $ade=  !trim($squan->acc_det_expiry) ? ' ' : date('d-m-Y', strtotime($squan->acc_det_expiry));
 
 
                                               $content .= ' <tr>      
@@ -650,7 +485,7 @@ $content = '<table width="100%" >
                                          <td align="center" valign="middle">'.$acc_det_address_of_factory.'</td>
                                          <td align="center" valign="middle">'.$acc_det_name_of_deceased_injured.'</td>
                                          <td align="center" valign="middle">'.date('d-m-Y', strtotime($squan->acc_det_date_of_accident)).'</td>
-                                         <td align="center" valign="middle">'. $acc_det_expiry.'</td>
+                                         <td align="center" valign="middle">'.$ade.'</td>
              
                                          <td align="center" valign="middle">'.$acc_det_section_violation.'</td>
                                          <td align="center" valign="middle">'.$classification_details.'</td>
@@ -663,10 +498,11 @@ $content = '<table width="100%" >
                                        </tr>';
                                           }
 
-                                        $content .= '   </table>
-                                         <div><b> 2(C) Details of Dangerous Occurrences </b></div>
+                                        $content .= '   </table></div>
+                                         <div class="table-panel-header"><b> 2(C) Details of Dangerous Occurrences </b></div>
 
-                                          <table width="100%" border="1">
+                                          <table   class="table table-striped table-bordered table-responsive admin-custom-table">
+										  <thead>
                                               <tr> 
                                              
       
@@ -684,7 +520,7 @@ $content = '<table width="100%" >
                                               
                                               
                                                
-                                                 </tr>';
+                                                 </tr></thead>';
 
                                              $query_tab_2_c=db_query('select  *  from labour_factory_statcell_annual_report_t2_c where  annual_inspection_id = :anid', array(':anid' => trim($filenumber) ));
 
@@ -695,6 +531,7 @@ $content = '<table width="100%" >
                                             $factory_name=$squan->factory_name;
                                             $factory_address=$squan->factory_address;
                                             $date_time=$squan->date_time;
+                                            $dho= !trim($date_time) ? ' ' : date('d-m-Y', strtotime($date_time));
                                             $desc_incident=$squan->desc_incident;
 
               
@@ -706,7 +543,7 @@ $content = '<table width="100%" >
                                               <td align="center" valign="middle">'.$factory_name.'</td>
                                               <td align="center" valign="middle">'.$factory_address.'</td>
                 
-                                             <td align="center" valign="middle">'.date('d-m-Y', strtotime($date_time)).'</td>
+                                             <td align="center" valign="middle">'.$dho.'</td>
                
              
                                            <td align="center" valign="middle">'.$desc_incident.'</td>
@@ -722,11 +559,12 @@ $content = '<table width="100%" >
 
                                            $content .= ' </table>
 
-                                          <div><b> 2(D) Number of cases of poisoning and diseases </b></div>
+                                          <div class="table-panel-header"><b> 2(D) Number of cases of poisoning and diseases </b></div>
 
 
-                                          <table width="100%" border="1">
-                                              <tr> 
+                                          <div class="table-responsive">
+  												<table  class="table table-striped table-bordered table-responsive admin-custom-table" >
+                                                  <thead>
                                              
       
                                               <th align="center" valign="middle" > Name of the Factory (R/UR)</th>
@@ -738,7 +576,7 @@ $content = '<table width="100%" >
                                               
                                               
                                                
-                                            </tr>';
+                                            </tr></thead>';
 
 
                                              $step2_tab2_d_query = db_select('labour_factory_statcell_annual_report_t2_d', 'd');
@@ -760,6 +598,7 @@ $content = '<table width="100%" >
                                              $content .= ' <tr>   
                                               <td align="center" valign="middle" rowspan="6">'.$result_step2_tab2_d['factory_name'].'</td>
                                               <td align="center" valign="middle" rowspan="6">'.$result_step2_tab2_d['factory_address'].'</td> 
+											  <thead>
                                               <th align="center" valign="middle"  >Lead Poisoning</th> 
                                               <th align="center" valign="middle"  >Lead Thetraethyl Poisoning</th> 
                                               <th align="center" valign="middle"  >Phosphorous Poisoning</th> 
@@ -771,7 +610,7 @@ $content = '<table width="100%" >
                                               <th align="center" valign="middle"  >Benzene Poisoning</th> 
                                               <th align="center" valign="middle"  >Chrome Ulceration</th> 
 
-                                              </tr>
+                                              </tr></thead>
 
                                               <tr>   
                                               
@@ -788,7 +627,7 @@ $content = '<table width="100%" >
 
                                               </tr>
                                               <tr>   
-                                              
+                                              <thead>
                                               <th align="center" valign="middle"  >Anthrax</th> 
                                               <th align="center" valign="middle"  >Silicosis</th> 
                                               <th align="center" valign="middle"  >Poisoning by Halogens or their derivatives</th> 
@@ -800,7 +639,7 @@ $content = '<table width="100%" >
                                               <th align="center" valign="middle"  >Byssinosis</th> 
                                               <th align="center" valign="middle"  >Asbestosis</th> 
 
-                                              </tr>
+                                              </tr></thead>
                                                <tr>   
                                               
                                               <td align="center" valign="center"  >'.$result_step2_tab2_d['anthrax'].'</td> 
@@ -815,7 +654,8 @@ $content = '<table width="100%" >
                                               <td align="center" valign="middle"  >'.$result_step2_tab2_d['asbestosis_no'].'</td> 
 
                                               </tr>
-
+												
+												<thead>
                                                <tr>   
                                               
                                               <th align="center" valign="middle"  >Occupational or contact dermatitis</th> 
@@ -829,7 +669,7 @@ $content = '<table width="100%" >
                                               <th align="center" valign="middle"  >Toxic nephritis</th> 
                                               <th align="center" valign="middle"  >Total</th> 
 
-                                              </tr>
+                                              </tr></thead>
                                               <tr>   
                                               
                                               <td align="center" valign="center"  >'.$result_step2_tab2_d['contact_dermatitis_no'].'</td> 
@@ -844,11 +684,12 @@ $content = '<table width="100%" >
                                               <td align="center" valign="middle"  >'.$result_step2_tab2_d['total'].'</td> 
 
                                               </tr>
-                                             </table>
+                                             </table></div>
                                           
-                                              <div><b> 3. Chemical Factory </b></div>
-                                              <table width="100%" border="1">
-                                              <tr> 
+                                              <div class="table-panel-header"><b> 3. Chemical Factory </b></div>
+                                               <div class="table-responsive">
+  												<table  class="table table-striped table-bordered table-responsive admin-custom-table" >
+                                                  <thead>
                                              
       
                                             
@@ -868,7 +709,7 @@ $content = '<table width="100%" >
                                              <th align="center" valign="middle">Action</th>
                                              <th align="center" valign="middle">Maximum storage of hazardous substances</th>
         
-                                             </tr>';
+                                             </tr></thead>';
 
                                               $query_tab_3=db_query('select  *  from labour_factory_statcell_annual_report_t3 where  annual_inspection_id = :anid', array(':anid' => trim($filenumber) ));
                                              $i=0;
@@ -909,10 +750,12 @@ $content = '<table width="100%" >
 
                                                
                                               
-                                            $content .= ' </table> 
+                                            $content .= ' </table> </div>
 
-                                            <div><b> 4. Details of order issued under various provisions of the Acts and Rules. </b></div>
-                                              <table width="100%" border="1">
+                                            <div class="table-panel-header"><b> 4. Details of order issued under various provisions of the Acts and Rules. </b></div>
+                                              <div class="table-responsive">
+  											<table  class="table table-striped table-bordered table-responsive admin-custom-table" >
+											<thead>
                                               <tr> 
                                              
       
@@ -929,7 +772,7 @@ $content = '<table width="100%" >
                                               <th align="center" valign="middle">Brief description including result</th>
                                               
         
-                                             </tr>';
+                                             </tr></thead>';
 
                                              $query_tab_4=db_query('select  *  from labour_factory_statcell_annual_report_t4 where  annual_inspection_id = :anid', array(':anid' => trim($filenumber) ));
 
@@ -956,12 +799,14 @@ $content = '<table width="100%" >
               
                                                
                                            }
-                                           $content .= ' </table> 
+                                           $content .= ' </table> </div>
 
 
-                                          <div><b> 5.A. Welfare facilities </b></div>
+                                          <div class="table-panel-header"><b> 5.A. Welfare facilities </b></div>
 
-                                           <table width="100%" border="1">
+                                           <div class="table-responsive">
+  												<table  class="table table-striped table-bordered table-responsive admin-custom-table" >
+                                                  <thead>
                                               <tr> 
                                              
       
@@ -999,7 +844,7 @@ $content = '<table width="100%" >
                                              <th align="center" valign="middle" > Canteen</th>
                                              <th align="center" valign="middle" >Rest Room/Shelter/Lunch Room</th>
                                              
-                                           </tr>';
+                                           </tr></thead>';
                                              
                                               
         
@@ -1034,14 +879,13 @@ $content = '<table width="100%" >
                                               <td align="center" valign="middle"  >'.$result_step6_A['factory_providing_1st_rest_shelter_lunch'].'</td> 
 
                                               </tr>
-                                             </table> 
+                                             </table></div> 
 
-                                            <div><b> 5.B. Additional health and Welfare facilities </b></div>
+                                            <div class="table-panel-header"><b> 5.B. Additional health and Welfare facilities </b></div>
 
-                                           <table width="100%" border="1">
-                                              
-                                             
-      
+                                           <div class="table-responsive">
+  												<table  class="table table-striped table-bordered table-responsive admin-custom-table" >
+                                                  <thead>
                                             <tr> 
                                              <th align="center" valign="middle" rowspan="2"  >Ambulance</th>
       
@@ -1057,7 +901,7 @@ $content = '<table width="100%" >
                                              <th align="center" valign="middle" > Part time</th>
                                              <th align="center" valign="middle" >Consultant (Specialist)</th>
                                              
-                                             </tr>';
+                                             </tr></thead>';
 
                                              $step5_select_B_query = db_select('labour_factory_statcell_annual_report_t5_b', 'b');
        
@@ -1105,12 +949,11 @@ $content = '<table width="100%" >
                                               </tr>
 
                                     
-                                         </table> 
-                                        <div><b> 5.C Clinical and laboratory examinations of workers during the year </b></div>
-                                         <table width="100%" border="1">
-                                              
-                                             
-      
+                                         </table> </div>
+                                        <div class="table-panel-header"><b> 5.C Clinical and laboratory examinations of workers during the year </b></div>
+                                         <div class="table-responsive">
+  										<table  class="table table-striped table-bordered table-responsive admin-custom-table" >
+                                         <thead>
                                             <tr> 
                                              <th align="center" valign="middle"   >Nature of Laboratory examinations</th>
       
@@ -1120,7 +963,7 @@ $content = '<table width="100%" >
 
                                              <tr> 
                                              <th align="left"  colspan="2"   >1.Pathological</th>
-                                            </tr>
+                                            </tr></thead>
                                             
                                              <tr> 
                                              <td align="left" valign="middle"   >(i) Blood</td>
@@ -1205,12 +1048,11 @@ $content = '<table width="100%" >
                                              
                                              </tr>
 
-                                          </table> 
-                                          <div><b> 6.A. Welfare Officer and Safety Officer </b></div>
-                                          <table width="100%" border="1">
-                                              
-                                             
-      
+                                          </table></div> 
+                                          <div class="table-panel-header"><b> 6.A. Welfare Officer and Safety Officer </b></div>
+                                          <div class="table-responsive">
+  											<table  class="table table-striped table-bordered table-responsive admin-custom-table" >
+                                              <thead>
                                             <tr> 
                                              <th align="center" valign="middle" rowspan="2"   >Name of the Factory</th>
       
@@ -1226,7 +1068,7 @@ $content = '<table width="100%" >
                                              <th align="center" valign="middle"  > Welfare Officer</th>
                                              <th align="center" valign="middle"  > Safety Officer</th>
                                              
-                                             </tr>';
+                                             </tr></thead>';
                                            $query_tab_6_a=db_query('select  *  from labour_factory_statcell_annual_report_t6_a where  annual_inspection_id = :anid', array(':anid' => trim($filenumber) ));
                                            foreach($query_tab_6_a as $squan) {
                                            $i++;
@@ -1251,26 +1093,25 @@ $content = '<table width="100%" >
                                              </tr>';
 
                                          }
-                                         $content .= ' </table>
-                                        <div><b> 6(B) Details of Safety policy and safety committee </b></div>
-                                          <table width="100%" border="1">
-                                              
-                                             
-      
+                                         $content .= ' </table></div>
+                                        <div class="table-panel-header"><b> 6(B) Details of Safety policy and safety committee </b></div>
+                                           <div class="table-responsive">
+  											<table  class="table table-striped table-bordered table-responsive admin-custom-table" >
+                                             <thead>
                                             <tr> 
-                                             <th align="center" valign="middle"    >Name of the factory having safety committees.</th>
+                                             <th align="center" valign="middle"    >Name of the factory<br> having safety committees.</th>
       
-                                             <th align="center" valign="middle"  > Address of the factory</th>
-                                             <th align="center" valign="middle"  > How the Committee has been set up?( By nomination/election).</th>
+                                             <th align="center" valign="middle"  > Address of <br>the factory</th>
+                                             <th align="center" valign="middle"  > How the Committee <br>has been set up?( By nomination/election).</th>
                                              
                                           
 
                                            
-                                             <th align="center" valign="middle"    >Whether any Safety policy has been framed by the factory with respect to health and safety of the workers</th>
+                                             <th align="center" valign="middle"    >Whether any Safety <br>policy has been framed by the factory <br>with respect to health <br>and safety of the workers</th>
       
-                                             <th align="center" valign="middle"  > if, so has it been submitted to chief inspector of factories, West Bengal?</th>
+                                             <th align="center" valign="middle"  > if, so has it been submitted <br>to chief inspector of factories,<br> West Bengal?</th>
                                              
-                                             </tr>';
+                                             </tr></thead>';
 
                                            $query_tab_6_b=db_query('select  *  from labour_factory_statcell_annual_report_t6_b where  annual_inspection_id = :anid', array(':anid' => trim($filenumber) ));
 
@@ -1297,13 +1138,12 @@ $content = '<table width="100%" >
                                              </tr>';
                                          }
 
-                                           $content .= ' </table>
+                                           $content .= ' </table></div>
 
-                                          <div><b> 7.A. No. of Factories where violations were observed in respect of </b></div>
-                                          <table width="100%" border="1">
-                                              
-                                             
-      
+                                          <div class="table-panel-header"><b> 7.A. No. of Factories where violations were observed in respect of </b></div>
+                                         <div class="table-responsive">
+  											<table  class="table table-striped table-bordered table-responsive admin-custom-table" >
+                                             <thead>
                                             <tr> 
                                             <th align="center" valign="middle"  >Regn. Licence etc.</th>
                                             <th align="center" valign="middle"  > Plan</th>
@@ -1324,7 +1164,7 @@ $content = '<table width="100%" >
                                             <th align="center" valign="middle"  > S/17</th>
                                             <th align="center" valign="middle"  > S/18</th>
                                             <th align="center" valign="middle"  > S/19</th>
-                                            </tr>
+                                            </tr></thead>
                                               ';
                                              $step7_taba_query = db_select('labour_factory_statcell_annual_report_t7_a', 'a');
        
@@ -1387,7 +1227,8 @@ $content = '<table width="100%" >
                                              <td align="center" valign="middle"   >'.$result_step7a['s_19'].'</td>
                                              
                                              </tr>
-
+											
+											<thead>
                                              <tr> 
                                             <th align="center" valign="middle"  >Fencing of machinery</th>
                                             <th align="center" valign="middle"  > Work on machinery in motion</th>
@@ -1408,7 +1249,7 @@ $content = '<table width="100%" >
                                             <th align="center" valign="middle"  > S/29</th>
                                             <th align="center" valign="middle"  > S/30</th>
                                             <th align="center" valign="middle"  > S/31</th>
-                                            </tr>
+                                            </tr></thead>
 
                                             <tr> 
                                              <td align="center" valign="middle"   >'.$result_step7a['s_21'].'</td>
@@ -1425,7 +1266,8 @@ $content = '<table width="100%" >
                                              <td align="center" valign="middle"   >'.$result_step7a['s_31'].'</td>
                                              
                                              </tr>
-
+											
+											<thead>
                                            <tr> 
                                             <th align="center" valign="middle"  > Floors stairs, etc.</th>
                                             <th align="center" valign="middle"  > Pits sumps, etc.</th>
@@ -1447,7 +1289,8 @@ $content = '<table width="100%" >
                                             <th align="center" valign="middle"  > S/38</th>
                                             <th align="center" valign="middle"  > S/42</th>
                                             </tr>
-
+											</thead>
+											
                                             <tr> 
                                              <td align="center" valign="middle"   >'.$result_step7a['s_32'].'</td>
       
@@ -1463,7 +1306,9 @@ $content = '<table width="100%" >
                                              <td align="center" valign="middle"   >'.$result_step7a['s_42'].'</td>
                                              
                                              </tr>
-
+											
+											
+											<thead>
                                              <tr> 
                                             <th align="center" valign="middle"  > First aid</th>
                                             <th align="center" valign="middle"  > Ambulance room</th>
@@ -1485,7 +1330,9 @@ $content = '<table width="100%" >
                                             <th align="center" valign="middle"  > S/52</th>
                                             <th align="center" valign="middle"  > S/54</th>
                                             </tr>
-
+											</thead>
+											
+											
                                             <tr> 
                                              <td align="center" valign="middle"   >'.$result_step7a['r_65'].'</td>
       
@@ -1502,6 +1349,7 @@ $content = '<table width="100%" >
                                              
                                              </tr>
                                          
+										 <thead>
                                          <tr> 
                                             <th align="center" valign="middle"  > Rest interval</th>
                                             <th align="center" valign="middle"  > Spread over</th>
@@ -1523,7 +1371,9 @@ $content = '<table width="100%" >
                                             <th align="center" valign="middle"  > S/61</th>
                                             <th align="center" valign="middle"  > S/62</th>
                                             </tr>
-
+											</thead>
+											
+											
                                             <tr> 
                                              <td align="center" valign="middle"   >'.$result_step7a['s_55'].'</td>
       
@@ -1540,7 +1390,7 @@ $content = '<table width="100%" >
                                              
                                              </tr>
 
-
+											<thead>
                                             <tr> 
                                             <th align="center" valign="middle"  > Exemption Rules</th>
                                             <th align="center" valign="middle"  > Employment of Women</th>
@@ -1562,7 +1412,8 @@ $content = '<table width="100%" >
                                             <th align="center" valign="middle"  > S/80</th>
                                             <th align="center" valign="middle"  > &nbsp;</th>
                                             </tr>
-
+											</thead>
+											
                                             <tr> 
                                              <td align="center" valign="middle"   >'.$result_step7a['s_64'].'</td>
       
@@ -1584,15 +1435,14 @@ $content = '<table width="100%" >
 
 
 
-                                         </table>
+                                         </table></div>
 
 
 
-                                          <div><b> 7.B. RULE 47 </b></div>
-                                          <table width="100%" border="1">
-                                              
-                                             
-      
+                                          <div class="table-panel-header"><b> 7.B. RULE 47 </b></div>
+                                          <div class="table-responsive">
+  											<table  class="table table-striped table-bordered table-responsive admin-custom-table" >
+                                            <thead>
                                             <tr> 
                                             <th align="center" valign="middle"  >Sch. I</th>
                                             <th align="center" valign="middle"  > Sch. II</th>
@@ -1602,7 +1452,7 @@ $content = '<table width="100%" >
                                             <th align="center" valign="middle"  > Sch. VI</th>
                                             <th align="center" valign="middle"  > Sch. VII</th>
                                             
-                                            </tr>';
+                                            </tr></thead>';
 
                                              $step7b_select_query = db_select('labour_factory_statcell_annual_report_t7_rule_47', 'b');
        
@@ -1630,13 +1480,12 @@ $content = '<table width="100%" >
                                             
                                              
                                              </tr>
-                                         </table>
+                                         </table></div>
 
-                                          <div><b> 7.C. RULE 94 </b></div>
-                                          <table width="100%" border="1">
-                                              
-                                             
-      
+                                          <div class="table-panel-header"><b> 7.C. RULE 94 </b></div>
+                                          <div class="table-responsive">
+  											<table  class="table table-striped table-bordered table-responsive admin-custom-table" >
+                                            <thead>
                                             <tr> 
                                             <th align="center" valign="middle"  >Sch. I</th>
                                             <th align="center" valign="middle"  > Sch. II</th>
@@ -1655,7 +1504,7 @@ $content = '<table width="100%" >
                                             <th align="center" valign="middle"  > Sch. XIV</th>
                                              <th align="center" valign="middle"  > Sch. XV</th>
                                             <th align="center" valign="middle"  > Sch. XVI</th>
-                                            </tr>';
+                                            </tr></thead>';
                                              $step7c_select_query = db_select('labour_factory_statcell_annual_report_t7_rule_94', 'c');
        
                                             $step7c_select_query->condition('c.annual_inspection_id',trim($filenumber),'=');
@@ -1743,7 +1592,7 @@ $content = '<table width="100%" >
                                              </tr>
 
 
-		
+											<thead>
                                             <tr>
                                             <th align="center" valign="middle"  > Sch. XVII</th>
                                             <th align="center" valign="middle"  > Sch. XVIII</th>
@@ -1767,6 +1616,7 @@ $content = '<table width="100%" >
                                              
                                             
                                             </tr>
+											</thead>
 
                                             <tr>   
                                              <td align="center" valign="middle"   >'.$result_step7c['s_xvii'].'</td>
@@ -1811,16 +1661,15 @@ $content = '<table width="100%" >
                                             
 
 
-                                        </table>
+                                        </table></div>
 
 
 
 
-                                           <div><b> 7.D. TAB-H </b></div>
-                                          <table width="100%" border="1">
-                                              
-                                             
-      
+                                           <div class="table-panel-header"><b> 7.D. TAB-H </b></div>
+                                          <div class="table-responsive">
+  											<table  class="table table-striped table-bordered table-responsive admin-custom-table" >
+                                            <thead>
                                             <tr> 
                                             <th align="center" valign="middle"  > S-7A</th>
                                             <th align="center" valign="middle"  > R-63B</th>
@@ -1833,7 +1682,7 @@ $content = '<table width="100%" >
                                             <th align="center" valign="middle"  > R-63K</th>
                                             <th align="center" valign="middle"  > R-63L</th>
                                             
-                                            </tr>';
+                                            </tr></thead>';
 
                                              $step7_tabh_query = db_select('labour_factory_statcell_annual_report_t7_tab_h', 'd');
        
@@ -1866,23 +1715,22 @@ $content = '<table width="100%" >
                                             
                                              
                                              </tr>
-                                         </table>
+                                         </table></div>
 
-                                          <div><b> 8.Complaints </b></div>
-                                          <table width="100%" border="1">
-                                              
-                                             
-      
+                                          <div class="table-panel-header"><b> 8.Complaints </b></div>
+                                          <div class="table-responsive">
+  											<table  class="table table-striped table-bordered table-responsive admin-custom-table" >
+                                             <thead>
                                             <tr> 
-                                            <th align="center" valign="middle"  > &nbsp;</th>
-                                            <th align="center" valign="middle"  > Number</th>
-                                            <th align="center" valign="middle"  > Investigated</th>
-                                            <th align="center" valign="middle"  > Violation observed</th>
-                                            <th align="center" valign="middle"  > Action taken</th>
-                                            <th align="center" valign="middle"  > Remarks</th>
+                                            <th  valign="middle"  > &nbsp;</th>
+                                            <th  valign="middle"  > Number</th>
+                                            <th  valign="middle"  > Investigated</th>
+                                            <th  valign="middle"  > Violation observed</th>
+                                            <th  valign="middle"  > Action taken</th>
+                                            <th  valign="middle"  > Remarks</th>
                                             
                                             
-                                            </tr>';
+                                            </tr></thead>';
 
                                             $step8_query = db_select('labour_factory_statcell_annual_report_t8', 'b');
        
@@ -1897,56 +1745,56 @@ $content = '<table width="100%" >
 
 
                                         $content .= '  <tr>   
-                                             <td align="center" valign="middle"   >Registered factories</td>
+                                             <td  valign="middle"   >Registered factories</td>
       
-                                             <td align="center" valign="middle" >'.$result_8['reg_recv_no'].' </td>
+                                             <td  valign="middle" >'.$result_8['reg_recv_no'].' </td>
 
-                                            <td align="center" valign="middle"   >'.$result_8['reg_investigated'].'</td>
-                                            <td align="center" valign="middle"   >'.$result_8['reg_violation'].'</td>
-                                            <td align="center" valign="middle"   >'.$result_8['reg_action'].'</td>
+                                            <td  valign="middle"   >'.$result_8['reg_investigated'].'</td>
+                                            <td  valign="middle"   >'.$result_8['reg_violation'].'</td>
+                                            <td  valign="middle"   >'.$result_8['reg_action'].'</td>
                                       
-                                            <td align="center" valign="middle"   >'.$result_8['reg_remarks'].'</td>
+                                            <td  valign="middle"   >'.$result_8['reg_remarks'].'</td>
                                             </tr>
                                            <tr>   
-                                             <td align="center" valign="middle"   >Unregister factories</td>  
+                                             <td  valign="middle"   >Unregister factories</td>  
 
-                                           <td align="center" valign="middle"   >'.$result_8['unreg_recv_no'].'</td>
+                                           <td  valign="middle"   >'.$result_8['unreg_recv_no'].'</td>
 
-                                           <td align="center" valign="middle"   >'.$result_8['unreg_investigated'].'</td>
+                                           <td  valign="middle"   >'.$result_8['unreg_investigated'].'</td>
 
 
-                                           <td align="center" valign="middle"   >'.$result_8['unreg_violation'].'</td>
+                                           <td  valign="middle"   >'.$result_8['unreg_violation'].'</td>
 
-                                           <td align="center" valign="middle"   >'.$result_8['unreg_action'].'</td>
+                                           <td  valign="middle"   >'.$result_8['unreg_action'].'</td>
 
-                                           <td align="center" valign="middle"   >'.$result_8['unreg_remarks'].'</td>
+                                           <td  valign="middle"   >'.$result_8['unreg_remarks'].'</td>
 
                                          
 
-                                       </tr></table>
+                                       </tr></table></div>
                                              
                                             
                                             
-                                            <div><b> 9.Information relating to prosecution proceedings instituted during the year (under the Factories Act) </b></div>
-                                          <table width="100%" border="1">
-                                              
-                                             
-      
+                                            <div class="table-panel-header"><b> 9.Information relating to prosecution proceedings instituted during the year (under the Factories Act) </b></div>
+                                          <div class="table-responsive">
+  											<table  class="table table-striped table-bordered table-responsive admin-custom-table" >
+                                            <thead>
                                             <tr> 
+                                                 <th align="center" valign="middle"  > SL.NO</th>
                                             <th align="center" valign="middle"  > Name of the factory</th>
                                             <th align="center" valign="middle"  > Address of the factory</th>
                                             <th align="center" valign="middle"  > Registered/un-registered factory</th>
-                                            <th align="center" valign="middle"  > Persons against whom launched(Occupier, Manager etc.)</th>
+                                            <th align="center" valign="middle"  > Persons against whom <br>launched(Occupier, Manager etc.)</th>
                                             <th align="center" valign="middle"  > Case Number</th>
                                             <th align="center" valign="middle"  > Name of Court</th>
 
-                                            <th align="center" valign="middle"  > Sections/Rules violated with a short description</th>
+                                            <th align="center" valign="middle"  > Sections/Rules <br>violated with a short description</th>
 
                                             <th align="center" valign="middle"  > Result</th>
                                              <th align="center" valign="middle"  >Amount of fines</th>
                                             
                                             
-                                            </tr>'; 
+                                            </tr></thead>'; 
                                             
 
                                      $query_tab_9=db_query('select  *  from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :anid and is_pending  = :ispen', array(':anid' => trim($filenumber) , ':ispen' => 0 ));
@@ -1971,7 +1819,7 @@ $content = '<table width="100%" >
 
                                  $content .= '<tr>
 
-                                   
+                                    <td align="center" valign="middle"   >'.$i.'</td>
 				                   <td align="center" valign="middle"   >'.$factory_name.'</td>
 			                       <td align="center" valign="middle"   >'.$factory_address.'</td>
                                    <td align="center" valign="middle"   >'.$reg_unreg.'</td>
@@ -1991,37 +1839,31 @@ $content = '<table width="100%" >
 
 
 
-                              $content .= '  </table> 
+                              $content .= '  </table> </div>
 
 
-                               <div><b> 10. Information relating to pending cases (Under the factories Act) of previous Year/Years. </b></div>
-                                          <table width="100%" border="1">
-                                              
-                                             
-      
+                               <div class="table-panel-header"><b>10. Information relating to pending cases (Under the factories Act) of previous Year/Years. </b></div>
+                                          <div class="table-responsive">
+  											<table  class="table table-striped table-bordered table-responsive admin-custom-table" >
+                                            <thead>
                                             <tr> 
                                             <th align="center" valign="middle"  > Name of the factory</th>
-                                            <th align="center" valign="middle"  > Address of the factory</th>
-                                            <th align="center" valign="middle"  > Registered/un-registered factory</th>
-                                            <th align="center" valign="middle"  > Persons against whom launched(Occupier, Manager etc.)</th>
+                                            <th align="center" valign="middle"  > Address of <br>the factory</th>
+                                            <th align="center" valign="middle"  > Registered/un-registered <br>factory</th>
+                                            <th align="center" valign="middle"  > Persons against <br> whom launched(Occupier, Manager etc.)</th>
                                             <th align="center" valign="middle"  > Case Number</th>
                                             <th align="center" valign="middle"  > Name of Court</th>
 
-                                            <th align="center" valign="middle"  > Sections/Rules violated with a short description</th>
+                                            <th align="center" valign="middle"  > Sections/Rules <br>violated with a short description</th>
 
                                             <th align="center" valign="middle"  > Result</th>
                                              <th align="center" valign="middle"  >Amount of fines</th>
                                             
                                             
-                                            </tr>';  
+                                            </tr></thead>';  
 
 
-                                       
-
-                                     /* $query_tab_10=db_query('select  *  from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :anid and is_pending  = :ispen', array(':anid' => trim($filenumber) , ':ispen' => 1 )); */
-
-                                   
-       $previous_year=$thisYear - 1;
+                   $previous_year=$thisYear - 1;
         
         //print "ssss".$previous_year;
        // exit;
@@ -2040,8 +1882,8 @@ $content = '<table width="100%" >
        
            $tab10_pending_case_select_query->InnerJoin('labour_factory_statcell_annual_report', 'b', 'a.annual_inspection_id=b.annual_inspection_id');
            $tab10_pending_case_select_query->condition('b.inspector_id',trim($inspector_id),'=');
-           $tab10_pending_case_select_query->condition('a.case_date',trim($previous_from_year_dt),'>=');
-           $tab10_pending_case_select_query->condition('a.case_date',trim($previous_to_year_dt),'<=');
+           $tab10_pending_case_select_query->condition('b.report_from_date',trim($previous_from_year_dt),'>=');
+           $tab10_pending_case_select_query->condition('b.report_to_date',trim($previous_to_year_dt),'<=');
            $tab10_pending_case_select_query->condition('a.results','PENDING','=');
            $tab10_pending_case_select_query->condition('a.is_disabled', 0 ,'=');
 
@@ -2051,8 +1893,9 @@ $content = '<table width="100%" >
              $tab10_pending_case_select_query->fields('b',array('annual_inspection_id'));
 
             $query_tab_10 = $tab10_pending_case_select_query->execute();
+                                       
 
-
+                                     /* $query_tab_10=db_query('select  *  from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :anid and is_pending  = :ispen', array(':anid' => trim($filenumber) , ':ispen' => 1 ));*/
 
 
                                        $i=0;
@@ -2093,12 +1936,13 @@ $content = '<table width="100%" >
 	                             }
 
 
-                                    $content .= '  </table>
+                                    $content .= '  </table></div>
 
 
 
-                                       <div><b> 11. </b></div>
-                                          <table width="100%" border="1">';
+                                        <div class="table-panel-header"><b> 11. </b></div>
+                                          <div class="table-responsive">
+                     					<table class="table table-striped table-bordered table-responsive admin-custom-table">';
 
 
                                           	 $step11_select_query = db_select('labour_factory_statcell_annual_report_t11', 'a');
@@ -2131,9 +1975,9 @@ $content = '<table width="100%" >
 
 
 
-                                      </table>
+                                      </table></div>
 
-                                       <div><b> A. Construction Works Details </b></div>';
+                                       <div class="table-panel-header"><b> A. Construction Works Details </b></div>';
 
                                            
                                              $step12a_query = db_select('labour_factory_statcell_annual_report_attach_construct_t1', 'a');
@@ -2159,7 +2003,9 @@ $content = '<table width="100%" >
 
 
 
-                                           $content .= '<table width="100%" border="1">
+                                           $content .= '<div class="table-responsive">
+                     					<table class="table table-striped table-bordered table-responsive admin-custom-table">
+                                      
                                              <tr> <td align="left" valign="middle"  > 1.Number of units visited</td>  <td> '.$result_step2a['unit_visited'] .'</td></tr>
                                             <tr> <td align="left" valign="middle"  > 2. Number of visits paid</td>  <td>'.$result_step2a['visit_paid'] .'</td></tr>
                                             <tr> <td align="left" valign="middle"  > 3. Total number of violations observed</td>  <td>'.$result_step2a['violation'] .'</td></tr>
@@ -2174,7 +2020,7 @@ $content = '<table width="100%" >
 
                                            <tr> <td align="left" valign="middle"  > 8. No. of prosecution launched</td>  <td>'.$result_step2a['prosecution'] .'</td></tr></table>
 
-                                          <div><b> B.Construction Works Case Details </b></div>';
+                                          <div class="table-panel-header"><b> B.Construction Works Case Details </b></div>';
 
 
 
@@ -2182,17 +2028,19 @@ $content = '<table width="100%" >
 
 
                                           $content .= '
-                                               <table width="100%" border="1">
+                                              <div class="table-responsive">
+                     <table class="table table-striped table-bordered table-responsive admin-custom-table">
+					 						<thead>
                                              <tr> 
                                            
-                                            <th align="center" valign="middle"  > Case No.</th>
-                                            <th align="center" valign="middle"  > Violation</th>
-                                            <th align="center" valign="middle"  > Court</th>
-                                            <th align="center" valign="middle"  > Remarks</th>
+                                            <th  valign="middle"  > Case No.</th>
+                                            <th  valign="middle"  > Violation</th>
+                                            <th  valign="middle"  > Court</th>
+                                            <th  valign="middle"  > Remarks</th>
                                            
                                             
                                             
-                                          </tr>';
+                                          </tr></thead>';
 
                                           foreach($query_tab_12_b as $squan) {
 			
@@ -2205,10 +2053,10 @@ $content = '<table width="100%" >
                                        $content .= '<tr>
 				                   
 				                  
-				                   <td align="center" valign="middle"   >'.$case_no.'</td>
-			                       <td align="center" valign="middle"   >'.$violation.'</td>
-                                   <td align="center" valign="middle"   >'.$court.'</td>
-                                   <td align="center" valign="middle"   >'.$remarks.'</td>
+				                   <td  valign="middle"   >'.$case_no.'</td>
+			                       <td  valign="middle"   >'.$violation.'</td>
+                                   <td  valign="middle"   >'.$court.'</td>
+                                   <td  valign="middle"   >'.$remarks.'</td>
                                   
 			                     
                                    </tr>';
@@ -2219,13 +2067,15 @@ $content = '<table width="100%" >
 			                       
 	                             }
 
-	                         $content .= '</table>
+	                         $content .= '</table></div>
 
-                             <div><b> Maternity Benefits Act Rules </b></div>
+                             <div class="table-panel-header"><b> Maternity Benefits Act Rules </b></div>
 
                               <div><b> 1.No. of violations in respect of </b></div>
 
-                              <table width="100%" border="1">';
+                              <div class="table-responsive">
+                     <table class="table table-striped table-bordered table-responsive admin-custom-table">
+                                      ';
 
 
                                              $step12_c_query = db_select('labour_factory_statcell_annual_report_attach_maternity_t1', 'a');
@@ -2262,12 +2112,14 @@ $content = '<table width="100%" >
                                             <tr> <td align="left" valign="middle"  > c) Improper maintenance of muster roll</td>  <td>'.$result_step12c['no_imp_maintenance_1_c'] .'</td></tr>
                                             <tr> <td align="left" valign="middle"  > d) Payment of maternity benefits </td>  <td>'.$result_step12c['maternity_benefit_1_d'] .'</td></tr>
                                             <tr> <td align="left" valign="middle"  > e)Others</td>  <td>'.$result_step12c['others_1_e'] .'</td></tr>
-                                            </table> 
+                                            </table> </div>
 
-                                         <div><b> 2. No. of compaints settled after investigation </b></div>
+                                         <div class="table-panel-header"><b> 2. No. of compaints settled after investigation </b></div>
                                             
                                      
-                                      <table width="100%" border="1">
+                                      <div class="table-responsive">
+                     <table class="table table-striped table-bordered table-responsive admin-custom-table">
+                                      <thead>
                                              <tr> 
                                             <th align="center" valign="middle"  > &nbsp;</th>
                                             <th align="center" valign="middle"  > Number.</th>
@@ -2278,7 +2130,7 @@ $content = '<table width="100%" >
                                            
                                             
                                             
-                                          </tr>
+                                          </tr></div>
 
                                         <tr>
 				                  
@@ -2300,11 +2152,9 @@ $content = '<table width="100%" >
                                   
 			                     
                                    </tr>
-                               </table>
-
-                                <div><b> 4. a) No. of case pending at the beginning of the year </b> '.$result_step12c['case_pending_at_beginning_4_a'].'</div>
-                                <div><b> b) No. of case in disposed off during the year </b> '.$result_step12c['case_disposed_4_b'].'</div>
-                                 <div><b> c) No. of case pending at the end of the year </b> '.$result_step12c['case_pending_at_end_4_c'].'</div>
+                               </table></div>
+								
+							
 
                                       ';
 
@@ -2312,7 +2162,12 @@ $content = '<table width="100%" >
 
                              $query_tab_12_d=db_query('select  *  from labour_factory_statcell_annual_report_attach_maternity_wages where  maternity_wages_id = :anid and maternity_wages_type = :mwt', array(':anid' => trim($filenumber) , ':mwt' => 'MATERNITY'));
      
-      $content .= ' <table >
+      $content .= ' 
+
+       <div><b> 3. Maternity Benefit Case Details </b></div>
+      <div class="table-responsive">
+                     <table class="table table-striped table-bordered table-responsive admin-custom-table">
+					 <thead>
 	    <tr > <th >SL.NO</th>
       
        <th > Name of the factory. </th>
@@ -2326,7 +2181,7 @@ $content = '<table width="100%" >
 
 		 
 		
-		</tr>';  
+		</tr></thead>';  
 			  $i=0;
 		foreach($query_tab_12_d as $squan) {
 			$i++;
@@ -2351,12 +2206,18 @@ $content = '<table width="100%" >
               
 			 </tr>';
 	        }
-              $content .= '</table>
+              $content .= '</table></div>
+            
+              <div class="table-responsive">
+                             <table class="table table-striped table-bordered table-responsive admin-custom-table">
+                                <div><b> 4. a) No. of case pending at the beginning of the year </b> '.$result_step12c['case_pending_at_beginning_4_a'].'</div>
+                                <div><b> b) No. of case in disposed off during the year </b> '.$result_step12c['case_disposed_4_b'].'</div>
+                                 <div><b> c) No. of case pending at the end of the year </b> '.$result_step12c['case_pending_at_end_4_c'].'</div></table></div>
 
 
                   <div><b> Payment of wages </b></div>
-                   <div><b> Information relating to payment of Wages act & Rules </b></div>
-                  <div><b> 1. No. of violations in respect of </b></div>';
+                   <div><b> Information relating to payment of Wages act & Rules </b></div> ';
+                 
 
                   $step12e_query = db_select('labour_factory_statcell_annual_report_attach_wages_t1', 'd');
        
@@ -2396,8 +2257,9 @@ $content = '<table width="100%" >
 		 
 		$result_step2e=$step12e_query_result->fetchAssoc();
                  $content .= '   
-                 <div><b> Information relating to payment of Wages act & Rules </b></div>
-                 <table width="100%" border="1">
+                 <div class="table-panel-header"><b> 1. No. of violations in respect of </b></div>
+                 <div class="table-responsive">
+                     <table class="table table-striped table-bordered table-responsive admin-custom-table">
                  <tr> <td align="left" valign="middle"  > a) Display of the Abstract of the Act and the Rules</td>  <td> '.$result_step2e['no_act_and_rules_1_a'] .'</td></tr>
                  <tr> <td align="left" valign="middle"  > (b) Display of the notice of dates of payment</td>  <td>'.$result_step2e['no_notice_dates_payment_1_b'] .'</td></tr>
                  <tr> <td align="left" valign="middle"  > (c) Non-maintenance of register of wages</td>  <td>'.$result_step2e['no_non_maintenance_wages_1_c'] .'</td></tr>
@@ -2411,11 +2273,13 @@ $content = '<table width="100%" >
 
 
 
-            </table> 
+            </table> </div>
                                             
-                 <div><b> 2. No. of complaints settled after investigation </b></div>
+                 <div class="table-panel-header"><b> 2. No. of complaints settled after investigation </b></div>
 
-                   <table width="100%" border="1">
+                   <div class="table-responsive">
+                     <table class="table table-striped table-bordered table-responsive admin-custom-table">
+                                      <thead>
                  <tr> <th > &nbsp; </th>
 	              <th >Number </th>
        
@@ -2425,7 +2289,7 @@ $content = '<table width="100%" >
        
 		        <th >Action taken</th>
                <th >Remarks</th>
-               </tr>
+               </tr></thead>
                 <tr>
                	<td align="left" valign="middle"  >Regd. factories </td>
                 <td align="left" valign="middle"  >'.$result_step2e['regd_number_2'] .' </td>
@@ -2447,10 +2311,12 @@ $content = '<table width="100%" >
 
 
 
-                </table>';
+                </table></div>';
                  $query_tab_12_f=db_query('select  *  from labour_factory_statcell_annual_report_attach_maternity_wages where  maternity_wages_id = :anid and maternity_wages_type = :mwt', array(':anid' => trim($filenumber) , ':mwt' => 'WAGES'));
     
-       $content .= ' <table width="100%" border="1" >
+       $content .= ' <div class="table-responsive">
+                     <table class="table table-striped table-bordered table-responsive admin-custom-table">
+                                      <thead>
 	    <tr > <th >SL.NO</th>
       
        <th > Name of the factory. </th>
@@ -2461,7 +2327,7 @@ $content = '<table width="100%" >
 		 <th >Amount of fines posted</th>
        
 		 <th >Remarks</th>
-       	</tr>';
+       	</tr></thead>';
 
        	foreach($query_tab_12_f as $squan) {
 		 
@@ -2479,23 +2345,27 @@ $content = '<table width="100%" >
               
 			   </tr>';
 	          }
-              $content .= '</table>
+              $content .= '</table></div>
 
-              <div><b> 3. Prosecution </b></div>
-              <div><b> a) No. of case pending at the beginning of the year - </b> '.$result_step2e['case_pending_at_beginning_3_a'] .'</div>
-              <div><b> b) No. of case in disposed off during the year- </b>'.$result_step2e['case_disposed_3_b'] .'</div>
-              <div><b> c) No. of case pending at the end of the year- </b>'.$result_step2e['case_pending_at_end_3_c'] .'</div>
+			 
+              <div class="table-panel-header"><b> 3. Prosecution </b></div>
+			  <div class="table-responsive">
+			  <table class="table table-striped table-bordered table-responsive admin-custom-table">
+              <tr><td align="left" valign="middle"> a) No. of case pending at the beginning of the year - </td> <td>'.$result_step2e['case_pending_at_beginning_3_a'] .'</td></tr>
+              <tr><td align="left" valign="middle"> b) No. of case in disposed off during the year- </td><td>'.$result_step2e['case_disposed_3_b'] .'</td></tr>
+              <tr><td align="left" valign="middle"><b> c) No. of case pending at the end of the year- </td><td>'.$result_step2e['case_pending_at_end_3_c'] .'</td></tr></table></div>
 
-              <div><b> 4. Information regarding applications filed during the year before the authority under the P.W Act -</b></div>
-
-              <div><b> a. Name of the factories- </b> '.$result_step2e['factories_name_4_a'] .'</div>
-             <div><b> b. Total number of applications filed- </b> '.$result_step2e['application_filed_4_b'] .'</div>
-             <div><b> c. Total number of persons involved -</b> '.$result_step2e['person_involved_4_c'] .'</div>
-             <div><b> d. Total amount of unpaid wages claimed- </b> '.$result_step2e['wages_claimed_4_d'] .'</div>
-             <div><b> e. Total amount of un-authorised deductions claimed -</b> '.$result_step2e['deduction_claimed_4_e'] .'</div>
-             <div><b> f. Number of applications pending at the beginning of the year- </b> '.$result_step2e['app_pending_at_beginning_4_f'] .'</div>
-             <div><b> g. Number of applications disposed off during the year- </b> '.$result_step2e['app_disposed_4_g'] .'</div>
-             <div><b> h. Number of applications pending at the end of the year -</b> '.$result_step2e['app_pending_at_end_4_h'] .'</div>';
+              <div class="table-panel-header"><b> 4. Information regarding applications filed during the year before the authority under the P.W Act -</b></div>
+			<div class="table-responsive">
+			  <table class="table table-striped table-bordered table-responsive admin-custom-table">
+              <tr><td align="left" valign="middle"> a. Name of the factories- </td><td> '.$result_step2e['factories_name_4_a'] .'</td></tr>
+             <tr><td align="left" valign="middle"> b. Total number of applications filed- </td><td> '.$result_step2e['application_filed_4_b'] .'</td></tr>
+             <tr><td align="left" valign="middle"> c. Total number of persons involved -</td><td> '.$result_step2e['person_involved_4_c'] .'</td></tr>
+             <tr><td align="left" valign="middle"> d. Total amount of unpaid wages claimed- </td><td> '.$result_step2e['wages_claimed_4_d'] .'</td></tr>
+             <tr><td align="left" valign="middle"> e. Total amount of un-authorised deductions claimed -</td><td> '.$result_step2e['deduction_claimed_4_e'] .'</td></tr>
+             <tr><td align="left" valign="middle"> f. Number of applications pending at the beginning of the year- </td><td> '.$result_step2e['app_pending_at_beginning_4_f'] .'</td></tr>
+             <tr><td align="left" valign="middle"> g. Number of applications disposed off during the year- </td><td> '.$result_step2e['app_disposed_4_g'] .'</td></tr>
+             <tr><td align="left" valign="middle"> h. Number of applications pending at the end of the year -</td><td> '.$result_step2e['app_pending_at_end_4_h'] .'</td></tr></table></div>';
 
               
 	
@@ -2505,7 +2375,7 @@ $content = '<table width="100%" >
 
 
           $form['step13Bfield'] = array(
-          '#title' => t('<font color="DarkGreen"><b>   </b></font>'),
+          '#title' => t('View & Submit'),
           '#type' => 'fieldset',
           '#collapsed' => FALSE
           );                         
@@ -2517,7 +2387,7 @@ $content = '<table width="100%" >
                
            
 
-                '#suffix'=>'</div>',
+                '#suffix'=>'',
        
        
            );  
@@ -2527,57 +2397,62 @@ $content = '<table width="100%" >
        
             );
 
-             if($status=='FD'){
+             
+             $result_string = "'" . str_replace(",", "','", $area) . "'";
 
-              $form['step13Bfield']['remarks'] = array
-              (
-		      
-		        '#type' => 'textarea',
-		       
-                '#rows' => 5,
-                 '#cols' => 5,
-
-                  '#title' => 'Remarks:',
-
-		          '#prefix' => '<div class="col-sm-8"    >',
-                  '#suffix'=>'</div>', 
-                    '#required' => TRUE,
-                    '#default_value' => $remarks
-	   
-	   
-           );
             
+             $roleId=get_role_id($inspector_id);
+           
+             $role_name=get_role_name($roleId);
+             //print 'sss'.$role_name;
+             if($role_name=='factoryinspector')
+                $deputy_cheif_role='deputychief';
+             elseif($role_name=='factoryinspector_chemical')
+                $deputy_cheif_role='deputychief_chemical';
+            elseif($role_name=='factoryinspector_medical')
+                $deputy_cheif_role='deputychief_medical';
+
+           $options_dp =  anr_deputy_director_option($result_string , $deputy_cheif_role );
+         
+          $form['step13Bfield']['dp_director'] = array (
+                    '#type' => 'select',
+                    '#title' => ('Select Deputy'),
+                    '#options'       => $options_dp,
+                    
+                    '#required' => TRUE,
+                   //  '#multiple'     =>  true,
+                   //   '#attributes' => array('style' => array('height: 100px; ')),
+                
+                   '#prefix'            => '<div> ',
+                   '#suffix'            => '</div>',
+                    //'#rows'        => 10,
+               );
 
 
           $form['step13Bfield']['submit_button']                    = array(
                                                                  
-                                                               '#prefix' => '<div style="text-align:center;" class="col-sm-6" >',
-                                                                 '#suffix'=>'</div>', 
+                                                               '#prefix' => '<div style="text-align:center;"  >',
+                                                                 '#suffix'=>'</div></div>', 
                                                                 '#type'                 =>'submit',
-                                                                '#value'                =>t(' Forward to Statistical cell '),
-                                                                	'#submit' => array('forward_statistical_cell'),
+                                                                '#value'                =>t(' Submit ')
                                                                 );
-
-           $form['step13Bfield']['submit_button_2']                    = array(
-                                                                 
-                                                               '#prefix' => '<div style="text-align:center;" class="col-sm-6" >',
-                                                                 '#suffix'=>'</div>', 
-                                                                '#type'                 =>'submit',
-                                                                '#value'                =>t(' Back to Inspector '),
-                                                                	'#submit' => array('back_to_inspector'),
-                                                                );
-
-
-          
-
-       }
 
            return $form;                                 
 
-	
+	//echo $content; die;	
+	//$mpdf = new mPDF('utf-8', 'A4', '', '', 10, 10, 20, 10, 0, 0);
+	//$mpdf->SetDisplayMode('fullpage');
+	//$mpdf->SetHTMLHeader('
+	//<div style="padding-top:50px; text-align: right; font-size:9px;">
+		//Page {PAGENO} of {nb}
+	//</div>');
+	//$mpdf->SetWatermarkText('DRAFT COPY');
+	//$mpdf->showWatermarkText = true;
+	//$mpdf->WriteHTML($content);
+	//$mpdf->Output('Worker-Information-Extension-'.time().'.pdf', 'I');
 }
 
-function back_to_inspector($form, &$form_state) {
+function annual_report_view_submit($form, &$form_state) {
    global $base_root, $base_path,$full_base;
 
       $full_base='';
@@ -2589,7 +2464,7 @@ function back_to_inspector($form, &$form_state) {
 
 
     $inspectionid=trim($val['inspectionid']);
-    $remarks=trim($val['remarks']);
+    $dp_director_uid=trim($val['dp_director']);
 
     $txn = db_transaction();
       try {
@@ -2599,7 +2474,7 @@ function back_to_inspector($form, &$form_state) {
 
       $query_update_B = db_update('labour_factory_statcell_annual_report');
       $query_update_B->fields(array(
-            'status' =>'BI', 'remarks' => $remarks , 'accept_date' => date("Y-m-d")));
+            'status' =>'FD', 'submit_date' => date("Y-m-d")  ,'is_submitted' => 1 , 'accept_by' => $dp_director_uid ));
                                         
                                         
                                         
@@ -2612,9 +2487,9 @@ function back_to_inspector($form, &$form_state) {
 
     
     
-       $message = '   Annual report send back to inspector ';
+       $message = '   Annual report submit successfully ';
      drupal_set_message(t($message));
-     $full_base=$base_root.$base_path.'admin/annual-report-deputy-director-list';
+     $full_base=$base_root.$base_path.'admin/annual-report-list';
                
     drupal_goto($full_base);
     
@@ -2624,78 +2499,53 @@ function back_to_inspector($form, &$form_state) {
     $txn->rollback();
   
     watchdog_exception('type', $e);
-    $message = '    Annual report is not fowward  ';
+    $message = '    Annual report is not submit  ';
      drupal_set_message(t($message));
 
-      $full_base=$base_root.$base_path.'admin/annual-report-deputy-director-list';
+      $full_base=$base_root.$base_path.'admin/annual-report/step13/'.encryption_decryption_fun('encrypt',$autoGENNO);
                
     drupal_goto($full_base);
      }
 
 
 
-
-}
-
-function forward_statistical_cell($form, &$form_state) {
-   global $base_root, $base_path,$full_base;
-
-      $full_base='';
-
-
-      $val=$form_state['values'];
-       //print_r($val);
-       //exit;
-
-
-    $inspectionid=trim($val['inspectionid']);
-    $remarks=trim($val['remarks']);
-
-    $txn = db_transaction();
-      try {
-          
    
 
 
-      $query_update_B = db_update('labour_factory_statcell_annual_report');
-      $query_update_B->fields(array(
-            'status' =>'FS'  ,'remarks' => $remarks , 'accept_date' => date("Y-m-d") ));
-                                        
-                                        
-                                        
-       $query_update_B->condition('annual_inspection_id',$inspectionid);
-       $query_update_B->execute(); 
-
-
-
-
-
-    
-    
-       $message = '   Annual report forward successfully ';
-     drupal_set_message(t($message));
-     $full_base=$base_root.$base_path.'admin/annual-report-deputy-director-list';
-               
-    drupal_goto($full_base);
-    
-     }
-    catch (Exception $e) {
-    
-    $txn->rollback();
-  
-    watchdog_exception('type', $e);
-    $message = '    Annual report is not forward  ';
-     drupal_set_message(t($message));
-
-      $full_base=$base_root.$base_path.'admin/annual-report-deputy-director-list';
-               
-    drupal_goto($full_base);
-     }
-
-
-
-
 }
+function anr_deputy_director_option($area , $deputy_cheif_role) {
+   
 
+   $blk=" select DISTINCT u.uid, fzum.zone_id, zone_name, fname, r.name
+from fa_zone_user_map fzum
+inner join users u on fzum.uid = u.uid
+inner join users_roles ur on u.uid = ur.uid
+inner join role r on ur.rid = r.rid
+inner join fa_employee_details ed on u.uid = ed.uid
+inner join fa_zone fz on fzum.zone_id = fz.zone_id and u.status=1 and ed.status=1
+where r.name = '".$deputy_cheif_role."' and fz.zone_name in (".$area.")";
+//print $blk;
+//exit;
+    
+    $state_query=db_query($blk);
+
+  $options              = array();
+    
+    foreach($state_query as $state_result) {
+        
+        $options[$state_result->uid] =$state_result->fname;  
+    
+    }
+    
+    
+    
+   
+       return $options;
+        
+  
+      
+    
+    
+}
 
 ?>
