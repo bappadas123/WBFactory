@@ -59,6 +59,10 @@ $form['step6Afield']['colA1'] = array
 		       '#markup'=>'<b> Name of the Factory  </b>',
 
 		          '#suffix'=>'</td>',
+
+
+		        
+		     
 	   
 	   
            );
@@ -82,7 +86,7 @@ $form['step6Afield']['colA1'] = array
 		        '#markup'=>'<b> Actually appointed  </b>',
            
 
-		        '#suffix'=>'</td></tr>',
+		        '#suffix'=>'</td></tr></thead>',
 	   
 	   
            ); 

@@ -1949,7 +1949,7 @@ $content = '<table width="100%" >
                                             </tr>'; 
                                             
 
-                                     $query_tab_9=db_query('select  *  from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :anid and is_pending  = :ispen', array(':anid' => trim($filenumber) , ':ispen' => 0 ));
+                                    $query_tab_9=db_query('select  *  from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :anid and is_pending  = :ispen and case_date >= :fdt and case_date <=:tdt', array(':anid' => trim($filenumber) , ':ispen' => 0 , ':fdt' => trim($report_from_date) , ':tdt' => trim($report_to_date)));
 
 
                                        $i=0;
@@ -2032,7 +2032,7 @@ $content = '<table width="100%" >
     }
     elseif($annual_form_type=='FINANCIAL'){
         $previous_from_year_dt='1900-01-01';
-        $previous_to_year_dt=date("Y")."-03-31";
+        $previous_to_year_dt=$thisYear."-03-31";
     }                         
 
                                        
@@ -2042,7 +2042,7 @@ $content = '<table width="100%" >
            $tab10_pending_case_select_query->condition('b.inspector_id',trim($inspector_id),'=');
            $tab10_pending_case_select_query->condition('a.case_date',trim($previous_from_year_dt),'>=');
            $tab10_pending_case_select_query->condition('a.case_date',trim($previous_to_year_dt),'<=');
-           $tab10_pending_case_select_query->condition('a.results','PENDING','=');
+          // $tab10_pending_case_select_query->condition('a.results','PENDING','=');
            $tab10_pending_case_select_query->condition('a.is_disabled', 0 ,'=');
 
             $tab10_pending_case_select_query->fields('a',array('row_id','factory_name','factory_address',

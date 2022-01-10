@@ -44,7 +44,7 @@ function annual_report_step10( $form, &$form_state, $filenumber= NULL , $row_id=
 	}
 	elseif($annual_report=='FINANCIAL'){
 		$previous_from_year_dt='1900-01-01';
-	    $previous_to_year_dt=date("Y")."-03-31";
+	    $previous_to_year_dt=$thisYear."-03-31";
 	}
 	
 
@@ -225,7 +225,7 @@ $form['step10field']['col1'] = array
                $form['step10field']['col10'] = array
               (
 		       '#prefix' => '  <th>', 
-		        '#markup'=>'<b> Case Date </b>',
+		        '#markup'=>'<b> Case Filing  Date </b>',
            
 
 		        '#suffix'=>'</th>',
@@ -429,7 +429,7 @@ $form['step10field']['col5val'] = array
            $mr_pending_case_select_query->condition('b.inspector_id',trim($inspector_id),'=');
            $mr_pending_case_select_query->condition('a.case_date',trim($previous_from_year_dt),'>=');
            $mr_pending_case_select_query->condition('a.case_date',trim($previous_to_year_dt),'<=');
-           $mr_pending_case_select_query->condition('a.results','PENDING','=');
+           //$mr_pending_case_select_query->condition('a.results','PENDING','=');
            $mr_pending_case_select_query->condition('a.is_disabled', 0 ,'=');
 
             $mr_pending_case_select_query->fields('a',array('row_id','factory_name','factory_address',
@@ -459,7 +459,7 @@ $form['step10field']['col5val'] = array
 		  <th >Name of Court	</th>
 		  <th >Sections/Rules violated <br>with a short description	</th>
 		   <th >Result	</th>
-		     <th >Case Date	</th>
+		     <th >Case Filing Date	</th>
 		  <th >Amount of fines	</th>
 		   <th >EDIT</th>
 		 

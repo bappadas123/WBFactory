@@ -1786,6 +1786,7 @@ $content = '<table width="100%" >
                                             <th align="center" valign="middle"  > Registered/un-registered factory</th>
                                             <th align="center" valign="middle"  > Persons against whom <br>launched(Occupier, Manager etc.)</th>
                                             <th align="center" valign="middle"  > Case Number</th>
+                                            <th align="center" valign="middle"  > Case Filing Date  </th>
                                             <th align="center" valign="middle"  > Name of Court</th>
 
                                             <th align="center" valign="middle"  > Sections/Rules <br>violated with a short description</th>
@@ -1797,7 +1798,7 @@ $content = '<table width="100%" >
                                             </tr></thead>'; 
                                             
 
-                                     $query_tab_9=db_query('select  *  from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :anid and is_pending  = :ispen', array(':anid' => trim($filenumber) , ':ispen' => 0 ));
+                                     $query_tab_9=db_query('select  *  from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :anid and is_pending  = :ispen and case_date >= :fdt and case_date <=:tdt', array(':anid' => trim($filenumber) , ':ispen' => 0 , ':fdt' => trim($report_from_date) , ':tdt' => trim($report_to_date)));
 
 
                                        $i=0;
@@ -1816,6 +1817,7 @@ $content = '<table width="100%" >
                                   $violation_description=$squan->violation_description; 
                                   $results=$squan->results; 
                                   $total_fine=$squan->total_fine; 
+                                  $case_date = !(trim($squan->case_date)) ?  '' :  date('d-m-Y', strtotime($squan->case_date));
 
                                  $content .= '<tr>
 
@@ -1825,6 +1827,7 @@ $content = '<table width="100%" >
                                    <td align="center" valign="middle"   >'.$reg_unreg.'</td>
                                    <td align="center" valign="middle"   >'.$person_prosecuted.'</td>
                                    <td align="center" valign="middle"   >'.$case_number.'</td>
+                                    <td align="center" valign="middle"   >'.$case_date.'</td>
                                    <td align="center" valign="middle"   >'.$court_name.'</td>
                                    <td align="center" valign="middle"   >'.$violation_description.'</td>
                                    <td align="center" valign="middle"   >'.$results.'</td>
@@ -1857,7 +1860,7 @@ $content = '<table width="100%" >
                                             <th align="center" valign="middle"  > Sections/Rules <br>violated with a short description</th>
 
                                             <th align="center" valign="middle"  > Result</th>
-                                             <th align="center" valign="middle"  > Case Date </th>
+                                             <th align="center" valign="middle"  > Case Filing Date </th>
                                              <th align="center" valign="middle"  >Amount of fines</th>
                                             
                                             
@@ -1875,7 +1878,7 @@ $content = '<table width="100%" >
     }
     elseif($annual_form_type=='FINANCIAL'){
         $previous_from_year_dt='1900-01-01';
-        $previous_to_year_dt=date("Y")."-03-31";
+        $previous_to_year_dt=$thisYear."-03-31";
     }                         
 
                                        
@@ -1885,7 +1888,7 @@ $content = '<table width="100%" >
            $tab10_pending_case_select_query->condition('b.inspector_id',trim($inspector_id),'=');
            $tab10_pending_case_select_query->condition('a.case_date',trim($previous_from_year_dt),'>=');
            $tab10_pending_case_select_query->condition('a.case_date',trim($previous_to_year_dt),'<=');
-           $tab10_pending_case_select_query->condition('a.results','PENDING','=');
+          // $tab10_pending_case_select_query->condition('a.results','PENDING','=');
            $tab10_pending_case_select_query->condition('a.is_disabled', 0 ,'=');
 
             $tab10_pending_case_select_query->fields('a',array('row_id','factory_name','factory_address',

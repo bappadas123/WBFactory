@@ -34,7 +34,7 @@ function annual_report_step9( $form, &$form_state, $filenumber= NULL , $row_id= 
 		
     
 	
-	      
+	     //  print 'aaaa'.$filenumber;
 	
 	
 	// Part 4
@@ -53,6 +53,20 @@ function annual_report_step9( $form, &$form_state, $filenumber= NULL , $row_id= 
 	     $form['step9field']['rowid'] = 
 	    array('#type' => 'hidden',  
 	    '#value' => $row_id,
+	   
+	   );
+
+
+
+	    $form['step9field']['fdt'] = 
+	    array('#type' => 'hidden',  
+	    '#value' => $report_from_date,
+	   
+	   );
+
+	    $form['step9field']['tdt'] = 
+	    array('#type' => 'hidden',  
+	    '#value' => $report_to_date,
 	   
 	   );
 
@@ -77,7 +91,7 @@ function annual_report_step9( $form, &$form_state, $filenumber= NULL , $row_id= 
                        
 
                           $t9_row_query->fields('a',array('factory_name','factory_address',
-        'reg_unreg','person_prosecuted','case_number','court_name','violation_description','results','total_fine','is_pending','is_disabled'));
+        'reg_unreg','person_prosecuted','case_number','court_name','violation_description','results','total_fine','is_pending','is_disabled','case_date'));
 
                    $t9_row_query_result = $t9_row_query->execute();
 
@@ -97,12 +111,14 @@ function annual_report_step9( $form, &$form_state, $filenumber= NULL , $row_id= 
                          $violation_description=$anr_t9_fetch['violation_description'];
                          $results=$anr_t9_fetch['results'];
                          $total_fine=$anr_t9_fetch['total_fine'];
+                        $case_date=!($anr_t9_fetch['case_date']) ? NULL : date('d-m-Y', strtotime($anr_t9_fetch['case_date']));
                      
 
                        }
                    }
 
-               
+         drupal_add_js(drupal_get_path('module', 'caf_form') . '/js/formcheck.js');
+        drupal_add_js(drupal_get_path('module', 'caf_form') . '/js/myfunction.js');
 
 
      	
@@ -157,6 +173,17 @@ $form['step9field']['col1'] = array
               (
 		       '#prefix' => ' <th>', 
 		        '#markup'=>'<b> Case Number </b>',
+           
+
+		        '#suffix'=>'</th>',
+	   
+	   
+           ); 
+
+               $form['step9field']['col10'] = array
+              (
+		       '#prefix' => ' <th>', 
+		        '#markup'=>'<b> Case Filing Date </b>',
            
 
 		        '#suffix'=>'</th>',
@@ -287,6 +314,19 @@ $form['step9field']['col5val'] = array
 	   
            ); 
 
+               $form['step9field']['col10val'] = array
+              (
+		       '#prefix' => ' <td  >', 
+		         '#type' => 'textfield',
+		         '#attributes' => array('class' => array('datepicker_retify')),
+           
+		          '#suffix'=>'</td>',
+		          '#required' => TRUE,
+		          '#default_value' =>  $case_date ,
+		          '#element_validate' => array('current_case_date_validate'),
+
+		          );
+
                 $form['step9field']['col6val'] = array
               (
 		       '#prefix' => ' <td  >', 
@@ -360,7 +400,12 @@ $form['step9field']['col5val'] = array
 		
           $output1='';
       if(trim($filenumber)){
-      $query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :anid and is_pending  = :ispen', array(':anid' => trim($filenumber) , ':ispen' => 0 ));
+      /*$query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :anid and is_pending  = :ispen and case_date >= :fdt and case_date <= :tdt', array(':anid' => trim($filenumber) , ':ispen' => 0 , ':fdt' => trim($report_from_date) , ':tdt' => trim($report_to_date)));*/
+
+ $query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t9_10 where  annual_inspection_id = :anid and is_pending  = :ispen and case_date >= :fdt and case_date <=:tdt', array(':anid' => trim($filenumber) , ':ispen' => 0 , ':fdt' => trim($result_mrist['report_from_date']) , ':tdt' => trim($result_mrist['report_to_date'])));
+
+
+
       if($query_tab_1_c->rowCount() > 0) 
               { 
       $output1 = "<div class='table-responsive'>
@@ -375,6 +420,7 @@ $form['step9field']['col5val'] = array
 		 <th >Persons against <br> whom launched <br>(Occupier, Manager etc.)</th>
        
 		 <th >Case Number	</th>
+		  <th >Case Filing Date	</th>
 		  <th >Name of Court	</th>
 		  <th >Sections/Rules <br> violated with a <br> short description	</th>
 		   <th >Result	</th>
@@ -399,6 +445,8 @@ $form['step9field']['col5val'] = array
               $results=$squan->results; 
               $total_fine=$squan->total_fine; 
              // $is_pending=$squan->is_pending; 
+
+                 $case_date = !(trim($squan->case_date)) ?  '' :  date('d-m-Y', strtotime($squan->case_date));
             
               
 			 //  $bb=$base_root.$base_path.'equalremuins/'.encryption_decryption_fun('encrypt',$annual_inspection_id).'/'.encryption_decryption_fun('encrypt',$row_id).'/presentperdel';
@@ -438,6 +486,7 @@ $form['step9field']['col5val'] = array
                 $output1.= "<td>".$reg_unreg."</td>";
                 $output1.= "<td>".$person_prosecuted."</td>";
                 $output1.= "<td>".$case_number."</td>";
+                $output1.= "<td>".$case_date."</td>";
                 $output1.= "<td>".$court_name."</td>";
                 $output1.= "<td>".$violation_description."</td>";
                 $output1.= "<td>".$results."</td>";
@@ -470,6 +519,33 @@ $form['step9field']['col5val'] = array
 	        return $form; 
   }
 
+ function current_case_date_validate($element,&$form_state)
+  {
+  
+    $val=$form_state['values'];
+    $fdt= strtotime(trim($val['fdt']));
+    $tdt= strtotime(trim($val['tdt']));
+    $casedt= strtotime(trim($val['col10val']));
+   
+   
+
+    //print $uid.'='.$from.'='.$to;
+    //exit;
+  
+
+		
+	      if($casedt > $tdt || $casedt < $fdt) 
+          { 
+	  
+	 
+	        form_error($element, t('  case date is between    from  '. date('d-m-Y',strtotime(trim($val['fdt']))).' to'.date('d-m-Y',strtotime(trim($val['tdt'])))));
+	 
+		 
+	   
+          
+		 }
+
+     }
 
   function step9_row_del(  $filenumber = NULL , $rowid = NULL){
 	  
@@ -537,6 +613,8 @@ $val=$form_state['values'];
 	$col8val=trim($val['col8val']); 
 
 	$col9val=trim($val['col9val']); if(!$col9val)  $col9val= NULL;   
+
+	$col10val=!trim($val['col10val']) ? NULL : date('Y-m-d', strtotime(trim($val['col10val']))); 
    
 
 
@@ -557,7 +635,7 @@ $val=$form_state['values'];
          $query_update_B = db_update('labour_factory_statcell_annual_report_t9_10');
       $query_update_B->fields(array(
 		   'factory_name' =>$col1val, 'factory_address' => $col2val, 'reg_unreg' => $col3val, 'person_prosecuted' => $col4val, 'case_number' => $col5val, 'court_name' => $col6val, 'violation_description' => $col7val
-                         , 'results' => $col8val, 'total_fine' => $col9val ));
+                         , 'results' => $col8val, 'total_fine' => $col9val , 'case_date' => $col10val));
 										
 										
 										
@@ -590,7 +668,7 @@ $val=$form_state['values'];
 
 
   $fieldsE = array('row_id' => $autoGENNO, 'annual_inspection_id' =>$inspectionid,'factory_name' =>$col1val, 'factory_address' => $col2val, 'reg_unreg' => $col3val, 'person_prosecuted' => $col4val, 'case_number' => $col5val, 'court_name' => $col6val, 'violation_description' => $col7val
-                         , 'results' => $col8val, 'total_fine' => $col9val, 'is_pending' => 0 ,'is_disabled'=> 0);
+                         , 'results' => $col8val, 'total_fine' => $col9val, 'is_pending' => 0 ,'is_disabled'=> 0, 'case_date' => $col10val);
 		  
 		   
                       db_insert('labour_factory_statcell_annual_report_t9_10')->fields($fieldsE)->execute();

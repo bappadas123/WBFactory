@@ -1174,10 +1174,10 @@ $val=$form_state['values'];
         if($max_sl_number_t9==0){$querystring_t9=1; }else{ $querystring_t9=$max_sl_number_t9+1; }
         $row_id_t9=$querystring_t9;
     
-            
+            $case_date='2021-12-15';
 
   $fields_t9 = array('row_id' => $row_id_t9, 'annual_inspection_id' =>$annualReportid,'factory_name' =>trim($squan->pros_instituted_name_of_factory), 'factory_address' => trim($squan->pros_instituted_address_of_factory), 'reg_unreg' => trim($squan->pros_instituted_reg_unreg), 'person_prosecuted' => trim($squan->pros_instituted_person_prosecuted), 'case_number' => trim($squan->pros_instituted_case_no), 'court_name' => trim($squan->pros_instituted_name_of_court), 'violation_description' => trim($squan->pros_instituted_violation)
-                         , 'results' =>  'PENDING', 'total_fine' => 0, 'is_pending' => 0 ,'is_disabled'=> 0);
+                         , 'results' =>  'PENDING', 'total_fine' => 0, 'is_pending' => 0 ,'is_disabled'=> 0 ,'case_date'=> $case_date);
       
        
                       db_insert('labour_factory_statcell_annual_report_t9_10')->fields($fields_t9)->execute();
@@ -2272,10 +2272,10 @@ db_insert('labour_factory_statcell_annual_report_t1_a_b')->fields($fieldsA)->exe
             if($max_sl_number_t9==0){$querystring_t9=1;	}else{ $querystring_t9=$max_sl_number_t9+1; }
 		    $row_id_t9=$querystring_t9;
     
-            
+            $case_date='2021-12-15';
 
   $fields_t9 = array('row_id' => $row_id_t9, 'annual_inspection_id' =>$autoGENNO,'factory_name' =>trim($squan->pros_instituted_name_of_factory), 'factory_address' => trim($squan->pros_instituted_address_of_factory), 'reg_unreg' => trim($squan->pros_instituted_reg_unreg), 'person_prosecuted' => trim($squan->pros_instituted_person_prosecuted), 'case_number' => trim($squan->pros_instituted_case_no), 'court_name' => trim($squan->pros_instituted_name_of_court), 'violation_description' => trim($squan->pros_instituted_violation)
-                         , 'results' =>  'PENDING', 'total_fine' => 0, 'is_pending' => 0 ,'is_disabled'=> 0);
+                         , 'results' =>  'PENDING', 'total_fine' => 0, 'is_pending' => 0 ,'case_date'=> $case_date);
 		  
 		   
                       db_insert('labour_factory_statcell_annual_report_t9_10')->fields($fields_t9)->execute();

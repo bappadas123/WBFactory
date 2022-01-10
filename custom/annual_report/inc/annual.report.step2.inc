@@ -231,7 +231,7 @@ $form['step2Afield']['colA1'] = array
                 '#size' => 5,
 
 		        '#suffix'=>'</td>',
-		          '#default_value' =>$ado_no_danger_occur_fire
+		          '#default_value' =>$ado_no_danger_occur_explosion,
 	   
 	   
            ); 
@@ -242,7 +242,7 @@ $form['step2Afield']['colA1'] = array
                 '#size' => 5,
 
 		        '#suffix'=>'</td>',
-		      '#default_value' =>$ado_no_danger_occur_explosion
+		      '#default_value' =>$ado_no_danger_occur_fire,
 	   
 	   
            ); 
@@ -2557,19 +2557,19 @@ $query_tab_1_c=db_query('select  *  from labour_factory_statcell_annual_report_t
       else
       	$colC3val=   NULL  ;
       $colC4val=trim($val['colC4val']);  
-      $colC5val=trim($val['colC5val']);   if(!$colC5val)   $colC5val= NULL;  
+      $colC5val=trim($val['colC5val']);   if(!$colC5val)   $colC5val= 0;  
       $colC6val=trim($val['colC6val']);  
       $colC7val=trim($val['colC7val']);  
         
 
-
+  if(trim($colC5val)){
    if(!preg_match('/^[0-9]+$/',trim($colC5val)))
 	 {
 	  drupal_get_messages(error);
 	  return "<font color='#FF3333'><b>please give integer value the  no. of persons involved   <b>    </font>";
 	  exit;
 	 }
-
+ }
 
 	 
 	    
